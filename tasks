@@ -6,6 +6,9 @@ for command in "$@"
 do
   echo "--- ${command} ---"
   case "${command}" in
+    lint)
+      pipenv run lint-flake8
+      ;;
     typecheck)
       pipenv run typecheck
       ;;
@@ -27,7 +30,7 @@ do
       pipenv install -d
       ;;
     validate)
-      ./tasks typecheck
+      ./tasks typecheck lint
       ;;
     dojo-validate)
       dojo "./tasks devenv validate"

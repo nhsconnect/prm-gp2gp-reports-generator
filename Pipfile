@@ -7,6 +7,12 @@ name = "pypi"
 gp2gp-reports-generator = {editable = true, path = "."}
 
 [dev-packages]
+flake8 = "~=3.9"
+flake8-bugbear="~=21.9"
+flake8-comprehensions="~=3.6"
+mccabe="~=0.6"
+flake8-builtins="~=1.5"
+flake8-print="~=4.0"
 mypy = "~=0.9"
 
 [requires]
@@ -14,3 +20,4 @@ python_version = "3.9"
 
 [scripts]
 typecheck = "mypy src/"
+lint-flake8 = "flake8 src/ setup.py"
