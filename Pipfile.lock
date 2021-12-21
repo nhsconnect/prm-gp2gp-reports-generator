@@ -1,0 +1,25 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "82a266b1dd0a44b9a44ce2d021885874e29afa299cfc2c08382446f579177233"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "3.9"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "gp2gp-reports-generator": {
+            "editable": true,
+            "path": "."
+        }
+    },
+    "develop": {}
+}
