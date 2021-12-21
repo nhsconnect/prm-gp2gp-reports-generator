@@ -7,6 +7,7 @@ name = "pypi"
 gp2gp-reports-generator = {editable = true, path = "."}
 
 [dev-packages]
+bandit = "~=1.7"
 flake8 = "~=3.9"
 flake8-bugbear="~=21.9"
 flake8-comprehensions="~=3.6"
@@ -21,3 +22,4 @@ python_version = "3.9"
 [scripts]
 typecheck = "mypy src/"
 lint-flake8 = "flake8 src/ setup.py"
+lint-bandit = "bandit -r src/"

@@ -8,6 +8,7 @@ do
   case "${command}" in
     lint)
       pipenv run lint-flake8
+      pipenv run lint-bandit
       ;;
     typecheck)
       pipenv run typecheck
