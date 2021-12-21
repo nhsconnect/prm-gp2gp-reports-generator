@@ -7,6 +7,18 @@ pipelines:
       git:
         type: configrepo
     stages:
+      - test:
+          clean_workspace: true
+          jobs:
+            test:
+              resources:
+                - docker
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - ./tasks dojo-validate
       - build_and_publish:
           clean_workspace: true
           jobs:

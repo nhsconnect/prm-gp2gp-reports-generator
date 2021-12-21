@@ -6,6 +6,9 @@ for command in "$@"
 do
   echo "--- ${command} ---"
   case "${command}" in
+    typecheck)
+      pipenv run typecheck
+      ;;
     check-deps)
       pipenv check
       ;;
@@ -19,7 +22,15 @@ do
       rm -rf build/ dist/ .pytest_cache/
       ;;
     devenv)
+      echo "./tasks validate" > .git/hooks/pre-commit
+      chmod +x .git/hooks/pre-commit
       pipenv install -d
+      ;;
+    validate)
+      ./tasks typecheck
+      ;;
+    dojo-validate)
+      dojo "./tasks devenv validate"
       ;;
     dep)
         ./tasks check-deps > audit-output.txt

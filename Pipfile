@@ -6,5 +6,11 @@ name = "pypi"
 [packages]
 gp2gp-reports-generator = {editable = true, path = "."}
 
+[dev-packages]
+mypy = "~=0.9"
+
 [requires]
 python_version = "3.9"
+
+[scripts]
+typecheck = "mypy src/"
