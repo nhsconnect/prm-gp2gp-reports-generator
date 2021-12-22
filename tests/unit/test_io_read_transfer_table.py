@@ -34,7 +34,7 @@ def test_read_transfer_table():
 
     expected_table = transfer_table
 
-    actual_table = metrics_io.read_transfers_as_table(s3_uris=[s3_uri])
+    actual_table = metrics_io.read_transfers_as_table(s3_uri)
 
     assert actual_table == expected_table
 
