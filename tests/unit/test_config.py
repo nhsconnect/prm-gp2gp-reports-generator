@@ -3,7 +3,12 @@ from datetime import datetime
 import pytest
 from dateutil.tz import tzutc
 
-from prmreportsgenerator.config import MissingEnvironmentVariable, PipelineConfig
+from prmreportsgenerator.config import (
+    InvalidEnvironmentVariableValue,
+    MissingEnvironmentVariable,
+    PipelineConfig,
+)
+from tests.builders.common import a_string
 
 
 def test_reads_from_environment_variables_and_converts_to_required_format():
@@ -63,3 +68,16 @@ def test_error_from_environment_when_required_fields_are_not_set():
     with pytest.raises(MissingEnvironmentVariable) as e:
         PipelineConfig.from_environment_variables(environment)
     assert str(e.value) == "Expected environment variable BUILD_TAG was not set, exiting..."
+
+
+def test_error_from_environment_when_invalid_type_field_set():
+    environment = {
+        "INPUT_TRANSFER_DATA_BUCKET": "input-transfer-data-bucket",
+        "OUTPUT_REPORTS_BUCKET": "output-reports-bucket",
+        "DATE_ANCHOR": "invalid type",
+        "BUILD_TAG": a_string(),
+    }
+
+    with pytest.raises(InvalidEnvironmentVariableValue) as e:
+        PipelineConfig.from_environment_variables(environment)
+    assert str(e.value) == "Expected environment variable DATE_ANCHOR value is invalid, exiting..."
