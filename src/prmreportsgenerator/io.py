@@ -4,6 +4,8 @@ from typing import Dict, List
 import polars as pl
 import pyarrow as pa
 
+from prmreportsgenerator.datetime import YearMonth
+from prmreportsgenerator.s3 import S3DataManager
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +26,7 @@ class ReportsS3UriResolver:
         self._reports_bucket = reports_bucket
         self._reports_version = _DEFAULT_REPORTS_VERSION
 
-    def supplier_pathway_outcome_counts(self, year_month) -> str:
+    def supplier_pathway_outcome_counts(self, year_month: YearMonth) -> str:
         year, month = year_month
         s3_key = "/".join(
             [
@@ -36,7 +38,7 @@ class ReportsS3UriResolver:
         )
         return f"s3://{s3_key}"
 
-    def transfer_data_uri(self, year_month) -> str:
+    def transfer_data_uri(self, year_month: YearMonth) -> str:
         year, month = year_month
         s3_file_name = f"{year}-{month}-{self._TRANSFER_DATA_FILE_NAME}"
         s3_key = "/".join(
@@ -53,7 +55,7 @@ class ReportsS3UriResolver:
 class ReportsIO:
     def __init__(
         self,
-        s3_data_manager,
+        s3_data_manager: S3DataManager,
         output_metadata: Dict[str, str],
     ):
         self._s3_manager = s3_data_manager
