@@ -8,6 +8,7 @@ gp2gp-reports-generator = {editable = true, path = "."}
 polars = "~=0.9.11"
 
 [dev-packages]
+moto = {version = "~=2.2", extras = ["server"]}
 black = "==21.9b0"
 bandit = "~=1.7"
 flake8 = "~=3.9"
@@ -18,14 +19,18 @@ flake8-builtins="~=1.5"
 flake8-print="~=4.0"
 isort = "~=5.9"
 mypy = "~=0.9"
+types-python-dateutil = "~=2.8"
+pytest-cov = "~=3.0"
+pytest = "~=6.2"
 
 [requires]
 python_version = "3.9"
 
 [scripts]
-format-import = "isort src/ setup.py"
-format = "black -t py39 -l100 src/ setup.py"
-check-format = "black --check -t py39 -l100 src/ setup.py"
-typecheck = "mypy src/"
-lint-flake8 = "flake8 src/ setup.py"
+test = "pytest --cov=prmreportsgenerator --cov-report=term-missing tests/unit"
+format-import = "isort src/ tests/ setup.py"
+format = "black -t py39 -l100 src/ tests/ setup.py"
+check-format = "black --check -t py39 -l100 src/ tests/ setup.py"
+typecheck = "mypy src/ tests/"
+lint-flake8 = "flake8 src/ tests/ setup.py"
 lint-bandit = "bandit -r src/"
