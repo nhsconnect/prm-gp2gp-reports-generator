@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 gp2gp-reports-generator = {editable = true, path = "."}
+polars = "~=0.9.11"
 
 [dev-packages]
 black = "==21.9b0"

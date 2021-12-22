@@ -5,5 +5,5 @@ setup(
     version="1.0.0",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
-    install_requires=[],
+    install_requires=["PyArrow>=5.0", "polars>=0.9"],
 )
