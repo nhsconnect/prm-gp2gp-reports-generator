@@ -2,6 +2,18 @@
 
 This repo contains the reports generator. It is responsible for generating various reports needed for reporting on GP2GP. It will put the generated reports (such as the Error Combination table) into an S3 bucket.
 
+## Configuration
+
+Configuration is achieved via the following environment variables:
+
+
+| Environment variable       | Description                                                             |
+|----------------------------|-------------------------------------------------------------------------|
+| INPUT_TRANSFER_DATA_BUCKET | Bucket to read transfer files from.                                     |
+| OUTPUT_REPORTS_BUCKET      | Bucket to write the reports.                                            |
+| BUILD_TAG                  | Unique identifier for version of code build tag (e.g. short git hash)   |
+| DATE_ANCHOR                | ISO-8601 datetime specifying "now".                                     | 
+
 ## Developing
 
 Common development workflows are defined in the `tasks` script.
@@ -56,6 +68,14 @@ To find out the path of this new virtual environment (which can be useful for co
 ```
 pipenv --venv
 ```
+
+### Running the unit and integration tests
+
+`./tasks test`
+
+### Running the end to end tests
+
+`./tasks e2e-test`
 
 ### Running tests, linting, and type checking
 
