@@ -1,4 +1,4 @@
-from prmreportsgenerator.io import ReportsS3UriResolver
+from prmreportsgenerator.reports_io import ReportsS3UriResolver
 from tests.builders.common import a_datetime, a_string
 
 

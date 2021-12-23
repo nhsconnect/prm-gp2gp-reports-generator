@@ -10,7 +10,7 @@ from prmreportsgenerator.count_outcomes_per_supplier_pathway import (
     count_outcomes_per_supplier_pathway,
 )
 from prmreportsgenerator.datetime import MonthlyReportingWindow
-from prmreportsgenerator.io import ReportsIO, ReportsS3UriResolver
+from prmreportsgenerator.reports_io import ReportsIO, ReportsS3UriResolver
 from prmreportsgenerator.json_formatter import JsonFormatter
 from prmreportsgenerator.s3 import S3DataManager
 
