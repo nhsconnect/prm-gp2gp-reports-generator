@@ -1,10 +1,10 @@
 import polars as pl
 import pytest
 
-from prmreportsgenerator.count_outcomes_per_supplier_pathway import (
+from prmreportsgenerator.domain.count_outcomes_per_supplier_pathway import (
     count_outcomes_per_supplier_pathway,
 )
-from prmreportsgenerator.transfer import TransferFailureReason, TransferStatus
+from prmreportsgenerator.domain.transfer import TransferFailureReason, TransferStatus
 from tests.builders.common import a_string
 from tests.builders.dataframe import TransferDataFrame
 

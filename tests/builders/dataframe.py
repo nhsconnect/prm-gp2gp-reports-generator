@@ -2,7 +2,7 @@ import polars as pl
 import pyarrow as pa
 from dateutil.tz import UTC
 
-from prmreportsgenerator.transfer import TransferStatus
+from prmreportsgenerator.domain.transfer import TransferStatus
 from tests.builders.common import a_datetime, a_string, an_integer
 
 requesting_supplier = a_string(5)

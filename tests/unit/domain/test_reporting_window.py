@@ -1,4 +1,4 @@
-from prmreportsgenerator.datetime import MonthlyReportingWindow
+from prmreportsgenerator.domain.datetime import MonthlyReportingWindow
 from tests.builders.common import a_datetime
 
 

@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from polars import DataFrame, col, count, lit, when  # type: ignore
 
-from prmreportsgenerator.transfer import TransferStatus
+from prmreportsgenerator.domain.transfer import TransferStatus
 
 error_code_descriptions = {
     6: "Not at surgery",
