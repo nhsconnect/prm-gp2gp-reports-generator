@@ -4,8 +4,8 @@ from typing import Dict
 import polars as pl
 import pyarrow as pa
 
-from prmreportsgenerator.domain.datetime import YearMonth
-from prmreportsgenerator.s3 import S3DataManager
+from prmreportsgenerator.domain.reporting_window import YearMonth
+from prmreportsgenerator.io.s3 import S3DataManager
 
 logger = logging.getLogger(__name__)
 

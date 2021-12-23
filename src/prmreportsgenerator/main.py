@@ -9,10 +9,10 @@ from prmreportsgenerator.config import PipelineConfig
 from prmreportsgenerator.domain.count_outcomes_per_supplier_pathway import (
     count_outcomes_per_supplier_pathway,
 )
-from prmreportsgenerator.domain.datetime import MonthlyReportingWindow
-from prmreportsgenerator.reports_io import ReportsIO, ReportsS3UriResolver
-from prmreportsgenerator.json_formatter import JsonFormatter
-from prmreportsgenerator.s3 import S3DataManager
+from prmreportsgenerator.domain.reporting_window import MonthlyReportingWindow
+from prmreportsgenerator.io.reports_io import ReportsIO, ReportsS3UriResolver
+from prmreportsgenerator.io.json_formatter import JsonFormatter
+from prmreportsgenerator.io.s3 import S3DataManager
 
 logger = logging.getLogger("prmreportsgenerator")
 

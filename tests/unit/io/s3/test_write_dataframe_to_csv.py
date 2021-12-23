@@ -4,8 +4,8 @@ import boto3
 import polars as pl
 from moto import mock_s3
 
-from prmreportsgenerator.s3 import S3DataManager, logger
-from tests.unit.s3 import MOTO_MOCK_REGION
+from prmreportsgenerator.io.s3 import S3DataManager, logger
+from tests.unit.io.s3 import MOTO_MOCK_REGION
 
 SOME_METADATA = {"metadata_field": "metadata_value"}
 

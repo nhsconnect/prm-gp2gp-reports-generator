@@ -5,8 +5,8 @@ import pyarrow as pa
 from moto import mock_s3
 from pyarrow.parquet import write_table
 
-from prmreportsgenerator.s3 import S3DataManager, logger
-from tests.unit.s3 import MOTO_MOCK_REGION
+from prmreportsgenerator.io.s3 import S3DataManager, logger
+from tests.unit.io.s3 import MOTO_MOCK_REGION
 
 
 @mock_s3
