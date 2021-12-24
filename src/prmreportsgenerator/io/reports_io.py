@@ -9,13 +9,12 @@ from prmreportsgenerator.io.s3 import S3DataManager
 
 logger = logging.getLogger(__name__)
 
-_TRANSFER_DATA_VERSION = "v6"
-_DEFAULT_REPORTS_VERSION = "v1"
-
 
 class ReportsS3UriResolver:
     _SUPPLIER_PATHWAY_OUTCOME_COUNTS_FILE_NAME = "supplier_pathway_outcome_counts.csv"
     _TRANSFER_DATA_FILE_NAME = "transfers.parquet"
+    _TRANSFER_DATA_VERSION = "v6"
+    _DEFAULT_REPORTS_VERSION = "v1"
 
     def __init__(
         self,
@@ -24,32 +23,29 @@ class ReportsS3UriResolver:
     ):
         self._transfer_data_bucket = transfer_data_bucket
         self._reports_bucket = reports_bucket
-        self._reports_version = _DEFAULT_REPORTS_VERSION
+        self._reports_version = self._DEFAULT_REPORTS_VERSION
+
+    @staticmethod
+    def _s3_path(*fragments):
+        return "s3://" + "/".join(fragments)
 
     def supplier_pathway_outcome_counts(self, year_month: YearMonth) -> str:
         year, month = year_month
-        s3_key = "/".join(
-            [
-                self._reports_bucket,
-                self._reports_version,
-                f"{year}/{month}",
-                f"{year}-{month}-{self._SUPPLIER_PATHWAY_OUTCOME_COUNTS_FILE_NAME}",
-            ]
+        return self._s3_path(
+            self._reports_bucket,
+            self._reports_version,
+            f"{year}/{month}",
+            f"{year}-{month}-{self._SUPPLIER_PATHWAY_OUTCOME_COUNTS_FILE_NAME}",
         )
-        return f"s3://{s3_key}"
 
     def transfer_data_uri(self, year_month: YearMonth) -> str:
         year, month = year_month
-        s3_file_name = f"{year}-{month}-{self._TRANSFER_DATA_FILE_NAME}"
-        s3_key = "/".join(
-            [
-                self._transfer_data_bucket,
-                _TRANSFER_DATA_VERSION,
-                f"{year}/{month}",
-                s3_file_name,
-            ]
+        return self._s3_path(
+            self._transfer_data_bucket,
+            self._TRANSFER_DATA_VERSION,
+            f"{year}/{month}",
+            f"{year}-{month}-{self._TRANSFER_DATA_FILE_NAME}",
         )
-        return f"s3://{s3_key}"
 
 
 class ReportsIO:
