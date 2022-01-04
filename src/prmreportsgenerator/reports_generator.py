@@ -3,9 +3,11 @@ import polars as pl
 import pyarrow as pa
 
 from prmreportsgenerator.config import PipelineConfig
-from prmreportsgenerator.domain.count_outcomes_per_supplier_pathway import count_outcomes_per_supplier_pathway
+from prmreportsgenerator.domain.count_outcomes_per_supplier_pathway import (
+    count_outcomes_per_supplier_pathway,
+)
 from prmreportsgenerator.domain.reporting_window import MonthlyReportingWindow
-from prmreportsgenerator.io.reports_io import ReportsS3UriResolver, ReportsIO
+from prmreportsgenerator.io.reports_io import ReportsIO, ReportsS3UriResolver
 from prmreportsgenerator.io.s3 import S3DataManager
 
 
