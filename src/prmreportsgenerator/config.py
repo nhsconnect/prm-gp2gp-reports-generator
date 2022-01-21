@@ -45,8 +45,14 @@ class EnvConfig:
     def read_optional_str(self, name: str) -> Optional[str]:
         return self._read_env(name, optional=True)
 
+    def read_optional_int(self, name: str) -> Optional[int]:
+        return self._read_env(name, optional=True, converter=int)
+
     def read_datetime(self, name: str) -> datetime:
         return self._read_env(name, optional=False, converter=isoparse)
+
+    def read_optional_datetime(self, name: str) -> datetime:
+        return self._read_env(name, optional=True, converter=isoparse)
 
 
 @dataclass
@@ -55,6 +61,9 @@ class PipelineConfig:
     input_transfer_data_bucket: str
     output_reports_bucket: str
     date_anchor: datetime
+    start_datetime: Optional[datetime]
+    end_datetime: Optional[datetime]
+    cutoff_days: Optional[int]
     s3_endpoint_url: Optional[str]
 
     @classmethod
@@ -65,5 +74,8 @@ class PipelineConfig:
             input_transfer_data_bucket=env.read_str("INPUT_TRANSFER_DATA_BUCKET"),
             output_reports_bucket=env.read_str("OUTPUT_REPORTS_BUCKET"),
             date_anchor=env.read_datetime("DATE_ANCHOR"),
+            start_datetime=env.read_optional_datetime("START_DATETIME"),
+            end_datetime=env.read_optional_datetime("END_DATETIME"),
+            cutoff_days=env.read_optional_int("CONVERSATION_CUTOFF_DAYS"),
             s3_endpoint_url=env.read_optional_str("S3_ENDPOINT_URL"),
         )

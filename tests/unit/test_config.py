@@ -17,6 +17,9 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
         "INPUT_TRANSFER_DATA_BUCKET": "input-transfer-data-bucket",
         "OUTPUT_REPORTS_BUCKET": "output-reports-bucket",
         "DATE_ANCHOR": "2020-01-30T18:44:49Z",
+        "START_DATETIME": "2020-01-29T00:00:00Z",
+        "END_DATETIME": "2020-01-30T00:00:00Z",
+        "CONVERSATION_CUTOFF_DAYS": "1",
         "S3_ENDPOINT_URL": "a_url",
         "BUILD_TAG": build_tag,
     }
@@ -27,6 +30,13 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
         date_anchor=datetime(
             year=2020, month=1, day=30, hour=18, minute=44, second=49, tzinfo=tzutc()
         ),
+        start_datetime=datetime(
+            year=2020, month=1, day=29, hour=0, minute=0, second=0, tzinfo=tzutc()
+        ),
+        end_datetime=datetime(
+            year=2020, month=1, day=30, hour=0, minute=0, second=0, tzinfo=tzutc()
+        ),
+        cutoff_days=1,
         s3_endpoint_url="a_url",
         build_tag=build_tag,
     )
@@ -51,6 +61,9 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
         date_anchor=datetime(
             year=2020, month=1, day=30, hour=18, minute=44, second=49, tzinfo=tzutc()
         ),
+        start_datetime=None,
+        end_datetime=None,
+        cutoff_days=None,
         s3_endpoint_url=None,
         build_tag=build_tag,
     )
