@@ -63,6 +63,8 @@ class PipelineConfig:
     date_anchor: datetime
     start_datetime: Optional[datetime]
     end_datetime: Optional[datetime]
+    number_of_months: Optional[int]
+    number_of_days: Optional[int]
     cutoff_days: Optional[int]
     s3_endpoint_url: Optional[str]
 
@@ -76,6 +78,8 @@ class PipelineConfig:
             date_anchor=env.read_datetime("DATE_ANCHOR"),
             start_datetime=env.read_optional_datetime("START_DATETIME"),
             end_datetime=env.read_optional_datetime("END_DATETIME"),
+            number_of_months=env.read_optional_int("NUMBER_OF_MONTHS"),
+            number_of_days=env.read_optional_int("NUMBER_OF_DAYS"),
             cutoff_days=env.read_optional_int("CONVERSATION_CUTOFF_DAYS"),
             s3_endpoint_url=env.read_optional_str("S3_ENDPOINT_URL"),
         )
