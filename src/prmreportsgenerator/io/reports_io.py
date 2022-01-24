@@ -5,7 +5,7 @@ from typing import Dict, List
 import polars as pl
 import pyarrow as pa
 
-from prmreportsgenerator.domain.reporting_window import YearMonth
+from prmreportsgenerator.domain.monthly_reporting_window import YearMonth
 from prmreportsgenerator.io.s3 import S3DataManager
 from prmreportsgenerator.utils.add_leading_zero import add_leading_zero
 
