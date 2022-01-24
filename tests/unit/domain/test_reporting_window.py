@@ -38,11 +38,41 @@ def test_returns_start_datetime_at_midnight_given_start_datetime_at_midnight():
     assert actual == start_datetime
 
 
-@freeze_time(datetime(year=2021, month=1, day=2, hour=3, minute=0, second=0, tzinfo=UTC))
-def test_returns_start_datetime_at_yesterday_midnight_given_no_start_datetime():
-    reporting_window = ReportingWindow(start_datetime=None, number_of_months=1, number_of_days=None)
+@pytest.mark.parametrize(
+    "number_of_days, expected_datetime",
+    [
+        (1, datetime(year=2020, month=12, day=31, hour=0, minute=0, second=0, tzinfo=UTC)),
+        (3, datetime(year=2020, month=12, day=29, hour=0, minute=0, second=0, tzinfo=UTC)),
+        (10, datetime(year=2020, month=12, day=22, hour=0, minute=0, second=0, tzinfo=UTC)),
+    ],
+)
+@freeze_time(datetime(year=2021, month=1, day=1, hour=3, minute=0, second=0, tzinfo=UTC))
+def test_returns_today_midnight_minus_days_given_no_start_datetime_and_number_of_days(
+    number_of_days, expected_datetime
+):
+    reporting_window = ReportingWindow(
+        start_datetime=None, number_of_months=None, number_of_days=number_of_days
+    )
     actual = reporting_window.get_start_datetime()
 
-    expected = datetime(year=2021, month=1, day=1, hour=0, minute=0, second=0, tzinfo=UTC)
+    assert actual == expected_datetime
 
-    assert actual == expected
+
+@pytest.mark.parametrize(
+    "number_of_months, expected_datetime",
+    [
+        (1, datetime(year=2020, month=12, day=2, hour=0, minute=0, second=0, tzinfo=UTC)),
+        (3, datetime(year=2020, month=10, day=2, hour=0, minute=0, second=0, tzinfo=UTC)),
+        (10, datetime(year=2020, month=3, day=2, hour=0, minute=0, second=0, tzinfo=UTC)),
+    ],
+)
+@freeze_time(datetime(year=2021, month=1, day=2, hour=3, minute=0, second=0, tzinfo=UTC))
+def test_returns_today_midnight_minus_months_given_no_start_datetime_and_number_of_months(
+    number_of_months, expected_datetime
+):
+    reporting_window = ReportingWindow(
+        start_datetime=None, number_of_months=number_of_months, number_of_days=None
+    )
+    actual = reporting_window.get_start_datetime()
+
+    assert actual == expected_datetime
