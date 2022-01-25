@@ -1,8 +1,6 @@
 from datetime import datetime, time
 from typing import List, Optional
 
-from dateutil.tz import UTC
-
 from prmreportsgenerator.utils.date_converter import convert_date_range_to_dates
 
 
@@ -33,12 +31,6 @@ class ReportingWindow:
         midnight = time(hour=0, minute=0, second=0)
         if a_datetime and a_datetime.time() != midnight:
             raise ValueError("Datetime must be at midnight")
-
-    @staticmethod
-    def _calculate_today_midnight_datetime() -> datetime:
-        today = datetime.now(UTC).date()
-        today_midnight_utc = datetime.combine(today, time.min, tzinfo=UTC)
-        return today_midnight_utc
 
     @property
     def start_datetime(self) -> Optional[datetime]:
