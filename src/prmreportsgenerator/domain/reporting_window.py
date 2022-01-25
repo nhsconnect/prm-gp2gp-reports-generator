@@ -1,7 +1,9 @@
 from datetime import datetime, time
-from typing import Optional
+from typing import List, Optional
 
 from dateutil.tz import UTC
+
+from prmreportsgenerator.utils.date_converter import convert_date_range_to_dates
 
 
 class ReportingWindow:
@@ -12,6 +14,8 @@ class ReportingWindow:
     ):
         self._validate_datetimes(start_datetime, end_datetime)
         self._start_datetime = start_datetime
+        if start_datetime and end_datetime:
+            self._dates = convert_date_range_to_dates(start_datetime, end_datetime)
 
     def _validate_datetimes(
         self, start_datetime: Optional[datetime], end_datetime: Optional[datetime]
@@ -20,8 +24,6 @@ class ReportingWindow:
             raise ValueError("Start datetime must be provided if end datetime is provided")
         if end_datetime is None and start_datetime:
             raise ValueError("End datetime must be provided if start datetime is provided")
-        if (start_datetime and end_datetime) and (start_datetime > end_datetime):
-            raise ValueError("Start datetime must be before end datetime")
 
         self._validate_datetime_is_at_midnight(start_datetime)
         self._validate_datetime_is_at_midnight(end_datetime)
@@ -41,3 +43,7 @@ class ReportingWindow:
     @property
     def start_datetime(self) -> Optional[datetime]:
         return self._start_datetime
+
+    @property
+    def dates(self) -> List[datetime]:
+        return self._dates
