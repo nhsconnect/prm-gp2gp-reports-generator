@@ -1,7 +1,6 @@
-from datetime import datetime, time, timedelta
+from datetime import datetime, time
 from typing import Optional
 
-from dateutil.relativedelta import relativedelta
 from dateutil.tz import UTC
 
 
@@ -9,19 +8,23 @@ class ReportingWindow:
     def __init__(
         self,
         start_datetime: Optional[datetime],
-        number_of_months: Optional[int],
-        number_of_days: Optional[int],
+        end_datetime: Optional[datetime],
     ):
+        self._validate_datetimes(start_datetime, end_datetime)
+        self._start_datetime = start_datetime
+
+    def _validate_datetimes(
+        self, start_datetime: Optional[datetime], end_datetime: Optional[datetime]
+    ):
+        if start_datetime is None and end_datetime:
+            raise ValueError("Start datetime must be provided if end datetime is provided")
+        if end_datetime is None and start_datetime:
+            raise ValueError("End datetime must be provided if start datetime is provided")
+        if (start_datetime and end_datetime) and (start_datetime > end_datetime):
+            raise ValueError("Start datetime must be before end datetime")
+
         self._validate_datetime_is_at_midnight(start_datetime)
-
-        if number_of_months and number_of_days:
-            raise ValueError("Cannot have both number of months and number of days")
-        if number_of_months is None and number_of_days is None:
-            raise ValueError("Number of months or number of days must be specified")
-
-        self._number_of_days: int = number_of_days or 0
-        self._number_of_months: int = number_of_months or 0
-        self._start_datetime = self._calculate_start_datetime(start_datetime)
+        self._validate_datetime_is_at_midnight(end_datetime)
 
     @staticmethod
     def _validate_datetime_is_at_midnight(a_datetime: Optional[datetime]):
@@ -35,14 +38,6 @@ class ReportingWindow:
         today_midnight_utc = datetime.combine(today, time.min, tzinfo=UTC)
         return today_midnight_utc
 
-    def _calculate_start_datetime(self, start_datetime: Optional[datetime]):
-        if start_datetime:
-            return start_datetime
-        today_midnight_datetime = self._calculate_today_midnight_datetime()
-        if self._number_of_months > 0:
-            return today_midnight_datetime - relativedelta(months=self._number_of_months)
-        else:
-            return today_midnight_datetime - timedelta(days=self._number_of_days)
-
-    def get_start_datetime(self) -> datetime:
+    @property
+    def start_datetime(self) -> Optional[datetime]:
         return self._start_datetime

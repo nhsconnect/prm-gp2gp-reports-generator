@@ -2,77 +2,71 @@ from datetime import datetime
 
 import pytest
 from dateutil.tz import UTC
-from freezegun import freeze_time
 
 from prmreportsgenerator.domain.reporting_window import ReportingWindow
-
-
-def test_throws_value_error_given_both_number_of_days_and_months():
-    with pytest.raises(ValueError) as e:
-        ReportingWindow(start_datetime=None, number_of_months=1, number_of_days=1)
-    assert str(e.value) == "Cannot have both number of months and number of days"
-
-
-def test_throws_value_error_given_no_number_of_days_and_months():
-    with pytest.raises(ValueError) as e:
-        ReportingWindow(start_datetime=None, number_of_months=None, number_of_days=None)
-    assert str(e.value) == "Number of months or number of days must be specified"
+from tests.builders.common import a_datetime
 
 
 def test_throws_value_error_given_start_datetime_not_at_midnight():
-    start_datetime = datetime(year=2019, month=12, day=1, hour=5, minute=0, second=0, tzinfo=UTC)
+    start_datetime = a_datetime(year=2020, hour=5, minute=0, second=0)
 
     with pytest.raises(ValueError) as e:
-        ReportingWindow(start_datetime=start_datetime, number_of_months=1, number_of_days=None)
+        ReportingWindow(
+            start_datetime=start_datetime,
+            end_datetime=a_datetime(year=2021, hour=0, minute=0, second=0),
+        )
     assert str(e.value) == "Datetime must be at midnight"
 
 
-def test_returns_start_datetime_at_midnight_given_start_datetime_at_midnight():
+def test_throws_value_error_given_end_datetime_not_at_midnight():
+    end_datetime = a_datetime(year=2022, hour=5, minute=0, second=0)
+
+    with pytest.raises(ValueError) as e:
+        ReportingWindow(
+            start_datetime=a_datetime(year=2021, hour=0, minute=0, second=0),
+            end_datetime=end_datetime,
+        )
+    assert str(e.value) == "Datetime must be at midnight"
+
+
+def test_throws_value_error_given_end_datetime_but_no_start_datetime():
+    end_datetime = datetime(year=2019, month=12, day=31, hour=0, minute=0, second=0, tzinfo=UTC)
+
+    with pytest.raises(ValueError) as e:
+        ReportingWindow(start_datetime=None, end_datetime=end_datetime)
+    assert str(e.value) == "Start datetime must be provided if end datetime is provided"
+
+
+def test_throws_value_error_given_start_datetime_but_no_end_datetime():
+    start_datetime = datetime(year=2019, month=12, day=31, hour=0, minute=0, second=0, tzinfo=UTC)
+
+    with pytest.raises(ValueError) as e:
+        ReportingWindow(
+            start_datetime=start_datetime,
+            end_datetime=None,
+        )
+    assert str(e.value) == "End datetime must be provided if start datetime is provided"
+
+
+def test_throws_value_error_given_start_datetime_is_after_end_datetime():
+    start_datetime = datetime(year=2019, month=12, day=2, hour=0, minute=0, second=0, tzinfo=UTC)
+    end_datetime = datetime(year=2019, month=12, day=1, hour=0, minute=0, second=0, tzinfo=UTC)
+
+    with pytest.raises(ValueError) as e:
+        ReportingWindow(
+            start_datetime=start_datetime,
+            end_datetime=end_datetime,
+        )
+    assert str(e.value) == "Start datetime must be before end datetime"
+
+
+def test_returns_start_datetime_given_start_datetime():
     start_datetime = datetime(year=2019, month=12, day=1, hour=0, minute=0, second=0, tzinfo=UTC)
 
     reporting_window = ReportingWindow(
-        start_datetime=start_datetime, number_of_months=1, number_of_days=None
+        start_datetime=start_datetime,
+        end_datetime=a_datetime(year=2020, hour=0, minute=0, second=0),
     )
-    actual = reporting_window.get_start_datetime()
+    actual = reporting_window.start_datetime
 
     assert actual == start_datetime
-
-
-@pytest.mark.parametrize(
-    "number_of_days, expected_datetime",
-    [
-        (1, datetime(year=2020, month=12, day=31, hour=0, minute=0, second=0, tzinfo=UTC)),
-        (3, datetime(year=2020, month=12, day=29, hour=0, minute=0, second=0, tzinfo=UTC)),
-        (10, datetime(year=2020, month=12, day=22, hour=0, minute=0, second=0, tzinfo=UTC)),
-    ],
-)
-@freeze_time(datetime(year=2021, month=1, day=1, hour=3, minute=0, second=0, tzinfo=UTC))
-def test_returns_today_midnight_minus_days_given_no_start_datetime_and_number_of_days(
-    number_of_days, expected_datetime
-):
-    reporting_window = ReportingWindow(
-        start_datetime=None, number_of_months=None, number_of_days=number_of_days
-    )
-    actual = reporting_window.get_start_datetime()
-
-    assert actual == expected_datetime
-
-
-@pytest.mark.parametrize(
-    "number_of_months, expected_datetime",
-    [
-        (1, datetime(year=2020, month=12, day=2, hour=0, minute=0, second=0, tzinfo=UTC)),
-        (3, datetime(year=2020, month=10, day=2, hour=0, minute=0, second=0, tzinfo=UTC)),
-        (10, datetime(year=2020, month=3, day=2, hour=0, minute=0, second=0, tzinfo=UTC)),
-    ],
-)
-@freeze_time(datetime(year=2021, month=1, day=2, hour=3, minute=0, second=0, tzinfo=UTC))
-def test_returns_today_midnight_minus_months_given_no_start_datetime_and_number_of_months(
-    number_of_months, expected_datetime
-):
-    reporting_window = ReportingWindow(
-        start_datetime=None, number_of_months=number_of_months, number_of_days=None
-    )
-    actual = reporting_window.get_start_datetime()
-
-    assert actual == expected_datetime
