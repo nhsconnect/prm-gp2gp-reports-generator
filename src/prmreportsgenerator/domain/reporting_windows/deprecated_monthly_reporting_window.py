@@ -9,7 +9,7 @@ MonthNumber = int
 YearMonth = Tuple[YearNumber, MonthNumber]
 
 
-class MonthlyReportingWindow:
+class MonthlyReportingWindowDeprecated:
     def __init__(
         self,
         date_anchor_month_start: datetime,

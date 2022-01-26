@@ -6,7 +6,9 @@ from prmreportsgenerator.config import PipelineConfig
 from prmreportsgenerator.domain.count_outcomes_per_supplier_pathway import (
     count_outcomes_per_supplier_pathway,
 )
-from prmreportsgenerator.domain.monthly_reporting_window import MonthlyReportingWindow
+from prmreportsgenerator.domain.reporting_windows.deprecated_monthly_reporting_window import (
+    MonthlyReportingWindowDeprecated,
+)
 from prmreportsgenerator.io.reports_io import ReportsIO, ReportsS3UriResolver
 from prmreportsgenerator.io.s3 import S3DataManager
 
@@ -16,7 +18,7 @@ class ReportsGenerator:
         s3 = boto3.resource("s3", endpoint_url=config.s3_endpoint_url)
         s3_manager = S3DataManager(s3)
 
-        self._reporting_window = MonthlyReportingWindow.prior_to(config.date_anchor)
+        self._reporting_window = MonthlyReportingWindowDeprecated.prior_to(config.date_anchor)
 
         output_metadata = {
             "reports-generator-version": config.build_tag,

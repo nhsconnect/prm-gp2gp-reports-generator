@@ -4,7 +4,7 @@ import pytest
 from dateutil.tz import UTC
 from freezegun import freeze_time
 
-from prmreportsgenerator.domain.daily_reporting_window import DailyReportingWindow
+from prmreportsgenerator.domain.reporting_windows.daily_reporting_window import DailyReportingWindow
 from tests.builders.common import a_datetime
 
 
