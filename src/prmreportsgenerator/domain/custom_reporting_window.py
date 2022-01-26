@@ -4,7 +4,7 @@ from typing import List, Optional
 from prmreportsgenerator.utils.date_converter import convert_date_range_to_dates
 
 
-class ReportingWindow:
+class CustomReportingWindow:
     def __init__(
         self,
         start_datetime: Optional[datetime],
