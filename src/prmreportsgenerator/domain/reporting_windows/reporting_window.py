@@ -13,5 +13,9 @@ class ReportingWindow:
     def start_datetime(self) -> datetime:
         return self._start_datetime
 
+    @property
+    def end_datetime(self) -> datetime:
+        return self._end_datetime
+
     def get_dates(self) -> List[datetime]:
         return convert_date_range_to_dates(self._start_datetime, self._end_datetime)
