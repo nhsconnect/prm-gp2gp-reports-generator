@@ -2,11 +2,15 @@ from datetime import datetime
 
 import pytest
 from dateutil.tz import UTC
+from freezegun import freeze_time
 
 from prmreportsgenerator.domain.reporting_windows.custom_reporting_window import (
     CustomReportingWindow,
 )
 from prmreportsgenerator.domain.reporting_windows.daily_reporting_window import DailyReportingWindow
+from prmreportsgenerator.domain.reporting_windows.monthly_reporting_window import (
+    MonthlyReportingWindow,
+)
 from prmreportsgenerator.domain.reporting_windows.reporting_window_calculator import (
     ReportingWindowCalculator,
 )
@@ -30,6 +34,14 @@ def test_generates_daily_reporting_window_given_number_of_days_and_cutoff_days()
 
     assert isinstance(reporting_window, DailyReportingWindow)
     assert len(reporting_window.get_dates()) == 2
+
+
+@freeze_time(a_datetime(year=2021, month=1, day=2))
+def test_generates_monthly_reporting_window_given_number_of_months():
+    reporting_window = ReportingWindowCalculator.generate(number_of_months=1)
+
+    assert isinstance(reporting_window, MonthlyReportingWindow)
+    assert len(reporting_window.get_dates()) == 31
 
 
 @pytest.mark.parametrize(
