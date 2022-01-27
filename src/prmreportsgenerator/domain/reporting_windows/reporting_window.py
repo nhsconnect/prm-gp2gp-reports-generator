@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List
 
-from prmreportsgenerator.utils.date_converter import convert_date_range_to_dates
+from prmreportsgenerator.utils.date_helpers import convert_date_range_to_dates
 
 
 class ReportingWindow:

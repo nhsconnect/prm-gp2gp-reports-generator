@@ -69,7 +69,7 @@ def test_dates_property_returns_list_of_datetimes_given_4_number_of_days_and_0_c
     ],
 )
 @freeze_time(a_datetime(year=2022, month=1, day=1))
-def test_dates_property_returns_list_of_datetimes_given_1_day_and_various_cutoffs(
+def test_get_dates_returns_list_of_datetimes_given_1_day_and_various_cutoffs(
     cutoff_days, expected_dates
 ):
     reporting_window = DailyReportingWindow(cutoff_days=cutoff_days, number_of_days=1)
