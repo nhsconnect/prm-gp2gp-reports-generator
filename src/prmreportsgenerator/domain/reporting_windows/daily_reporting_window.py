@@ -1,15 +1,14 @@
 from datetime import datetime, time, timedelta
-from typing import List
-
 from dateutil.tz import UTC
 
-from prmreportsgenerator.utils.date_converter import convert_date_range_to_dates
+from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
 
 
-class DailyReportingWindow:
+class DailyReportingWindow(ReportingWindow):
     def __init__(self, number_of_days: int, cutoff_days: int):
         self._number_of_days = number_of_days
         self._cutoff_days = cutoff_days
+        super().__init__(self.start_datetime, self.end_datetime)
 
     @staticmethod
     def _calculate_today_midnight_datetime() -> datetime:
@@ -23,6 +22,5 @@ class DailyReportingWindow:
         return today_midnight_datetime - timedelta(days=self._number_of_days + self._cutoff_days)
 
     @property
-    def dates(self) -> List[datetime]:
-        end_datetime = self.start_datetime + timedelta(days=self._number_of_days)
-        return convert_date_range_to_dates(self.start_datetime, end_datetime)
+    def end_datetime(self) -> datetime:
+        return self.start_datetime + timedelta(days=self._number_of_days)

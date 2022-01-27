@@ -55,7 +55,7 @@ def test_dates_property_returns_list_of_datetimes_given_4_number_of_days_and_0_c
         datetime(year=2022, month=1, day=2, tzinfo=UTC),
     ]
 
-    actual = reporting_window.dates
+    actual = reporting_window.get_dates()
 
     assert actual == expected
 
@@ -74,6 +74,6 @@ def test_dates_property_returns_list_of_datetimes_given_1_day_and_various_cutoff
 ):
     reporting_window = DailyReportingWindow(cutoff_days=cutoff_days, number_of_days=1)
 
-    actual = reporting_window.dates
+    actual = reporting_window.get_dates()
 
     assert actual == expected_dates
