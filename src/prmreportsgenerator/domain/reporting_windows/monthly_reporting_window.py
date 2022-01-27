@@ -8,16 +8,22 @@ from prmreportsgenerator.utils.date_helpers import calculate_today_midnight_date
 
 
 class MonthlyReportingWindow(ReportingWindow):
-    def __init__(self, cutoff_days, number_of_months):
-        self._cutoff_days = cutoff_days
+    def __init__(self, number_of_months: int):
         self._number_of_months = number_of_months
 
-        super().__init__(self.start_datetime, None)
+        self._current_month_start_datetime = self.get_current_month_start_datetime()
+
+        super().__init__(self.start_datetime, self.end_datetime)
+
+    @staticmethod
+    def get_current_month_start_datetime() -> datetime:
+        today_datetime = calculate_today_midnight_datetime()
+        return datetime(today_datetime.year, today_datetime.month, 1, tzinfo=UTC)
 
     @property
     def start_datetime(self) -> datetime:
-        today_datetime = calculate_today_midnight_datetime()
-        current_month_start_datetime = datetime(
-            today_datetime.year, today_datetime.month, 1, tzinfo=UTC
-        )
-        return current_month_start_datetime - relativedelta(months=1)
+        return self._current_month_start_datetime - relativedelta(months=self._number_of_months)
+
+    @property
+    def end_datetime(self) -> datetime:
+        return self._current_month_start_datetime

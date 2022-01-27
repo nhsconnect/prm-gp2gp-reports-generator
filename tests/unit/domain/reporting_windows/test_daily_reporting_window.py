@@ -45,7 +45,7 @@ def test_returns_today_midnight_minus_days_given_1_number_of_days_and_various_cu
 
 
 @freeze_time(a_datetime(year=2022, month=1, day=3))
-def test_dates_property_returns_list_of_datetimes_given_4_number_of_days_and_0_cutoff():
+def test_get_dates_returns_list_of_datetimes_given_4_number_of_days_and_0_cutoff():
     reporting_window = DailyReportingWindow(number_of_days=4, cutoff_days=0)
 
     expected = [
