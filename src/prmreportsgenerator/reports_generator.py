@@ -6,9 +6,17 @@ from prmreportsgenerator.config import PipelineConfig
 from prmreportsgenerator.domain.count_outcomes_per_supplier_pathway import (
     count_outcomes_per_supplier_pathway,
 )
+from prmreportsgenerator.domain.reporting_windows.custom_reporting_window import (
+    CustomReportingWindow,
+)
+from prmreportsgenerator.domain.reporting_windows.daily_reporting_window import DailyReportingWindow
 from prmreportsgenerator.domain.reporting_windows.deprecated_monthly_reporting_window import (
     MonthlyReportingWindowDeprecated,
 )
+from prmreportsgenerator.domain.reporting_windows.monthly_reporting_window import (
+    MonthlyReportingWindow,
+)
+from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
 from prmreportsgenerator.io.reports_io import ReportsIO, ReportsS3UriResolver
 from prmreportsgenerator.io.s3 import S3DataManager
 
@@ -18,7 +26,9 @@ class ReportsGenerator:
         s3 = boto3.resource("s3", endpoint_url=config.s3_endpoint_url)
         s3_manager = S3DataManager(s3)
 
-        self._reporting_window = MonthlyReportingWindowDeprecated.prior_to(config.date_anchor)
+        self._reporting_window_deprecated = MonthlyReportingWindowDeprecated.prior_to(
+            config.date_anchor
+        )
 
         output_metadata = {
             "reports-generator-version": config.build_tag,
@@ -39,11 +49,6 @@ class ReportsGenerator:
         transfer_table_s3_uri = self._uris.transfer_data_uri(year_month)
         return self._io.read_transfers_as_table(transfer_table_s3_uri)
 
-    @staticmethod
-    def _count_outcomes_per_supplier_pathway(transfer_table: pa.Table):
-        transfers_frame = pl.from_arrow(transfer_table)
-        return count_outcomes_per_supplier_pathway(transfers_frame)
-
     def _write_supplier_pathway_outcome_counts(
         self, supplier_pathway_outcome_counts: pl.DataFrame, month
     ):
@@ -52,8 +57,25 @@ class ReportsGenerator:
             s3_uri=self._uris.supplier_pathway_outcome_counts(month),
         )
 
+    @staticmethod
+    def create_reporting_window(config: PipelineConfig) -> ReportingWindow:
+        if config.start_datetime and config.end_datetime is None:
+            raise ValueError("End datetime must be provided if start datetime is provided")
+        if config.start_datetime and config.end_datetime:
+            return CustomReportingWindow(config.start_datetime, config.end_datetime)
+        if config.number_of_days and config.cutoff_days:
+            return DailyReportingWindow(config.number_of_days, config.cutoff_days)
+        if config.number_of_months:
+            return MonthlyReportingWindow(config.number_of_months)
+        raise ValueError("Missing required config to generate reports. Please see README.")
+
+    @staticmethod
+    def _count_outcomes_per_supplier_pathway(transfer_table: pa.Table):
+        transfers_frame = pl.from_arrow(transfer_table)
+        return count_outcomes_per_supplier_pathway(transfers_frame)
+
     def run(self):
-        last_month = self._reporting_window.metric_month
+        last_month = self._reporting_window_deprecated.metric_month
         transfer_table = self._read_transfer_table(last_month)
         supplier_pathway_outcome_counts = self._count_outcomes_per_supplier_pathway(transfer_table)
         self._write_supplier_pathway_outcome_counts(supplier_pathway_outcome_counts, last_month)
