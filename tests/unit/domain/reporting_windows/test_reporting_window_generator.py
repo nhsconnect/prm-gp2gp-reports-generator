@@ -44,15 +44,17 @@ def test_generates_monthly_reporting_window_given_number_of_months():
     assert len(reporting_window.get_dates()) == 31
 
 
-@pytest.mark.parametrize(
-    "start_datetime, end_datetime",
-    [
-        (None, None),
-        (None, a_datetime()),
-        (a_datetime(), None),
-    ],
-)
-def test_throws_if_missing_valid_inputs(start_datetime, end_datetime):
+def test_throws_if_missing_end_date_but_start_date_provided():
+    start_datetime = a_datetime()
+    end_datetime = None
     with pytest.raises(ValueError) as e:
         ReportingWindowCalculator.generate(start_datetime, end_datetime)
-    assert str(e.value) == "Missing required config to generate reports"
+    assert str(e.value) == "End datetime must be provided if start datetime is provided"
+
+
+def test_throws_if_missing_valid_inputs():
+    start_datetime = None
+    end_datetime = None
+    with pytest.raises(ValueError) as e:
+        ReportingWindowCalculator.generate(start_datetime, end_datetime)
+    assert str(e.value) == "Missing required config to generate reports. Please see README."

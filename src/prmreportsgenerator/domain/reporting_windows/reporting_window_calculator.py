@@ -24,10 +24,12 @@ class ReportingWindowCalculator:
         cutoff_days: Optional[int] = None,
         number_of_months: Optional[int] = None,
     ) -> ReportingWindow:
+        if start_datetime and end_datetime is None:
+            raise ValueError("End datetime must be provided if start datetime is provided")
         if start_datetime and end_datetime:
             return CustomReportingWindow(start_datetime, end_datetime)
         if number_of_days and cutoff_days:
             return DailyReportingWindow(number_of_days, cutoff_days)
         if number_of_months:
             return MonthlyReportingWindow(number_of_months)
-        raise ValueError("Missing required config to generate reports")
+        raise ValueError("Missing required config to generate reports. Please see README.")
