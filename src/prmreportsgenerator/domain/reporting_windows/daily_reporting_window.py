@@ -18,3 +18,7 @@ class DailyReportingWindow(ReportingWindow):
     @property
     def end_datetime(self) -> datetime:
         return self.start_datetime + timedelta(days=self._number_of_days)
+
+    @property
+    def config_string(self) -> str:
+        return f"{self._number_of_days}-days"

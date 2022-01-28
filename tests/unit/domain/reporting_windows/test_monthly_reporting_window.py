@@ -62,3 +62,12 @@ def test_get_dates_returns_a_list_of_datetimes_of_previous_months(
     actual_datetimes = reporting_window.get_dates()
 
     assert actual_datetimes == expected_datetimes
+
+
+def test_config_string_returns_string_containing_number_of_months():
+    reporting_window = MonthlyReportingWindow(number_of_months=3)
+
+    actual = reporting_window.config_string
+    expected = "3-months"
+
+    assert actual == expected

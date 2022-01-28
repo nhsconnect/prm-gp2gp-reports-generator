@@ -27,3 +27,7 @@ class MonthlyReportingWindow(ReportingWindow):
     @property
     def end_datetime(self) -> datetime:
         return self._current_month_start_datetime
+
+    @property
+    def config_string(self) -> str:
+        return f"{self._number_of_months}-months"

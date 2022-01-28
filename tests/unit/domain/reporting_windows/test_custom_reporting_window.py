@@ -71,3 +71,15 @@ def test_get_dates_returns_list_of_datetimes_within_start_and_end_datetime():
     actual = reporting_window.get_dates()
 
     assert actual == expected
+
+
+def test_config_string_returns_custom_string():
+    start_datetime = datetime(year=2021, month=12, day=30, tzinfo=UTC)
+    end_datetime = datetime(year=2022, month=1, day=3, tzinfo=UTC)
+
+    reporting_window = CustomReportingWindow(start_datetime, end_datetime)
+
+    actual = reporting_window.config_string
+    expected = "custom"
+
+    assert actual == expected

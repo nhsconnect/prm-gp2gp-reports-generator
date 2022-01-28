@@ -14,3 +14,7 @@ class CustomReportingWindow(ReportingWindow):
         midnight = time(hour=0, minute=0, second=0)
         if a_datetime.time() != midnight:
             raise ValueError("Datetime must be at midnight")
+
+    @property
+    def config_string(self) -> str:
+        return "custom"

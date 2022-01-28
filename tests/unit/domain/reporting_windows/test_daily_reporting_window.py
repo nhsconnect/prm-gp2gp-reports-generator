@@ -77,3 +77,12 @@ def test_get_dates_returns_list_of_datetimes_given_1_day_and_various_cutoffs(
     actual = reporting_window.get_dates()
 
     assert actual == expected_dates
+
+
+def test_config_string_returns_string_containing_number_of_days():
+    reporting_window = DailyReportingWindow(number_of_days=4, cutoff_days=0)
+
+    actual = reporting_window.config_string
+    expected = "4-days"
+
+    assert actual == expected
