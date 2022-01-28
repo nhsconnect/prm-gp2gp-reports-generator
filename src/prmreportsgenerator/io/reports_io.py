@@ -61,7 +61,6 @@ class ReportsS3UriResolver:
         return f"{year}-{month}-{day}-{filename}"
 
     def transfer_data_uris(self, reporting_window: ReportingWindow, cutoff_days: int) -> List[str]:
-
         return [
             self._s3_path(
                 self._transfer_data_bucket,
