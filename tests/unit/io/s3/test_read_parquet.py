@@ -2,6 +2,7 @@ from unittest import mock
 
 import boto3
 import pyarrow as pa
+import pytest
 from moto import mock_s3
 from pyarrow.parquet import write_table
 
@@ -54,3 +55,22 @@ def test_will_log_reading_file_event():
             f"Reading file from: {object_uri}",
             extra={"event": "READING_FILE_FROM_S3", "object_uri": object_uri},
         )
+
+
+@mock_s3
+def test_read_parquet_logs_error_when_s3_parquet_file_not_found(capsys):
+    conn = boto3.resource("s3", region_name=MOTO_MOCK_REGION)
+    bucket_name = "test_bucket"
+    conn.create_bucket(Bucket=bucket_name)
+
+    s3_manager = S3DataManager(conn)
+    object_uri = f"s3://{bucket_name}/fruits.parquet"
+
+    with pytest.raises(SystemExit):
+        with mock.patch.object(logger, "error") as mock_log_error:
+            s3_manager.read_parquet(object_uri)
+
+    mock_log_error.assert_called_once_with(
+        f"File not found: {object_uri}, exiting...",
+        extra={"event": "FILE_NOT_FOUND_IN_S3"},
+    )
