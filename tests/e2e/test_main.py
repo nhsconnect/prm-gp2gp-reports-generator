@@ -34,6 +34,43 @@ class ThreadedServer:
         self._thread.join()
 
 
+FAKE_AWS_HOST = "127.0.0.1"
+FAKE_AWS_PORT = 8887
+FAKE_AWS_URL = f"http://{FAKE_AWS_HOST}:{FAKE_AWS_PORT}"
+FAKE_S3_ACCESS_KEY = "testing"
+FAKE_S3_SECRET_KEY = "testing"
+FAKE_S3_REGION = "us-west-1"
+
+S3_INPUT_TRANSFER_DATA_BUCKET = "input-transfer-data-bucket"
+S3_OUTPUT_REPORTS_BUCKET = "output-reports-data-bucket"
+
+BUILD_TAG = a_string(7)
+
+
+def _setup():
+    s3_client = boto3.resource(
+        "s3",
+        endpoint_url=FAKE_AWS_URL,
+        aws_access_key_id=FAKE_S3_ACCESS_KEY,
+        aws_secret_access_key=FAKE_S3_SECRET_KEY,
+        config=Config(signature_version="s3v4"),
+        region_name=FAKE_S3_REGION,
+    )
+
+    environ["AWS_ACCESS_KEY_ID"] = FAKE_S3_ACCESS_KEY
+    environ["AWS_SECRET_ACCESS_KEY"] = FAKE_S3_SECRET_KEY
+    environ["AWS_DEFAULT_REGION"] = FAKE_S3_REGION
+
+    environ["INPUT_TRANSFER_DATA_BUCKET"] = S3_INPUT_TRANSFER_DATA_BUCKET
+    environ["OUTPUT_REPORTS_BUCKET"] = S3_OUTPUT_REPORTS_BUCKET
+
+    environ["S3_ENDPOINT_URL"] = FAKE_AWS_URL
+    environ["BUILD_TAG"] = BUILD_TAG
+
+    fake_s3 = _build_fake_s3(FAKE_AWS_HOST, FAKE_AWS_PORT)
+    return fake_s3, s3_client
+
+
 def _read_json(path):
     return json.loads(path.read_text())
 
@@ -92,49 +129,21 @@ def _build_fake_s3_bucket(bucket_name: str, s3):
 
 
 fake_s3_host = "127.0.0.1"
-fake_s3_port = 8888
+fake_s3_port = 8887
 fake_s3_url = f"http://{fake_s3_host}:{fake_s3_port}"
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
 def test_end_to_end_with_fake_s3_deprecated(datadir):
-    fake_s3_access_key = "testing"
-    fake_s3_secret_key = "testing"
-    fake_s3_region = "eu-west-2"
-    s3_output_reports_bucket = "output-reports-bucket"
-    s3_input_transfer_data_bucket_name = "input-transfer-data-bucket"
-    build_tag = a_string(7)
-
-    fake_s3 = _build_fake_s3(fake_s3_host, fake_s3_port)
+    fake_s3, s3_client = _setup()
     fake_s3.start()
 
-    date_anchor = "2020-01-30T18:44:49Z"
-
-    environ["AWS_ACCESS_KEY_ID"] = fake_s3_access_key
-    environ["AWS_SECRET_ACCESS_KEY"] = fake_s3_secret_key
-    environ["AWS_DEFAULT_REGION"] = fake_s3_region
-
-    environ["INPUT_TRANSFER_DATA_BUCKET"] = s3_input_transfer_data_bucket_name
-    environ["OUTPUT_REPORTS_BUCKET"] = s3_output_reports_bucket
-    environ["DATE_ANCHOR"] = date_anchor
-    environ["S3_ENDPOINT_URL"] = fake_s3_url
-    environ["BUILD_TAG"] = build_tag
-
-    s3 = boto3.resource(
-        "s3",
-        endpoint_url=fake_s3_url,
-        aws_access_key_id=fake_s3_access_key,
-        aws_secret_access_key=fake_s3_secret_key,
-        config=Config(signature_version="s3v4"),
-        region_name=fake_s3_region,
-    )
-
-    output_reports_bucket = _build_fake_s3_bucket(s3_output_reports_bucket, s3)
-    input_transfer_bucket = _build_fake_s3_bucket(s3_input_transfer_data_bucket_name, s3)
+    output_reports_bucket = _build_fake_s3_bucket(S3_OUTPUT_REPORTS_BUCKET, s3_client)
+    input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
 
     _write_transfer_parquet(
         datadir / "inputs" / "decTransfersParquetColumns.json",
-        f"{s3_input_transfer_data_bucket_name}/v6/2019/12/2019-12-transfers.parquet",
+        f"{S3_INPUT_TRANSFER_DATA_BUCKET}/v6/2019/12/2019-12-transfers.parquet",
     )
 
     expected_supplier_pathway_outcome_counts_output_key = (
@@ -145,14 +154,17 @@ def test_end_to_end_with_fake_s3_deprecated(datadir):
     )
 
     expected_metadata = {
-        "reports-generator-version": build_tag,
+        "reports-generator-version": BUILD_TAG,
         "date-anchor": "2020-01-30T18:44:49+00:00",
     }
 
     s3_reports_output_path = "v1/2019/12/"
 
     try:
+        environ["DATE_ANCHOR"] = "2020-01-30T18:44:49Z"
+
         main()
+
         supplier_pathway_outcome_counts_s3_path = (
             f"{s3_reports_output_path}{expected_supplier_pathway_outcome_counts_output_key}"
         )
