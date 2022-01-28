@@ -38,24 +38,11 @@ def test_returns_correct_supplier_pathway_outcome_counts_uri_given_date():
         reports_bucket=reports_bucket,
         transfer_data_bucket=a_string(),
     )
+    supplement_s3_key = "4-days"
 
-    actual = uri_resolver.supplier_pathway_outcome_counts_uri(date)
+    actual = uri_resolver.supplier_pathway_outcome_counts_uri(date, supplement_s3_key)
 
-    expected = f"s3://{reports_bucket}/v2/2022/03/05/2022-03-05-supplier_pathway_outcome_counts.csv"
-
-    assert actual == expected
-
-
-def test_returns_correct_supplier_pathway_outcome_counts_month_uri_given_date():
-    reports_bucket = a_string()
-    date = datetime(year=2022, month=3, day=5, tzinfo=UTC)
-    uri_resolver = ReportsS3UriResolver(
-        reports_bucket=reports_bucket,
-        transfer_data_bucket=a_string(),
-    )
-
-    actual = uri_resolver.supplier_pathway_outcome_counts_month_uri(date)
-
-    expected = f"s3://{reports_bucket}/v2/2022/03/2022-03-supplier_pathway_outcome_counts.csv"
+    expected_s3_key = f"{reports_bucket}/v2/{supplement_s3_key}/2022/03/05"
+    expected = f"s3://{expected_s3_key}/2022-03-05-supplier_pathway_outcome_counts.csv"
 
     assert actual == expected

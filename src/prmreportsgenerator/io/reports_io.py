@@ -93,25 +93,17 @@ class ReportsS3UriResolver:
             for date in reporting_window.get_dates()
         ]
 
-    def supplier_pathway_outcome_counts_uri(self, date: datetime) -> str:
+    def supplier_pathway_outcome_counts_uri(
+        self, date: datetime, supplement_s3_key: str = ""
+    ) -> str:
         return self._s3_path(
             self._reports_bucket,
             self._REPORTS_VERSION,
+            supplement_s3_key,
             f"{add_leading_zero(date.year)}",
             f"{add_leading_zero(date.month)}",
             f"{add_leading_zero(date.day)}",
             self._filepath(date, self._SUPPLIER_PATHWAY_OUTCOME_COUNTS_FILE_NAME),
-        )
-
-    def supplier_pathway_outcome_counts_month_uri(self, date: datetime) -> str:
-        year = add_leading_zero(date.year)
-        month = add_leading_zero(date.month)
-        return self._s3_path(
-            self._reports_bucket,
-            self._REPORTS_VERSION,
-            year,
-            month,
-            f"{year}-{month}-{self._SUPPLIER_PATHWAY_OUTCOME_COUNTS_FILE_NAME}",
         )
 
 
