@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Dict, List
 
 import polars as pl
@@ -8,6 +8,7 @@ import pyarrow as pa
 from prmreportsgenerator.domain.reporting_windows.deprecated_monthly_reporting_window import (
     YearMonth,
 )
+from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
 from prmreportsgenerator.io.s3 import S3DataManager
 from prmreportsgenerator.utils.add_leading_zero import add_leading_zero
 
@@ -59,14 +60,7 @@ class ReportsS3UriResolver:
         day = add_leading_zero(date.day)
         return f"{year}-{month}-{day}-{filename}"
 
-    def transfer_data_uris(
-        self, start_datetime: datetime, end_datetime: datetime, cutoff_days: int
-    ) -> List[str]:
-        if start_datetime > end_datetime:
-            raise ValueError("Start datetime must be before end datetime")
-
-        delta = end_datetime - start_datetime
-        dates = [start_datetime + timedelta(days=days) for days in range(delta.days)]
+    def transfer_data_uris(self, reporting_window: ReportingWindow, cutoff_days: int) -> List[str]:
 
         return [
             self._s3_path(
@@ -78,7 +72,7 @@ class ReportsS3UriResolver:
                 f"{add_leading_zero(date.day)}",
                 self._filepath(date, self._TRANSFER_DATA_FILE_NAME),
             )
-            for date in dates
+            for date in reporting_window.get_dates()
         ]
 
 

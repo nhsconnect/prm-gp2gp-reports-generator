@@ -2,8 +2,9 @@ from datetime import datetime
 
 from dateutil.tz import tzutc
 
+from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
 from prmreportsgenerator.io.reports_io import ReportsS3UriResolver
-from tests.builders.common import a_datetime, a_string
+from tests.builders.common import a_datetime, a_string, an_integer
 
 
 def test_resolver_returns_correct_supplier_pathway_outcome_counts_uri():
@@ -46,18 +47,21 @@ def test_returns_correct_transfer_data_uris_given_start_and_end_datetime_and_cut
     transfer_data_bucket = a_string()
     start_datetime = datetime(year=2021, month=1, day=1, tzinfo=tzutc())
     end_datetime = datetime(year=2021, month=1, day=3, tzinfo=tzutc())
-    cutoff_days = 1
+    cutoff_days = an_integer(b=30)
+
+    reporting_window = ReportingWindow(start_datetime=start_datetime, end_datetime=end_datetime)
 
     uri_resolver = ReportsS3UriResolver(
         reports_bucket=a_string(),
         transfer_data_bucket=transfer_data_bucket,
     )
 
-    actual = uri_resolver.transfer_data_uris(start_datetime, end_datetime, cutoff_days)
+    actual = uri_resolver.transfer_data_uris(reporting_window, cutoff_days)
 
+    cutoff_key = f"cutoff-{cutoff_days}"
     expected = [
-        f"s3://{transfer_data_bucket}/v7/cutoff-1/2021/01/01/2021-01-01-transfers.parquet",
-        f"s3://{transfer_data_bucket}/v7/cutoff-1/2021/01/02/2021-01-02-transfers.parquet",
+        f"s3://{transfer_data_bucket}/v7/{cutoff_key}/2021/01/01/2021-01-01-transfers.parquet",
+        f"s3://{transfer_data_bucket}/v7/{cutoff_key}/2021/01/02/2021-01-02-transfers.parquet",
     ]
 
     assert actual == expected
