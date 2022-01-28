@@ -57,6 +57,8 @@ class ReportsS3UriResolverDeprecated:
 class ReportsS3UriResolver:
     _TRANSFER_DATA_FILE_NAME = "transfers.parquet"
     _TRANSFER_DATA_VERSION = "v7"
+    _SUPPLIER_PATHWAY_OUTCOME_COUNTS_FILE_NAME = "supplier_pathway_outcome_counts.csv"
+    _REPORTS_VERSION = "v2"
 
     def __init__(
         self,
@@ -90,6 +92,27 @@ class ReportsS3UriResolver:
             )
             for date in reporting_window.get_dates()
         ]
+
+    def supplier_pathway_outcome_counts_uri(self, date: datetime) -> str:
+        return self._s3_path(
+            self._reports_bucket,
+            self._REPORTS_VERSION,
+            f"{add_leading_zero(date.year)}",
+            f"{add_leading_zero(date.month)}",
+            f"{add_leading_zero(date.day)}",
+            self._filepath(date, self._SUPPLIER_PATHWAY_OUTCOME_COUNTS_FILE_NAME),
+        )
+
+    def supplier_pathway_outcome_counts_month_uri(self, date: datetime) -> str:
+        year = add_leading_zero(date.year)
+        month = add_leading_zero(date.month)
+        return self._s3_path(
+            self._reports_bucket,
+            self._REPORTS_VERSION,
+            year,
+            month,
+            f"{year}-{month}-{self._SUPPLIER_PATHWAY_OUTCOME_COUNTS_FILE_NAME}",
+        )
 
 
 class ReportsIO:
