@@ -92,12 +92,12 @@ def _build_fake_s3_bucket(bucket_name: str, s3):
 
 
 fake_s3_host = "127.0.0.1"
-fake_s3_port = 8887
+fake_s3_port = 8888
 fake_s3_url = f"http://{fake_s3_host}:{fake_s3_port}"
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
-def test_end_to_end_with_fake_s3(datadir):
+def test_end_to_end_with_fake_s3_deprecated(datadir):
     fake_s3_access_key = "testing"
     fake_s3_secret_key = "testing"
     fake_s3_region = "eu-west-2"
