@@ -19,7 +19,7 @@ _INTEGRATED_TRANSFER_DATA_DICT = {
 }
 
 
-def test_read_transfer_table():
+def test_read_transfer_table_given_list_of_s3_uris():
     transfer_table = pa.Table.from_pydict(_INTEGRATED_TRANSFER_DATA_DICT)
     s3_manager = Mock()
     s3_manager.read_parquet.return_value = transfer_table
@@ -34,7 +34,7 @@ def test_read_transfer_table():
 
     expected_table = transfer_table
 
-    actual_table = metrics_io.read_transfers_as_table(s3_uri)
+    actual_table = metrics_io.read_transfers_as_table([s3_uri])
 
     assert actual_table == expected_table
 

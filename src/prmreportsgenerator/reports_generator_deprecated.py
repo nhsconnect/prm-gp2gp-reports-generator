@@ -39,7 +39,7 @@ class ReportsGeneratorDeprecated:
 
     def _read_transfer_table(self, year_month) -> pa.Table:
         transfer_table_s3_uri = self._uris.transfer_data_uri(year_month)
-        return self._io.read_transfers_as_table(transfer_table_s3_uri)
+        return self._io.read_transfers_as_table([transfer_table_s3_uri])
 
     def _write_supplier_pathway_outcome_counts(
         self, supplier_pathway_outcome_counts: pl.DataFrame, month

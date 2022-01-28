@@ -116,8 +116,10 @@ class ReportsIO:
         self._s3_manager = s3_data_manager
         self._output_metadata = output_metadata
 
-    def read_transfers_as_table(self, s3_uri: str) -> pa.Table:
-        return self._s3_manager.read_parquet(s3_uri)
+    def read_transfers_as_table(self, s3_uris: List[str]) -> pa.Table:
+        return pa.concat_tables(
+            [self._s3_manager.read_parquet(s3_path) for s3_path in s3_uris],
+        )
 
     def write_outcome_counts(self, dataframe: pl.DataFrame, s3_uri: str):
         self._s3_manager.write_dataframe_to_csv(
