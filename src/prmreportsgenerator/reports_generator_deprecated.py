@@ -9,7 +9,7 @@ from prmreportsgenerator.domain.count_outcomes_per_supplier_pathway import (
 from prmreportsgenerator.domain.reporting_windows.deprecated_monthly_reporting_window import (
     MonthlyReportingWindowDeprecated,
 )
-from prmreportsgenerator.io.reports_io import ReportsIO, ReportsS3UriResolver
+from prmreportsgenerator.io.reports_io import ReportsIO, ReportsS3UriResolverDeprecated
 from prmreportsgenerator.io.s3 import S3DataManager
 
 
@@ -27,7 +27,7 @@ class ReportsGeneratorDeprecated:
             "date-anchor": config.date_anchor.isoformat(),
         }
 
-        self._uris = ReportsS3UriResolver(
+        self._uris = ReportsS3UriResolverDeprecated(
             transfer_data_bucket=config.input_transfer_data_bucket,
             reports_bucket=config.output_reports_bucket,
         )

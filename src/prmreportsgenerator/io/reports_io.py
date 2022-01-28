@@ -15,7 +15,7 @@ from prmreportsgenerator.utils.add_leading_zero import add_leading_zero
 logger = logging.getLogger(__name__)
 
 
-class ReportsS3UriResolver:
+class ReportsS3UriResolverDeprecated:
     _SUPPLIER_PATHWAY_OUTCOME_COUNTS_FILE_NAME = "supplier_pathway_outcome_counts.csv"
     _TRANSFER_DATA_FILE_NAME = "transfers.parquet"
     _TRANSFER_DATA_VERSION_DEPRECATED = "v6"
@@ -52,6 +52,23 @@ class ReportsS3UriResolver:
             f"{year}/{month}",
             f"{year}-{month}-{self._TRANSFER_DATA_FILE_NAME}",
         )
+
+
+class ReportsS3UriResolver:
+    _TRANSFER_DATA_FILE_NAME = "transfers.parquet"
+    _TRANSFER_DATA_VERSION = "v7"
+
+    def __init__(
+        self,
+        transfer_data_bucket: str,
+        reports_bucket: str,
+    ):
+        self._transfer_data_bucket = transfer_data_bucket
+        self._reports_bucket = reports_bucket
+
+    @staticmethod
+    def _s3_path(*fragments):
+        return "s3://" + "/".join(fragments)
 
     @staticmethod
     def _filepath(date: datetime, filename: str) -> str:
