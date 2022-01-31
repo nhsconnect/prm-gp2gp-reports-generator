@@ -1,4 +1,5 @@
 from datetime import datetime
+from unittest.mock import patch
 
 from dateutil.tz import UTC, tzutc
 
@@ -7,6 +8,7 @@ from prmreportsgenerator.io.reports_io import ReportsS3UriResolver
 from tests.builders.common import a_string, an_integer
 
 
+@patch.multiple(ReportingWindow, __abstractmethods__=set())
 def test_returns_correct_transfer_data_uris_given_start_and_end_datetime_and_cutoff():
     transfer_data_bucket = a_string()
     start_datetime = datetime(year=2021, month=1, day=1, tzinfo=tzutc())

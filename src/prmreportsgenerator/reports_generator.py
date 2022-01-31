@@ -58,7 +58,9 @@ class ReportsGenerator:
         date = self._reporting_window.start_datetime
         self._io.write_outcome_counts(
             dataframe=supplier_pathway_outcome_counts,
-            s3_uri=self._uris.supplier_pathway_outcome_counts_uri(date, "custom"),
+            s3_uri=self._uris.supplier_pathway_outcome_counts_uri(
+                date=date, supplement_s3_key=self._reporting_window.config_string
+            ),
         )
 
     @staticmethod
