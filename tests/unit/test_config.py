@@ -51,6 +51,7 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
     environment = {
         "INPUT_TRANSFER_DATA_BUCKET": "input-transfer-data-bucket",
         "OUTPUT_REPORTS_BUCKET": "output-reports-bucket",
+        "CONVERSATION_CUTOFF_DAYS": "14",
         "BUILD_TAG": build_tag,
     }
 
@@ -61,7 +62,7 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
         end_datetime=None,
         number_of_months=None,
         number_of_days=None,
-        cutoff_days=None,
+        cutoff_days=14,
         s3_endpoint_url=None,
         build_tag=build_tag,
     )
@@ -85,6 +86,7 @@ def test_error_from_environment_when_invalid_type_field_set():
     environment = {
         "INPUT_TRANSFER_DATA_BUCKET": "input-transfer-data-bucket",
         "OUTPUT_REPORTS_BUCKET": "output-reports-bucket",
+        "CONVERSATION_CUTOFF_DAYS": "14",
         "START_DATETIME": "invalid type",
         "BUILD_TAG": a_string(),
     }

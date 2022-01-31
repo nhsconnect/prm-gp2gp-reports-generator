@@ -48,6 +48,9 @@ class EnvConfig:
     def read_optional_int(self, name: str) -> Optional[int]:
         return self._read_env(name, optional=True, converter=int)
 
+    def read_int(self, name: str) -> int:
+        return self._read_env(name, optional=False, converter=int)
+
     def read_optional_datetime(self, name: str) -> datetime:
         return self._read_env(name, optional=True, converter=isoparse)
 
@@ -61,7 +64,7 @@ class PipelineConfig:
     end_datetime: Optional[datetime]
     number_of_months: Optional[int]
     number_of_days: Optional[int]
-    cutoff_days: Optional[int]
+    cutoff_days: int
     s3_endpoint_url: Optional[str]
 
     @classmethod
@@ -75,6 +78,6 @@ class PipelineConfig:
             end_datetime=env.read_optional_datetime("END_DATETIME"),
             number_of_months=env.read_optional_int("NUMBER_OF_MONTHS"),
             number_of_days=env.read_optional_int("NUMBER_OF_DAYS"),
-            cutoff_days=env.read_optional_int("CONVERSATION_CUTOFF_DAYS"),
+            cutoff_days=env.read_int("CONVERSATION_CUTOFF_DAYS"),
             s3_endpoint_url=env.read_optional_str("S3_ENDPOINT_URL"),
         )
