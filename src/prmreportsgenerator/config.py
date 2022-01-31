@@ -48,9 +48,6 @@ class EnvConfig:
     def read_optional_int(self, name: str) -> Optional[int]:
         return self._read_env(name, optional=True, converter=int)
 
-    def read_datetime(self, name: str) -> datetime:
-        return self._read_env(name, optional=False, converter=isoparse)
-
     def read_optional_datetime(self, name: str) -> datetime:
         return self._read_env(name, optional=True, converter=isoparse)
 
@@ -60,7 +57,7 @@ class PipelineConfig:
     build_tag: str
     input_transfer_data_bucket: str
     output_reports_bucket: str
-    date_anchor: datetime
+    date_anchor: Optional[datetime]
     start_datetime: Optional[datetime]
     end_datetime: Optional[datetime]
     number_of_months: Optional[int]
@@ -75,7 +72,7 @@ class PipelineConfig:
             build_tag=env.read_str("BUILD_TAG"),
             input_transfer_data_bucket=env.read_str("INPUT_TRANSFER_DATA_BUCKET"),
             output_reports_bucket=env.read_str("OUTPUT_REPORTS_BUCKET"),
-            date_anchor=env.read_datetime("DATE_ANCHOR"),
+            date_anchor=env.read_optional_datetime("DATE_ANCHOR"),
             start_datetime=env.read_optional_datetime("START_DATETIME"),
             end_datetime=env.read_optional_datetime("END_DATETIME"),
             number_of_months=env.read_optional_int("NUMBER_OF_MONTHS"),

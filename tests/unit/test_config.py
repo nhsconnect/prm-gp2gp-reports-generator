@@ -55,16 +55,13 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
     environment = {
         "INPUT_TRANSFER_DATA_BUCKET": "input-transfer-data-bucket",
         "OUTPUT_REPORTS_BUCKET": "output-reports-bucket",
-        "DATE_ANCHOR": "2020-01-30T18:44:49Z",
         "BUILD_TAG": build_tag,
     }
 
     expected_config = PipelineConfig(
         input_transfer_data_bucket="input-transfer-data-bucket",
         output_reports_bucket="output-reports-bucket",
-        date_anchor=datetime(
-            year=2020, month=1, day=30, hour=18, minute=44, second=49, tzinfo=tzutc()
-        ),
+        date_anchor=None,
         start_datetime=None,
         end_datetime=None,
         number_of_months=None,
