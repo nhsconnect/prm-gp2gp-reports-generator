@@ -26,7 +26,7 @@ class ReportsGenerator:
         self._reporting_window = self.create_reporting_window(config)
         self._cutoff_days = config.cutoff_days
 
-        self._uris = ReportsS3UriResolver(
+        self._uri_resolver = ReportsS3UriResolver(
             transfer_data_bucket=config.input_transfer_data_bucket,
             reports_bucket=config.output_reports_bucket,
         )
@@ -49,18 +49,19 @@ class ReportsGenerator:
         raise ValueError("Missing required config to generate reports. Please see README.")
 
     def _read_transfer_table(self) -> pa.Table:
-        transfer_table_s3_uris = self._uris.transfer_data_uris(
+        transfer_table_s3_uris = self._uri_resolver.input_transfer_data_uris(
             reporting_window=self._reporting_window, cutoff_days=self._cutoff_days
         )
         return self._io.read_transfers_as_table(transfer_table_s3_uris)
 
     def _write_supplier_pathway_outcome_counts(self, supplier_pathway_outcome_counts: pl.DataFrame):
         date = self._reporting_window.start_datetime
+        output_supplier_pathway_uri = self._uri_resolver.output_supplier_pathway_outcome_counts_uri(
+            date=date, supplement_s3_key=self._reporting_window.config_string
+        )
         self._io.write_outcome_counts(
             dataframe=supplier_pathway_outcome_counts,
-            s3_uri=self._uris.supplier_pathway_outcome_counts_uri(
-                date=date, supplement_s3_key=self._reporting_window.config_string
-            ),
+            s3_uri=output_supplier_pathway_uri,
         )
 
     @staticmethod

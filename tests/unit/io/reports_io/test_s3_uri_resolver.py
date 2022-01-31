@@ -22,7 +22,7 @@ def test_returns_correct_transfer_data_uris_given_start_and_end_datetime_and_cut
         transfer_data_bucket=transfer_data_bucket,
     )
 
-    actual = uri_resolver.transfer_data_uris(reporting_window, cutoff_days)
+    actual = uri_resolver.input_transfer_data_uris(reporting_window, cutoff_days)
 
     cutoff_key = f"cutoff-{cutoff_days}"
     expected = [
@@ -42,7 +42,7 @@ def test_returns_correct_supplier_pathway_outcome_counts_uri_given_date():
     )
     supplement_s3_key = "4-days"
 
-    actual = uri_resolver.supplier_pathway_outcome_counts_uri(date, supplement_s3_key)
+    actual = uri_resolver.output_supplier_pathway_outcome_counts_uri(date, supplement_s3_key)
 
     expected_s3_key = f"{reports_bucket}/v2/{supplement_s3_key}/2022/03/05"
     expected = f"s3://{expected_s3_key}/2022-03-05-supplier_pathway_outcome_counts.csv"

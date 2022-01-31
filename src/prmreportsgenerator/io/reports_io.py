@@ -79,7 +79,9 @@ class ReportsS3UriResolver:
         day = add_leading_zero(date.day)
         return f"{year}-{month}-{day}-{filename}"
 
-    def transfer_data_uris(self, reporting_window: ReportingWindow, cutoff_days: int) -> List[str]:
+    def input_transfer_data_uris(
+        self, reporting_window: ReportingWindow, cutoff_days: int
+    ) -> List[str]:
         return [
             self._s3_path(
                 self._transfer_data_bucket,
@@ -93,7 +95,9 @@ class ReportsS3UriResolver:
             for date in reporting_window.get_dates()
         ]
 
-    def supplier_pathway_outcome_counts_uri(self, date: datetime, supplement_s3_key: str) -> str:
+    def output_supplier_pathway_outcome_counts_uri(
+        self, date: datetime, supplement_s3_key: str
+    ) -> str:
         return self._s3_path(
             self._reports_bucket,
             self._REPORTS_VERSION,
