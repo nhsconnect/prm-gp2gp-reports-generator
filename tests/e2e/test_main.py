@@ -208,6 +208,24 @@ def test_end_to_end_custom_reporting_window_given_start_and_end_datetime(datadir
             output_reports_bucket, supplier_pathway_outcome_counts_s3_path
         )
         assert actual_supplier_pathway_outcome_counts == expected_supplier_pathway_outcome_counts
+
+        expected_metadata = {
+            "reports-generator-version": BUILD_TAG,
+            "config-start-datetime": "2019-12-19T00:00:00+00:00",
+            "config-end-datetime": "2019-12-21T00:00:00+00:00",
+            "config-number-of-months": "None",
+            "config-number-of-days": "None",
+            "config-cutoff-days": DEFAULT_CONVERSATION_CUTOFF_DAYS,
+            "reporting-window-start-datetime": "2019-12-19T00:00:00+00:00",
+            "reporting-window-end-datetime": "2019-12-21T00:00:00+00:00",
+        }
+
+        actual_supplier_pathway_outcome_counts_s3_metadata = _read_s3_metadata(
+            output_reports_bucket, supplier_pathway_outcome_counts_s3_path
+        )
+
+        assert actual_supplier_pathway_outcome_counts_s3_metadata == expected_metadata
+
     finally:
         output_reports_bucket.objects.all().delete()
         output_reports_bucket.delete()
@@ -261,6 +279,23 @@ def test_end_to_end_monthly_reporting_window_given_number_of_months_1(datadir):
             output_reports_bucket, supplier_pathway_outcome_counts_s3_path
         )
         assert actual_supplier_pathway_outcome_counts == expected_supplier_pathway_outcome_counts
+
+        expected_metadata = {
+            "reports-generator-version": BUILD_TAG,
+            "config-start-datetime": "None",
+            "config-end-datetime": "None",
+            "config-number-of-months": "1",
+            "config-number-of-days": "None",
+            "config-cutoff-days": DEFAULT_CONVERSATION_CUTOFF_DAYS,
+            "reporting-window-start-datetime": "2019-12-01T00:00:00+00:00",
+            "reporting-window-end-datetime": "2020-01-01T00:00:00+00:00",
+        }
+
+        actual_supplier_pathway_outcome_counts_s3_metadata = _read_s3_metadata(
+            output_reports_bucket, supplier_pathway_outcome_counts_s3_path
+        )
+
+        assert actual_supplier_pathway_outcome_counts_s3_metadata == expected_metadata
     finally:
         output_reports_bucket.objects.all().delete()
         output_reports_bucket.delete()
@@ -289,7 +324,8 @@ def test_end_to_end_daily_reporting_window_given_number_of_days_2(datadir):
     s3_reports_output_path = "v2/2-days/2019/12/23"
 
     try:
-        environ["NUMBER_OF_DAYS"] = "2"
+        number_of_days = "2"
+        environ["NUMBER_OF_DAYS"] = number_of_days
         cutoff_days = "3"
         environ["CONVERSATION_CUTOFF_DAYS"] = cutoff_days
 
@@ -312,6 +348,23 @@ def test_end_to_end_daily_reporting_window_given_number_of_days_2(datadir):
             output_reports_bucket, supplier_pathway_outcome_counts_s3_path
         )
         assert actual_supplier_pathway_outcome_counts == expected_supplier_pathway_outcome_counts
+
+        expected_metadata = {
+            "reports-generator-version": BUILD_TAG,
+            "config-start-datetime": "None",
+            "config-end-datetime": "None",
+            "config-number-of-months": "None",
+            "config-number-of-days": number_of_days,
+            "config-cutoff-days": cutoff_days,
+            "reporting-window-start-datetime": "2019-12-23T00:00:00+00:00",
+            "reporting-window-end-datetime": "2019-12-25T00:00:00+00:00",
+        }
+
+        actual_supplier_pathway_outcome_counts_s3_metadata = _read_s3_metadata(
+            output_reports_bucket, supplier_pathway_outcome_counts_s3_path
+        )
+
+        assert actual_supplier_pathway_outcome_counts_s3_metadata == expected_metadata
     finally:
         output_reports_bucket.objects.all().delete()
         output_reports_bucket.delete()

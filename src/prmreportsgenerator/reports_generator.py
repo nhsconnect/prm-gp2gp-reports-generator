@@ -16,6 +16,7 @@ from prmreportsgenerator.domain.reporting_windows.monthly_reporting_window impor
 from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
 from prmreportsgenerator.io.reports_io import ReportsIO, ReportsS3UriResolver
 from prmreportsgenerator.io.s3 import S3DataManager
+from prmreportsgenerator.utils.date_helpers import convert_to_datetime_string
 
 
 class ReportsGenerator:
@@ -31,10 +32,22 @@ class ReportsGenerator:
             reports_bucket=config.output_reports_bucket,
         )
 
-        self._io = ReportsIO(
-            s3_data_manager=s3_manager,
-            output_metadata={},
-        )
+        output_metadata = {
+            "reports-generator-version": config.build_tag,
+            "config-start-datetime": convert_to_datetime_string(config.start_datetime),
+            "config-end-datetime": convert_to_datetime_string(config.end_datetime),
+            "config-number-of-months": str(config.number_of_months),
+            "config-number-of-days": str(config.number_of_days),
+            "config-cutoff-days": str(config.cutoff_days),
+            "reporting-window-start-datetime": convert_to_datetime_string(
+                self._reporting_window.start_datetime
+            ),
+            "reporting-window-end-datetime": convert_to_datetime_string(
+                self._reporting_window.end_datetime
+            ),
+        }
+
+        self._io = ReportsIO(s3_data_manager=s3_manager, output_metadata=output_metadata)
 
     @staticmethod
     def create_reporting_window(config: PipelineConfig) -> ReportingWindow:
