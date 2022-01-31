@@ -57,10 +57,19 @@ class ReportsGenerator:
         raise ValueError("Missing required config to generate reports. Please see README.")
 
     def _read_transfer_table(self) -> pa.Table:
-        transfer_table_s3_uris = self._uri_resolver.input_transfer_data_uris(
+        transfer_data_s3_uris = self._uri_resolver.input_transfer_data_uris(
             reporting_window=self._reporting_window, cutoff_days=self._cutoff_days
         )
-        return self._io.read_transfers_as_table(transfer_table_s3_uris)
+
+        logger.info(
+            "Attempting to read from the following transfer data S3 Uris",
+            extra={
+                "event": "ATTEMPTING_TO_READ_FROM_TRANSFER_DATA_S3_URIS",
+                "transfer_data_s3_uris": transfer_data_s3_uris,
+            },
+        )
+
+        return self._io.read_transfers_as_table(transfer_data_s3_uris)
 
     def _write_supplier_pathway_outcome_counts(self, supplier_pathway_outcome_counts: pl.DataFrame):
         date = self._reporting_window.start_datetime
