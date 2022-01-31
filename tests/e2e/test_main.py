@@ -16,7 +16,9 @@ from pyarrow.parquet import write_table
 from werkzeug.serving import make_server
 
 from prmreportsgenerator.main import main
+from prmreportsgenerator.utils.add_leading_zero import add_leading_zero
 from tests.builders.common import a_string
+from tests.builders.dataframe import TransferDataFrame
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +45,7 @@ FAKE_S3_REGION = "us-west-1"
 
 S3_INPUT_TRANSFER_DATA_BUCKET = "input-transfer-data-bucket"
 S3_OUTPUT_REPORTS_BUCKET = "output-reports-data-bucket"
+CONVERSATION_CUTOFF_DAYS = "14"
 
 BUILD_TAG = a_string(7)
 
@@ -93,6 +96,11 @@ def _read_parquet_columns_json(path):
     }
 
 
+def _get_s3_path(bucket_name, year, month, day, cutoff_days):
+    s3_filename = f"{year}-{month}-{day}-transfers.parquet"
+    return f"{bucket_name}/v7/cutoff-{cutoff_days}/{year}/{month}/{day}/{s3_filename}"
+
+
 def _read_s3_csv(bucket, key):
     f = BytesIO()
     bucket.download_fileobj(key, f)
@@ -108,11 +116,11 @@ def _read_s3_metadata(bucket, key):
 
 def _write_transfer_parquet(input_transfer_parquet_columns_json, s3_path: str):
     transfers_dictionary = _read_parquet_columns_json(input_transfer_parquet_columns_json)
-    transfers_table = pa.table(transfers_dictionary)
+    transfers_table = pa.table(data=transfers_dictionary, schema=TransferDataFrame.get_schema())
     write_table(
         table=transfers_table,
         where=s3_path,
-        filesystem=S3FileSystem(endpoint_override=fake_s3_url),
+        filesystem=S3FileSystem(endpoint_override=FAKE_AWS_URL),
     )
 
 
@@ -128,40 +136,65 @@ def _build_fake_s3_bucket(bucket_name: str, s3):
     return s3_fake_bucket
 
 
-fake_s3_host = "127.0.0.1"
-fake_s3_port = 8887
-fake_s3_url = f"http://{fake_s3_host}:{fake_s3_port}"
+def _upload_template_transfer_data(
+    datadir, input_transfer_bucket: str, year: int, data_month: int, time_range: range
+):
+    for data_day in time_range:
+        day = add_leading_zero(data_day)
+        month = add_leading_zero(data_month)
+
+        _write_transfer_parquet(
+            datadir / "inputs" / "template-transfers.json",
+            _get_s3_path(input_transfer_bucket, year, month, day, cutoff_days=14),
+        )
+
+
+def _override_transfer_data(
+    datadir, input_transfer_bucket, year: int, data_month: int, data_day: int
+):
+    day = add_leading_zero(data_day)
+    month = add_leading_zero(data_month)
+
+    _write_transfer_parquet(
+        datadir / "inputs" / f"{year}-{month}-{day}-transfers.json",
+        _get_s3_path(input_transfer_bucket, year, month, day, cutoff_days=CONVERSATION_CUTOFF_DAYS),
+    )
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
-def test_end_to_end_with_fake_s3_deprecated(datadir):
+def test_end_to_end_given_start_and_end_datetime(datadir):
     fake_s3, s3_client = _setup()
     fake_s3.start()
 
     output_reports_bucket = _build_fake_s3_bucket(S3_OUTPUT_REPORTS_BUCKET, s3_client)
     input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
 
-    _write_transfer_parquet(
-        datadir / "inputs" / "decTransfersParquetColumns.json",
-        f"{S3_INPUT_TRANSFER_DATA_BUCKET}/v6/2019/12/2019-12-transfers.parquet",
-    )
-
     expected_supplier_pathway_outcome_counts_output_key = (
-        "2019-12-supplier_pathway_outcome_counts.csv"
+        "/2019-12-01-supplier_pathway_outcome_counts.csv"
     )
     expected_supplier_pathway_outcome_counts = _read_csv(
         datadir / "expected_outputs" / "supplier_pathway_outcome_counts.csv"
     )
 
-    expected_metadata = {
-        "reports-generator-version": BUILD_TAG,
-        "date-anchor": "2020-01-30T18:44:49+00:00",
-    }
-
-    s3_reports_output_path = "v1/2019/12/"
+    s3_reports_output_path = "v2/custom/2019/12/01"
 
     try:
-        environ["DATE_ANCHOR"] = "2020-01-30T18:44:49Z"
+        environ["START_DATETIME"] = "2019-12-01T00:00:00Z"
+        environ["END_DATETIME"] = "2020-01-01T00:00:00Z"
+        environ["CONVERSATION_CUTOFF_DAYS"] = CONVERSATION_CUTOFF_DAYS
+
+        _upload_template_transfer_data(
+            datadir,
+            S3_INPUT_TRANSFER_DATA_BUCKET,
+            year=2019,
+            data_month=12,
+            time_range=range(1, 32),
+        )
+
+        for day in [1, 3, 5, 19, 20, 23, 24, 25, 29, 30, 31]:
+            _override_transfer_data(
+                datadir, S3_INPUT_TRANSFER_DATA_BUCKET, year=2019, data_month=12, data_day=day
+            )
 
         main()
 
@@ -171,11 +204,7 @@ def test_end_to_end_with_fake_s3_deprecated(datadir):
         actual_supplier_pathway_outcome_counts = _read_s3_csv(
             output_reports_bucket, supplier_pathway_outcome_counts_s3_path
         )
-        actual_supplier_pathway_outcome_counts_s3_metadata = _read_s3_metadata(
-            output_reports_bucket, supplier_pathway_outcome_counts_s3_path
-        )
         assert actual_supplier_pathway_outcome_counts == expected_supplier_pathway_outcome_counts
-        assert actual_supplier_pathway_outcome_counts_s3_metadata == expected_metadata
     finally:
         output_reports_bucket.objects.all().delete()
         output_reports_bucket.delete()

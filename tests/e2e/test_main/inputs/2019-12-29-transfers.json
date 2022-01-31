@@ -1,0 +1,39 @@
+{
+  "conversation_id": [
+    "slow-transferred-completed-within-3-days--A12347"
+  ],
+  "date_requested": [
+    "2019-12-29T18:02:29.985000"
+  ],
+  "last_sender_message_timestamp": [
+    "2019-12-31T18:03:29.985000"
+  ],
+  "requesting_practice_asid": [
+    "987654321240"
+  ],
+  "requesting_supplier": [
+    "SupplierC"
+  ],
+  "sending_supplier": [
+    "SupplierA"
+  ],
+  "sla_duration": [
+    3
+  ],
+  "status": [
+    "Integrated on time"
+  ],
+  "failure_reason": [
+    null
+  ],
+  "final_error_codes": [
+    []
+  ],
+  "sender_error_codes": [
+    []
+  ],
+  "intermediate_error_codes": [
+    []
+  ]
+}
+

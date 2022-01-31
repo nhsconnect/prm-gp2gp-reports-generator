@@ -93,9 +93,7 @@ class ReportsS3UriResolver:
             for date in reporting_window.get_dates()
         ]
 
-    def supplier_pathway_outcome_counts_uri(
-        self, date: datetime, supplement_s3_key: str = ""
-    ) -> str:
+    def supplier_pathway_outcome_counts_uri(self, date: datetime, supplement_s3_key: str) -> str:
         return self._s3_path(
             self._reports_bucket,
             self._REPORTS_VERSION,
