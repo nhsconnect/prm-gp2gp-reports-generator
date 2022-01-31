@@ -12,7 +12,6 @@ Configuration is achieved via the following environment variables:
 | INPUT_TRANSFER_DATA_BUCKET | Bucket to read transfer files from.                                     |
 | OUTPUT_REPORTS_BUCKET      | Bucket to write the reports.                                            |
 | BUILD_TAG                  | Unique identifier for version of code build tag (e.g. short git hash)   |
-| DATE_ANCHOR                | ISO-8601 datetime specifying "now".                                     | 
 
 ## Developing
 

@@ -16,7 +16,6 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
     environment = {
         "INPUT_TRANSFER_DATA_BUCKET": "input-transfer-data-bucket",
         "OUTPUT_REPORTS_BUCKET": "output-reports-bucket",
-        "DATE_ANCHOR": "2020-01-30T18:44:49Z",
         "START_DATETIME": "2020-01-29T00:00:00Z",
         "END_DATETIME": "2020-01-30T00:00:00Z",
         "NUMBER_OF_MONTHS": "1",
@@ -29,9 +28,6 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
     expected_config = PipelineConfig(
         input_transfer_data_bucket="input-transfer-data-bucket",
         output_reports_bucket="output-reports-bucket",
-        date_anchor=datetime(
-            year=2020, month=1, day=30, hour=18, minute=44, second=49, tzinfo=tzutc()
-        ),
         start_datetime=datetime(
             year=2020, month=1, day=29, hour=0, minute=0, second=0, tzinfo=tzutc()
         ),
@@ -61,7 +57,6 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
     expected_config = PipelineConfig(
         input_transfer_data_bucket="input-transfer-data-bucket",
         output_reports_bucket="output-reports-bucket",
-        date_anchor=None,
         start_datetime=None,
         end_datetime=None,
         number_of_months=None,
@@ -90,10 +85,12 @@ def test_error_from_environment_when_invalid_type_field_set():
     environment = {
         "INPUT_TRANSFER_DATA_BUCKET": "input-transfer-data-bucket",
         "OUTPUT_REPORTS_BUCKET": "output-reports-bucket",
-        "DATE_ANCHOR": "invalid type",
+        "START_DATETIME": "invalid type",
         "BUILD_TAG": a_string(),
     }
 
     with pytest.raises(InvalidEnvironmentVariableValue) as e:
         PipelineConfig.from_environment_variables(environment)
-    assert str(e.value) == "Expected environment variable DATE_ANCHOR value is invalid, exiting..."
+    assert (
+        str(e.value) == "Expected environment variable START_DATETIME value is invalid, exiting..."
+    )

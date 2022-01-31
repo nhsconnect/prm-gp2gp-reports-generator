@@ -5,53 +5,11 @@ from typing import Dict, List
 import polars as pl
 import pyarrow as pa
 
-from prmreportsgenerator.domain.reporting_windows.deprecated_monthly_reporting_window import (
-    YearMonth,
-)
 from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
 from prmreportsgenerator.io.s3 import S3DataManager
 from prmreportsgenerator.utils.add_leading_zero import add_leading_zero
 
 logger = logging.getLogger(__name__)
-
-
-class ReportsS3UriResolverDeprecated:
-    _SUPPLIER_PATHWAY_OUTCOME_COUNTS_FILE_NAME = "supplier_pathway_outcome_counts.csv"
-    _TRANSFER_DATA_FILE_NAME = "transfers.parquet"
-    _TRANSFER_DATA_VERSION_DEPRECATED = "v6"
-    _TRANSFER_DATA_VERSION = "v7"
-    _DEFAULT_REPORTS_VERSION = "v1"
-
-    def __init__(
-        self,
-        transfer_data_bucket: str,
-        reports_bucket: str,
-    ):
-        self._transfer_data_bucket = transfer_data_bucket
-        self._reports_bucket = reports_bucket
-        self._reports_version = self._DEFAULT_REPORTS_VERSION
-
-    @staticmethod
-    def _s3_path(*fragments):
-        return "s3://" + "/".join(fragments)
-
-    def supplier_pathway_outcome_counts(self, year_month: YearMonth) -> str:
-        year, month = year_month
-        return self._s3_path(
-            self._reports_bucket,
-            self._reports_version,
-            f"{year}/{month}",
-            f"{year}-{month}-{self._SUPPLIER_PATHWAY_OUTCOME_COUNTS_FILE_NAME}",
-        )
-
-    def transfer_data_uri(self, year_month: YearMonth) -> str:
-        year, month = year_month
-        return self._s3_path(
-            self._transfer_data_bucket,
-            self._TRANSFER_DATA_VERSION_DEPRECATED,
-            f"{year}/{month}",
-            f"{year}-{month}-{self._TRANSFER_DATA_FILE_NAME}",
-        )
 
 
 class ReportsS3UriResolver:
