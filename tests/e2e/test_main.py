@@ -181,28 +181,20 @@ def test_end_to_end_custom_reporting_window_given_start_and_end_datetime(datadir
     input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
 
     expected_supplier_pathway_outcome_counts_output_key = (
-        "/2019-12-01-supplier_pathway_outcome_counts.csv"
+        "/2019-12-19-supplier_pathway_outcome_counts.csv"
     )
     expected_supplier_pathway_outcome_counts = _read_csv(
-        datadir / "expected_outputs" / "supplier_pathway_outcome_counts.csv"
+        datadir / "expected_outputs" / "custom_supplier_pathway_outcome_counts.csv"
     )
 
-    s3_reports_output_path = "v2/custom/2019/12/01"
+    s3_reports_output_path = "v2/custom/2019/12/19"
 
     try:
-        environ["START_DATETIME"] = "2019-12-01T00:00:00Z"
-        environ["END_DATETIME"] = "2020-01-01T00:00:00Z"
+        environ["START_DATETIME"] = "2019-12-19T00:00:00Z"
+        environ["END_DATETIME"] = "2019-12-21T00:00:00Z"
         environ["CONVERSATION_CUTOFF_DAYS"] = DEFAULT_CONVERSATION_CUTOFF_DAYS
 
-        _upload_template_transfer_data(
-            datadir,
-            S3_INPUT_TRANSFER_DATA_BUCKET,
-            year=2019,
-            data_month=12,
-            time_range=range(1, 32),
-        )
-
-        for day in [1, 3, 5, 19, 20, 23, 24, 25, 29, 30, 31]:
+        for day in [19, 20]:
             _override_transfer_data(
                 datadir, S3_INPUT_TRANSFER_DATA_BUCKET, year=2019, data_month=12, data_day=day
             )
@@ -238,7 +230,7 @@ def test_end_to_end_monthly_reporting_window_given_number_of_months_1(datadir):
         "/2019-12-01-supplier_pathway_outcome_counts.csv"
     )
     expected_supplier_pathway_outcome_counts = _read_csv(
-        datadir / "expected_outputs" / "supplier_pathway_outcome_counts.csv"
+        datadir / "expected_outputs" / "monthly_supplier_pathway_outcome_counts.csv"
     )
 
     s3_reports_output_path = "v2/1-months/2019/12/01"
