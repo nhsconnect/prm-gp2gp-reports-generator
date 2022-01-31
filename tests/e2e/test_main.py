@@ -46,7 +46,7 @@ FAKE_S3_REGION = "us-west-1"
 
 S3_INPUT_TRANSFER_DATA_BUCKET = "input-transfer-data-bucket"
 S3_OUTPUT_REPORTS_BUCKET = "output-reports-data-bucket"
-CONVERSATION_CUTOFF_DAYS = "14"
+DEFAULT_CONVERSATION_CUTOFF_DAYS = "14"
 
 BUILD_TAG = a_string(7)
 
@@ -138,7 +138,12 @@ def _build_fake_s3_bucket(bucket_name: str, s3):
 
 
 def _upload_template_transfer_data(
-    datadir, input_transfer_bucket: str, year: int, data_month: int, time_range: range
+    datadir,
+    input_transfer_bucket: str,
+    year: int,
+    data_month: int,
+    time_range: range,
+    cutoff_days: str = DEFAULT_CONVERSATION_CUTOFF_DAYS,
 ):
     for data_day in time_range:
         day = add_leading_zero(data_day)
@@ -146,19 +151,24 @@ def _upload_template_transfer_data(
 
         _write_transfer_parquet(
             datadir / "inputs" / "template-transfers.json",
-            _get_s3_path(input_transfer_bucket, year, month, day, cutoff_days=14),
+            _get_s3_path(input_transfer_bucket, year, month, day, cutoff_days),
         )
 
 
 def _override_transfer_data(
-    datadir, input_transfer_bucket, year: int, data_month: int, data_day: int
+    datadir,
+    input_transfer_bucket,
+    year: int,
+    data_month: int,
+    data_day: int,
+    cutoff_days: str = DEFAULT_CONVERSATION_CUTOFF_DAYS,
 ):
     day = add_leading_zero(data_day)
     month = add_leading_zero(data_month)
 
     _write_transfer_parquet(
         datadir / "inputs" / f"{year}-{month}-{day}-transfers.json",
-        _get_s3_path(input_transfer_bucket, year, month, day, cutoff_days=CONVERSATION_CUTOFF_DAYS),
+        _get_s3_path(input_transfer_bucket, year, month, day, cutoff_days=cutoff_days),
     )
 
 
@@ -182,7 +192,7 @@ def test_end_to_end_custom_reporting_window_given_start_and_end_datetime(datadir
     try:
         environ["START_DATETIME"] = "2019-12-01T00:00:00Z"
         environ["END_DATETIME"] = "2020-01-01T00:00:00Z"
-        environ["CONVERSATION_CUTOFF_DAYS"] = CONVERSATION_CUTOFF_DAYS
+        environ["CONVERSATION_CUTOFF_DAYS"] = DEFAULT_CONVERSATION_CUTOFF_DAYS
 
         _upload_template_transfer_data(
             datadir,
@@ -235,7 +245,7 @@ def test_end_to_end_monthly_reporting_window_given_number_of_months_1(datadir):
 
     try:
         environ["NUMBER_OF_MONTHS"] = "1"
-        environ["CONVERSATION_CUTOFF_DAYS"] = CONVERSATION_CUTOFF_DAYS
+        environ["CONVERSATION_CUTOFF_DAYS"] = DEFAULT_CONVERSATION_CUTOFF_DAYS
 
         _upload_template_transfer_data(
             datadir,
@@ -248,6 +258,57 @@ def test_end_to_end_monthly_reporting_window_given_number_of_months_1(datadir):
         for day in [1, 3, 5, 19, 20, 23, 24, 25, 29, 30, 31]:
             _override_transfer_data(
                 datadir, S3_INPUT_TRANSFER_DATA_BUCKET, year=2019, data_month=12, data_day=day
+            )
+
+        main()
+
+        supplier_pathway_outcome_counts_s3_path = (
+            f"{s3_reports_output_path}{expected_supplier_pathway_outcome_counts_output_key}"
+        )
+        actual_supplier_pathway_outcome_counts = _read_s3_csv(
+            output_reports_bucket, supplier_pathway_outcome_counts_s3_path
+        )
+        assert actual_supplier_pathway_outcome_counts == expected_supplier_pathway_outcome_counts
+    finally:
+        output_reports_bucket.objects.all().delete()
+        output_reports_bucket.delete()
+        input_transfer_bucket.objects.all().delete()
+        input_transfer_bucket.delete()
+        fake_s3.stop()
+        environ.clear()
+
+
+@freeze_time(a_datetime(year=2019, month=12, day=28))
+@pytest.mark.filterwarnings("ignore:Conversion of")
+def test_end_to_end_daily_reporting_window_given_number_of_days_2(datadir):
+    fake_s3, s3_client = _setup()
+    fake_s3.start()
+
+    output_reports_bucket = _build_fake_s3_bucket(S3_OUTPUT_REPORTS_BUCKET, s3_client)
+    input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
+
+    expected_supplier_pathway_outcome_counts_output_key = (
+        "/2019-12-23-supplier_pathway_outcome_counts.csv"
+    )
+    expected_supplier_pathway_outcome_counts = _read_csv(
+        datadir / "expected_outputs" / "daily_supplier_pathway_outcome_counts.csv"
+    )
+
+    s3_reports_output_path = "v2/2-days/2019/12/23"
+
+    try:
+        environ["NUMBER_OF_DAYS"] = "2"
+        cutoff_days = "3"
+        environ["CONVERSATION_CUTOFF_DAYS"] = cutoff_days
+
+        for day in [23, 24]:
+            _override_transfer_data(
+                datadir,
+                S3_INPUT_TRANSFER_DATA_BUCKET,
+                year=2019,
+                data_month=12,
+                data_day=day,
+                cutoff_days=cutoff_days,
             )
 
         main()
