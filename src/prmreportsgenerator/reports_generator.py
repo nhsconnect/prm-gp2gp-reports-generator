@@ -1,3 +1,5 @@
+import logging
+
 import boto3
 import polars as pl
 import pyarrow as pa
@@ -18,6 +20,8 @@ from prmreportsgenerator.io.reports_io import ReportsIO, ReportsS3UriResolver
 from prmreportsgenerator.io.s3 import S3DataManager
 from prmreportsgenerator.utils.date_helpers import convert_to_datetime_string
 
+logger = logging.getLogger(__name__)
+
 
 class ReportsGenerator:
     def __init__(self, config: PipelineConfig):
@@ -32,19 +36,10 @@ class ReportsGenerator:
             reports_bucket=config.output_reports_bucket,
         )
 
+        self._date_range_info_json = self._construct_date_range_info_json(config)
         output_metadata = {
             "reports-generator-version": config.build_tag,
-            "config-start-datetime": convert_to_datetime_string(config.start_datetime),
-            "config-end-datetime": convert_to_datetime_string(config.end_datetime),
-            "config-number-of-months": str(config.number_of_months),
-            "config-number-of-days": str(config.number_of_days),
-            "config-cutoff-days": str(config.cutoff_days),
-            "reporting-window-start-datetime": convert_to_datetime_string(
-                self._reporting_window.start_datetime
-            ),
-            "reporting-window-end-datetime": convert_to_datetime_string(
-                self._reporting_window.end_datetime
-            ),
+            **self._date_range_info_json,
         }
 
         self._io = ReportsIO(s3_data_manager=s3_manager, output_metadata=output_metadata)
@@ -82,7 +77,37 @@ class ReportsGenerator:
         transfers_frame = pl.from_arrow(transfer_table)
         return count_outcomes_per_supplier_pathway(transfers_frame)
 
+    def _construct_date_range_info_json(self, config: PipelineConfig) -> dict:
+        return {
+            "config-cutoff-days": str(config.cutoff_days),
+            "config-number-of-months": str(config.number_of_months),
+            "config-number-of-days": str(config.number_of_days),
+            "config-start-datetime": convert_to_datetime_string(config.start_datetime),
+            "config-end-datetime": convert_to_datetime_string(config.end_datetime),
+            "reporting-window-start-datetime": convert_to_datetime_string(
+                self._reporting_window.start_datetime
+            ),
+            "reporting-window-end-datetime": convert_to_datetime_string(
+                self._reporting_window.end_datetime
+            ),
+        }
+
     def run(self):
         transfer_table = self._read_transfer_table()
+        logger.info(
+            "Attempting to produce supplier pathway outcome counts for transfers in date range",
+            extra={
+                "event": "ATTEMPTING_TO_PRODUCE_SUPPLIER_PATHWAY_OUTCOME_COUNTS",
+                **self._date_range_info_json,
+            },
+        )
         supplier_pathway_outcome_counts = self._count_outcomes_per_supplier_pathway(transfer_table)
+
+        logger.info(
+            "Successfully produced supplier pathway outcome counts for transfers in date range",
+            extra={
+                "event": "PRODUCED_SUPPLIER_PATHWAY_OUTCOME_COUNTS",
+                **self._date_range_info_json,
+            },
+        )
         self._write_supplier_pathway_outcome_counts(supplier_pathway_outcome_counts)
