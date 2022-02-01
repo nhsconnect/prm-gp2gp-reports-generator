@@ -18,6 +18,7 @@ from prmreportsgenerator.domain.reporting_windows.monthly_reporting_window impor
 from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
 from prmreportsgenerator.io.reports_io import ReportsIO, ReportsS3UriResolver
 from prmreportsgenerator.io.s3 import S3DataManager
+from prmreportsgenerator.ReportName import ReportName
 from prmreportsgenerator.utils.date_helpers import convert_to_datetime_string
 
 logger = logging.getLogger(__name__)
@@ -30,6 +31,7 @@ class ReportsGenerator:
 
         self._reporting_window = self.create_reporting_window(config)
         self._cutoff_days = config.cutoff_days
+        self._report_name = config.report_name
 
         self._uri_resolver = ReportsS3UriResolver(
             transfer_data_bucket=config.input_transfer_data_bucket,
@@ -102,22 +104,29 @@ class ReportsGenerator:
             ),
         }
 
+    def _generate_report(self, transfers: pa.Table):
+        if self._report_name == ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY:
+            return self._count_outcomes_per_supplier_pathway(transfers)
+
     def run(self):
-        transfer_table = self._read_transfer_table()
-        logger.info(
-            "Attempting to produce supplier pathway outcome counts for transfers in date range",
-            extra={
-                "event": "ATTEMPTING_TO_PRODUCE_SUPPLIER_PATHWAY_OUTCOME_COUNTS",
-                **self._date_range_info_json,
-            },
-        )
-        supplier_pathway_outcome_counts = self._count_outcomes_per_supplier_pathway(transfer_table)
+        transfers = self._read_transfer_table()
 
         logger.info(
-            "Successfully produced supplier pathway outcome counts for transfers in date range",
+            f"Attempting to produce [{self._report_name}] report for transfers in date range",
             extra={
-                "event": "PRODUCED_SUPPLIER_PATHWAY_OUTCOME_COUNTS",
+                "event": f"ATTEMPTING_TO_PRODUCE_{self._report_name}_REPORT",
                 **self._date_range_info_json,
             },
         )
-        self._write_table(supplier_pathway_outcome_counts)
+
+        table = self._generate_report(transfers)
+
+        logger.info(
+            f"Successfully produced [{self._report_name}] report for transfers in date range",
+            extra={
+                "event": f"PRODUCED_{self._report_name}_REPORT",
+                **self._date_range_info_json,
+            },
+        )
+
+        self._write_table(table)
