@@ -113,9 +113,9 @@ class ReportsPipeline:
         transfers = self._read_transfer_table()
 
         logger.info(
-            f"Attempting to produce [{self._report_name}] report for transfers in date range",
+            f"Attempting to produce {self._report_name.value} report for transfers in date range",
             extra={
-                "event": f"ATTEMPTING_TO_PRODUCE_{self._report_name}_REPORT",
+                "event": f"ATTEMPTING_TO_PRODUCE_{self._report_name.value}_REPORT",
                 **self._date_range_info_json,
             },
         )
@@ -123,9 +123,9 @@ class ReportsPipeline:
         table = self._generate_report(transfers)
 
         logger.info(
-            f"Successfully produced [{self._report_name}] report for transfers in date range",
+            f"Successfully produced {self._report_name.value} report for transfers in date range",
             extra={
-                "event": f"PRODUCED_{self._report_name}_REPORT",
+                "event": f"PRODUCED_{self._report_name.value}_REPORT",
                 **self._date_range_info_json,
             },
         )
