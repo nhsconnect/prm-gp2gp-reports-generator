@@ -1,8 +1,7 @@
 from functools import reduce
 from typing import List, Optional, Union
 
-from polars import DataFrame, col, count, Expr  # type: ignore
-from polars import lit, when  # type: ignore
+from polars import DataFrame, Expr, col, count, lit, when
 
 from prmreportsgenerator.domain.transfer import TransferStatus
 
@@ -40,12 +39,12 @@ def _error_description(error_code: int) -> str:
         return "Unknown error code"
 
 
-def _unique_errors(errors: List[Optional[int]]):
+def _unique_errors(errors: List[Optional[int]]) -> str:
     unique_error_codes = {error_code for error_code in errors if error_code is not None}
     return ", ".join([f"{e} - {_error_description(e)}" for e in sorted(unique_error_codes)])
 
 
-def _counted_by_supplier_pathway_and_outcome(transfers: DataFrame):
+def _counted_by_supplier_pathway_and_outcome(transfers: DataFrame) -> DataFrame:
     return (
         transfers.with_columns(
             [
@@ -74,13 +73,13 @@ def _counted_by_supplier_pathway_and_outcome(transfers: DataFrame):
     )
 
 
-def _with_percentage_of_all_transfers(transfer_counts: DataFrame):
+def _with_percentage_of_all_transfers(transfer_counts: DataFrame) -> DataFrame:
     total_transfers = col("number of transfers").sum()
     percentage_of_total_transfers = (col("number of transfers") / total_transfers) * 100
     return transfer_counts.with_column(percentage_of_total_transfers.alias("% of transfers"))
 
 
-def _with_percentage_of_supplier_pathway(transfer_counts: DataFrame):
+def _with_percentage_of_supplier_pathway(transfer_counts: DataFrame) -> DataFrame:
     supplier_pathway: List[Union[Expr, str]] = [
         col("requesting supplier"),
         col("sending supplier"),
@@ -90,7 +89,7 @@ def _with_percentage_of_supplier_pathway(transfer_counts: DataFrame):
     return transfer_counts.with_column(percentage_of_pathway.alias("% of supplier pathway"))
 
 
-def _with_percentage_of_technical_failures(transfer_counts: DataFrame):
+def _with_percentage_of_technical_failures(transfer_counts: DataFrame) -> DataFrame:
     is_technical_failure = col("status") == TransferStatus.TECHNICAL_FAILURE.value
     total_technical_failures = col("number of transfers").filter(is_technical_failure).sum()
     percentage_of_tech_failures = (col("number of transfers") / total_technical_failures) * 100
@@ -102,7 +101,7 @@ def _with_percentage_of_technical_failures(transfer_counts: DataFrame):
     )
 
 
-def _sorted_by_pathway_and_status(transfer_counts: DataFrame):
+def _sorted_by_pathway_and_status(transfer_counts: DataFrame) -> DataFrame:
     return transfer_counts.sort(
         [
             col("number of transfers"),
@@ -118,7 +117,7 @@ def _process(data, *function_chain):
     return reduce(lambda d, func: func(d), list(function_chain), data)
 
 
-def count_outcomes_per_supplier_pathway(transfers):
+def count_outcomes_per_supplier_pathway(transfers: DataFrame) -> DataFrame:
     return _process(
         transfers,
         _counted_by_supplier_pathway_and_outcome,

@@ -71,20 +71,21 @@ class ReportsGenerator:
 
         return self._io.read_transfers_as_table(transfer_data_s3_uris)
 
-    def _write_supplier_pathway_outcome_counts(self, supplier_pathway_outcome_counts: pl.DataFrame):
+    def _write_supplier_pathway_outcome_counts(self, supplier_pathway_outcome_counts: pa.Table):
         date = self._reporting_window.start_datetime
         output_supplier_pathway_uri = self._uri_resolver.output_supplier_pathway_outcome_counts_uri(
             date=date, supplement_s3_key=self._reporting_window.config_string
         )
         self._io.write_outcome_counts(
-            dataframe=supplier_pathway_outcome_counts,
+            table=supplier_pathway_outcome_counts,
             s3_uri=output_supplier_pathway_uri,
         )
 
     @staticmethod
-    def _count_outcomes_per_supplier_pathway(transfer_table: pa.Table):
+    def _count_outcomes_per_supplier_pathway(transfer_table: pa.Table) -> pa.Table:
         transfers_frame = pl.from_arrow(transfer_table)
-        return count_outcomes_per_supplier_pathway(transfers_frame)
+        processed_transfers = count_outcomes_per_supplier_pathway(transfers_frame)
+        return processed_transfers.to_arrow()
 
     def _construct_date_range_info_json(self, config: PipelineConfig) -> dict:
         return {

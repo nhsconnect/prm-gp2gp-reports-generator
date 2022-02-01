@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-import polars as pl
+import pyarrow as pa
 
 from prmreportsgenerator.io.reports_io import ReportsIO
 from tests.builders.common import a_string
@@ -9,7 +9,7 @@ _DATE_ANCHOR_MONTH = 1
 _DATE_ANCHOR_YEAR = 2021
 
 
-def test_given_dataframe_will_write_csv():
+def test_given_table_will_write_csv():
     s3_manager = Mock()
     reports_bucket = a_string()
     s3_key = f"v1/{_DATE_ANCHOR_YEAR}/{_DATE_ANCHOR_MONTH}/supplier_pathway_outcome_counts.csv"
@@ -22,12 +22,12 @@ def test_given_dataframe_will_write_csv():
         output_metadata=output_metadata,
     )
     data = {"Fruit": ["Banana"]}
-    df = pl.DataFrame(data)
+    table = pa.table(data)
 
-    metrics_io.write_outcome_counts(dataframe=df, s3_uri=s3_uri)
+    metrics_io.write_outcome_counts(table=table, s3_uri=s3_uri)
 
-    expected_dataframe = df
+    expected_table = table
 
-    s3_manager.write_dataframe_to_csv.assert_called_once_with(
-        object_uri=s3_uri, dataframe=expected_dataframe, metadata=output_metadata
+    s3_manager.write_table_to_csv.assert_called_once_with(
+        object_uri=s3_uri, table=expected_table, metadata=output_metadata
     )

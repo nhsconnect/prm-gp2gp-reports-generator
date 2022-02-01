@@ -2,7 +2,6 @@ import logging
 from datetime import datetime
 from typing import Dict, List
 
-import polars as pl
 import pyarrow as pa
 
 from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
@@ -81,7 +80,7 @@ class ReportsIO:
             [self._s3_manager.read_parquet(s3_path) for s3_path in s3_uris],
         )
 
-    def write_outcome_counts(self, dataframe: pl.DataFrame, s3_uri: str):
-        self._s3_manager.write_dataframe_to_csv(
-            object_uri=s3_uri, dataframe=dataframe, metadata=self._output_metadata
+    def write_outcome_counts(self, table: pa.Table, s3_uri: str):
+        self._s3_manager.write_table_to_csv(
+            object_uri=s3_uri, table=table, metadata=self._output_metadata
         )
