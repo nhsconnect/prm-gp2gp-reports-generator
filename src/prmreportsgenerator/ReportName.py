@@ -1,0 +1,5 @@
+from enum import Enum
+
+
+class ReportName(Enum):
+    TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY = "TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY"

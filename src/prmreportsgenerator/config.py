@@ -5,6 +5,8 @@ from typing import Optional
 
 from dateutil.parser import isoparse
 
+from prmreportsgenerator.ReportName import ReportName
+
 logger = logging.getLogger(__name__)
 
 
@@ -54,6 +56,9 @@ class EnvConfig:
     def read_optional_datetime(self, name: str) -> datetime:
         return self._read_env(name, optional=True, converter=isoparse)
 
+    def read_report_name(self, report_name: str) -> ReportName:
+        return ReportName(self._env_vars[report_name])
+
 
 @dataclass
 class PipelineConfig:
@@ -66,6 +71,7 @@ class PipelineConfig:
     number_of_days: Optional[int]
     cutoff_days: int
     s3_endpoint_url: Optional[str]
+    report_name: ReportName
 
     @classmethod
     def from_environment_variables(cls, env_vars):
@@ -80,4 +86,5 @@ class PipelineConfig:
             number_of_days=env.read_optional_int("NUMBER_OF_DAYS"),
             cutoff_days=env.read_int("CONVERSATION_CUTOFF_DAYS"),
             s3_endpoint_url=env.read_optional_str("S3_ENDPOINT_URL"),
+            report_name=env.read_report_name("REPORT_NAME"),
         )

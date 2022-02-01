@@ -17,6 +17,7 @@ from pyarrow.parquet import write_table
 from werkzeug.serving import make_server
 
 from prmreportsgenerator.main import main
+from prmreportsgenerator.ReportName import ReportName
 from prmreportsgenerator.utils.add_leading_zero import add_leading_zero
 from tests.builders.common import a_datetime, a_string
 from tests.builders.dataframe import TransferDataFrame
@@ -43,6 +44,7 @@ FAKE_AWS_URL = f"http://{FAKE_AWS_HOST}:{FAKE_AWS_PORT}"
 FAKE_S3_ACCESS_KEY = "testing"
 FAKE_S3_SECRET_KEY = "testing"
 FAKE_S3_REGION = "us-west-1"
+REPORT_NAME = ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY.value
 
 S3_INPUT_TRANSFER_DATA_BUCKET = "input-transfer-data-bucket"
 S3_OUTPUT_REPORTS_BUCKET = "output-reports-data-bucket"
@@ -64,6 +66,7 @@ def _setup():
     environ["AWS_ACCESS_KEY_ID"] = FAKE_S3_ACCESS_KEY
     environ["AWS_SECRET_ACCESS_KEY"] = FAKE_S3_SECRET_KEY
     environ["AWS_DEFAULT_REGION"] = FAKE_S3_REGION
+    environ["REPORT_NAME"] = REPORT_NAME
 
     environ["INPUT_TRANSFER_DATA_BUCKET"] = S3_INPUT_TRANSFER_DATA_BUCKET
     environ["OUTPUT_REPORTS_BUCKET"] = S3_OUTPUT_REPORTS_BUCKET

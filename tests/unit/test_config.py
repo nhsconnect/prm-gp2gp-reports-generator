@@ -8,6 +8,7 @@ from prmreportsgenerator.config import (
     MissingEnvironmentVariable,
     PipelineConfig,
 )
+from prmreportsgenerator.ReportName import ReportName
 from tests.builders.common import a_string
 
 
@@ -23,6 +24,7 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
         "CONVERSATION_CUTOFF_DAYS": "1",
         "S3_ENDPOINT_URL": "a_url",
         "BUILD_TAG": build_tag,
+        "REPORT_NAME": ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY,
     }
 
     expected_config = PipelineConfig(
@@ -39,6 +41,7 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
         cutoff_days=1,
         s3_endpoint_url="a_url",
         build_tag=build_tag,
+        report_name=ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY,
     )
 
     actual_config = PipelineConfig.from_environment_variables(environment)
@@ -53,6 +56,7 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
         "OUTPUT_REPORTS_BUCKET": "output-reports-bucket",
         "CONVERSATION_CUTOFF_DAYS": "14",
         "BUILD_TAG": build_tag,
+        "REPORT_NAME": ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY,
     }
 
     expected_config = PipelineConfig(
@@ -65,6 +69,7 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
         cutoff_days=14,
         s3_endpoint_url=None,
         build_tag=build_tag,
+        report_name=ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY,
     )
 
     actual_config = PipelineConfig.from_environment_variables(environment)
@@ -82,6 +87,20 @@ def test_error_from_environment_when_required_fields_are_not_set():
     assert str(e.value) == "Expected environment variable BUILD_TAG was not set, exiting..."
 
 
+def test_report_name_error_from_environment_when_invalid_report_provided():
+    environment = {
+        "INPUT_TRANSFER_DATA_BUCKET": "input-transfer-data-bucket",
+        "OUTPUT_REPORTS_BUCKET": "output-reports-bucket",
+        "CONVERSATION_CUTOFF_DAYS": "14",
+        "BUILD_TAG": a_string(),
+        "REPORT_NAME": "invalid-report-name",
+    }
+
+    with pytest.raises(ValueError) as e:
+        PipelineConfig.from_environment_variables(environment)
+    assert str(e.value) == "'invalid-report-name' is not a valid ReportName"
+
+
 def test_error_from_environment_when_invalid_type_field_set():
     environment = {
         "INPUT_TRANSFER_DATA_BUCKET": "input-transfer-data-bucket",
@@ -89,6 +108,7 @@ def test_error_from_environment_when_invalid_type_field_set():
         "CONVERSATION_CUTOFF_DAYS": "14",
         "START_DATETIME": "invalid type",
         "BUILD_TAG": a_string(),
+        "REPORT_NAME": ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY,
     }
 
     with pytest.raises(InvalidEnvironmentVariableValue) as e:

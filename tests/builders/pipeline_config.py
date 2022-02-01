@@ -1,4 +1,5 @@
 from prmreportsgenerator.config import PipelineConfig
+from prmreportsgenerator.ReportName import ReportName
 
 
 def create_pipeline_config(**kwargs) -> PipelineConfig:
@@ -12,4 +13,5 @@ def create_pipeline_config(**kwargs) -> PipelineConfig:
         number_of_months=kwargs.get("number_of_months", None),
         number_of_days=kwargs.get("number_of_days", None),
         cutoff_days=kwargs.get("cutoff_days", None),
+        report_name=ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY,
     )
