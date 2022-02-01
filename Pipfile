@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 gp2gp-reports-generator = {editable = true, path = "."}
-polars = "~=0.9.11"
+polars = "~=0.12.19"
 
 [dev-packages]
 moto = {version = "~=2.2", extras = ["server"]}

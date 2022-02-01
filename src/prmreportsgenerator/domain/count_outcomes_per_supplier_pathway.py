@@ -1,7 +1,8 @@
 from functools import reduce
-from typing import List, Optional
+from typing import List, Optional, Union
 
-from polars import DataFrame, col, count, lit, when  # type: ignore
+from polars import DataFrame, col, count, Expr  # type: ignore
+from polars import lit, when  # type: ignore
 
 from prmreportsgenerator.domain.transfer import TransferStatus
 
@@ -80,7 +81,10 @@ def _with_percentage_of_all_transfers(transfer_counts: DataFrame):
 
 
 def _with_percentage_of_supplier_pathway(transfer_counts: DataFrame):
-    supplier_pathway = [col("requesting supplier"), col("sending supplier")]
+    supplier_pathway: List[Union[Expr, str]] = [
+        col("requesting supplier"),
+        col("sending supplier"),
+    ]
     count_per_pathway = col("number of transfers").sum().over(supplier_pathway)
     percentage_of_pathway = (col("number of transfers") / count_per_pathway) * 100
     return transfer_counts.with_column(percentage_of_pathway.alias("% of supplier pathway"))
