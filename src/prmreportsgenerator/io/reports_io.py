@@ -52,9 +52,7 @@ class ReportsS3UriResolver:
             for date in reporting_window.get_dates()
         ]
 
-    def output_supplier_pathway_outcome_counts_uri(
-        self, date: datetime, supplement_s3_key: str
-    ) -> str:
+    def output_table_uri(self, date: datetime, supplement_s3_key: str) -> str:
         return self._s3_path(
             self._reports_bucket,
             self._REPORTS_VERSION,
@@ -80,7 +78,7 @@ class ReportsIO:
             [self._s3_manager.read_parquet(s3_path) for s3_path in s3_uris],
         )
 
-    def write_outcome_counts(self, table: pa.Table, s3_uri: str):
+    def write_table(self, table: pa.Table, s3_uri: str):
         self._s3_manager.write_table_to_csv(
             object_uri=s3_uri, table=table, metadata=self._output_metadata
         )

@@ -42,7 +42,7 @@ def test_returns_correct_supplier_pathway_outcome_counts_uri_given_date():
     )
     supplement_s3_key = "4-days"
 
-    actual = uri_resolver.output_supplier_pathway_outcome_counts_uri(date, supplement_s3_key)
+    actual = uri_resolver.output_table_uri(date, supplement_s3_key)
 
     expected_s3_key = f"{reports_bucket}/v2/{supplement_s3_key}/2022/03/05"
     expected = f"s3://{expected_s3_key}/2022-03-05-supplier_pathway_outcome_counts.csv"

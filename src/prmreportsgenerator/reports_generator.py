@@ -71,14 +71,14 @@ class ReportsGenerator:
 
         return self._io.read_transfers_as_table(transfer_data_s3_uris)
 
-    def _write_supplier_pathway_outcome_counts(self, supplier_pathway_outcome_counts: pa.Table):
+    def _write_table(self, table: pa.Table):
         date = self._reporting_window.start_datetime
-        output_supplier_pathway_uri = self._uri_resolver.output_supplier_pathway_outcome_counts_uri(
+        output_table_uri = self._uri_resolver.output_table_uri(
             date=date, supplement_s3_key=self._reporting_window.config_string
         )
-        self._io.write_outcome_counts(
-            table=supplier_pathway_outcome_counts,
-            s3_uri=output_supplier_pathway_uri,
+        self._io.write_table(
+            table=table,
+            s3_uri=output_table_uri,
         )
 
     @staticmethod
@@ -120,4 +120,4 @@ class ReportsGenerator:
                 **self._date_range_info_json,
             },
         )
-        self._write_supplier_pathway_outcome_counts(supplier_pathway_outcome_counts)
+        self._write_table(supplier_pathway_outcome_counts)

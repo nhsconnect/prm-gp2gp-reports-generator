@@ -24,7 +24,7 @@ def test_given_table_will_write_csv():
     data = {"Fruit": ["Banana"]}
     table = pa.table(data)
 
-    metrics_io.write_outcome_counts(table=table, s3_uri=s3_uri)
+    metrics_io.write_table(table=table, s3_uri=s3_uri)
 
     expected_table = table
 
