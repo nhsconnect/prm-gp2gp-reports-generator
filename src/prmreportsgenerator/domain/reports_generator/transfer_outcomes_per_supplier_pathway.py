@@ -8,7 +8,7 @@ from prmreportsgenerator.domain.reports_generator.reports_generator import Repor
 from prmreportsgenerator.domain.transfer import TransferStatus
 
 
-class TransferOutcomePerSupplierPathwayReportsGenerator(ReportsGenerator):
+class TransferOutcomesPerSupplierPathwayReportsGenerator(ReportsGenerator):
     def __init__(self, transfers: pa.Table):
         super().__init__()
         self._transfers = transfers

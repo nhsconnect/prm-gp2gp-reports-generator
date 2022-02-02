@@ -12,8 +12,8 @@ from prmreportsgenerator.domain.reporting_windows.monthly_reporting_window impor
     MonthlyReportingWindow,
 )
 from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
-from prmreportsgenerator.domain.reports_generator.transfer_outcome_per_supplier_pathway import (
-    TransferOutcomePerSupplierPathwayReportsGenerator,
+from prmreportsgenerator.domain.reports_generator.transfer_outcomes_per_supplier_pathway import (
+    TransferOutcomesPerSupplierPathwayReportsGenerator,
 )
 from prmreportsgenerator.io.reports_io import ReportsIO, ReportsS3UriResolver
 from prmreportsgenerator.io.s3 import S3DataManager
@@ -99,8 +99,7 @@ class ReportsPipeline:
 
     def _generate_report(self, transfers: pa.Table) -> pa.Table:
         if self._report_name == ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY:
-            report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(transfers)
-            return report_generator.generate()
+            return TransferOutcomesPerSupplierPathwayReportsGenerator(transfers).generate()
 
     def run(self):
         transfers = self._read_transfer_table()
