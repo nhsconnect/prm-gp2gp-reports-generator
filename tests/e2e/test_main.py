@@ -17,7 +17,7 @@ from pyarrow.parquet import write_table
 from werkzeug.serving import make_server
 
 from prmreportsgenerator.main import main
-from prmreportsgenerator.ReportName import ReportName
+from prmreportsgenerator.report_name import ReportName
 from prmreportsgenerator.utils.add_leading_zero import add_leading_zero
 from tests.builders.common import a_datetime, a_string
 from tests.builders.dataframe import TransferDataFrame

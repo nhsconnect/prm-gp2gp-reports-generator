@@ -18,13 +18,13 @@ from prmreportsgenerator.domain.reporting_windows.monthly_reporting_window impor
 from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
 from prmreportsgenerator.io.reports_io import ReportsIO, ReportsS3UriResolver
 from prmreportsgenerator.io.s3 import S3DataManager
-from prmreportsgenerator.ReportName import ReportName
+from prmreportsgenerator.report_name import ReportName
 from prmreportsgenerator.utils.date_helpers import convert_to_datetime_string
 
 logger = logging.getLogger(__name__)
 
 
-class ReportsGenerator:
+class ReportsPipeline:
     def __init__(self, config: PipelineConfig):
         s3 = boto3.resource("s3", endpoint_url=config.s3_endpoint_url)
         s3_manager = S3DataManager(s3)
@@ -104,7 +104,7 @@ class ReportsGenerator:
             ),
         }
 
-    def _generate_report(self, transfers: pa.Table):
+    def _generate_report(self, transfers: pa.Table) -> pa.Table:
         if self._report_name == ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY:
             return self._count_outcomes_per_supplier_pathway(transfers)
 

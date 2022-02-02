@@ -5,7 +5,7 @@ from typing import Optional
 
 from dateutil.parser import isoparse
 
-from prmreportsgenerator.ReportName import ReportName
+from prmreportsgenerator.report_name import ReportName
 
 logger = logging.getLogger(__name__)
 

@@ -1,5 +1,5 @@
 from prmreportsgenerator.config import PipelineConfig
-from prmreportsgenerator.ReportName import ReportName
+from prmreportsgenerator.report_name import ReportName
 
 
 def create_pipeline_config(**kwargs) -> PipelineConfig:

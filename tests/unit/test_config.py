@@ -8,7 +8,7 @@ from prmreportsgenerator.config import (
     MissingEnvironmentVariable,
     PipelineConfig,
 )
-from prmreportsgenerator.ReportName import ReportName
+from prmreportsgenerator.report_name import ReportName
 from tests.builders.common import a_string
 
 
