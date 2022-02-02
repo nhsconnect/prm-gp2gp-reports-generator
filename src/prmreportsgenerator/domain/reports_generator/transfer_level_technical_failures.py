@@ -18,6 +18,11 @@ class TransferLevelTechnicalFailuresReportsGenerator(ReportsGenerator):
                 col("sending_supplier").alias("sending supplier"),
                 col("status"),
                 col("failure_reason").alias("failure reason"),
+                col("final_error_codes").apply(self._unique_errors).alias("unique final errors"),
+                col("sender_error_codes").apply(self._unique_errors).alias("unique sender errors"),
+                col("intermediate_error_codes")
+                .apply(self._unique_errors)
+                .alias("unique intermediate errors"),
             ]
         ).to_dict()
 
