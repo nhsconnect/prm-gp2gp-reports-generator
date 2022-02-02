@@ -1,7 +1,6 @@
 import logging
 
 import boto3
-import polars as pl
 import pyarrow as pa
 
 from prmreportsgenerator.config import PipelineConfig
@@ -83,13 +82,6 @@ class ReportsPipeline:
             s3_uri=output_table_uri,
         )
 
-    @staticmethod
-    def _generate_outcomes_per_supplier_pathway(transfer_table: pa.Table) -> pa.Table:
-        transfers_frame = pl.from_arrow(transfer_table)
-        report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(transfers_frame)
-        processed_transfers = report_generator.generate()
-        return processed_transfers.to_arrow()
-
     def _construct_date_range_info_json(self, config: PipelineConfig) -> dict:
         return {
             "config-cutoff-days": str(config.cutoff_days),
@@ -107,7 +99,8 @@ class ReportsPipeline:
 
     def _generate_report(self, transfers: pa.Table) -> pa.Table:
         if self._report_name == ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY:
-            return self._generate_outcomes_per_supplier_pathway(transfers)
+            report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(transfers)
+            return report_generator.generate()
 
     def run(self):
         transfers = self._read_transfer_table()

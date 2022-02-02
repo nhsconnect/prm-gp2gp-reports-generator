@@ -1,4 +1,3 @@
-import polars as pl
 import pyarrow as pa
 from dateutil.tz import UTC
 
@@ -9,7 +8,7 @@ requesting_supplier = a_string(5)
 sending_supplier = a_string(5)
 
 
-class TransferDataFrame:
+class PaTableBuilder:
     def __init__(self):
         self._conversation_id_list = []
         self._sla_duration_list = []
@@ -51,24 +50,22 @@ class TransferDataFrame:
         return self
 
     def build(self):
-        return pl.from_arrow(
-            pa.table(
-                data={
-                    "conversation_id": self._conversation_id_list,
-                    "date_requested": self._date_requested_list,
-                    "last_sender_message_timestamp": self._last_sender_message_timestamp_list,
-                    "requesting_practice_asid": self._requesting_practice_asid_list,
-                    "requesting_supplier": self._requesting_supplier_list,
-                    "sending_supplier": self._sending_supplier_list,
-                    "sla_duration": self._sla_duration_list,
-                    "status": self._status_list,
-                    "failure_reason": self._failure_reason_list,
-                    "final_error_codes": self._final_error_codes_list,
-                    "sender_error_codes": self._sender_error_codes_list,
-                    "intermediate_error_codes": self._intermediate_error_codes_list,
-                },
-                schema=self.get_schema(),
-            )
+        return pa.table(
+            data={
+                "conversation_id": self._conversation_id_list,
+                "date_requested": self._date_requested_list,
+                "last_sender_message_timestamp": self._last_sender_message_timestamp_list,
+                "requesting_practice_asid": self._requesting_practice_asid_list,
+                "requesting_supplier": self._requesting_supplier_list,
+                "sending_supplier": self._sending_supplier_list,
+                "sla_duration": self._sla_duration_list,
+                "status": self._status_list,
+                "failure_reason": self._failure_reason_list,
+                "final_error_codes": self._final_error_codes_list,
+                "sender_error_codes": self._sender_error_codes_list,
+                "intermediate_error_codes": self._intermediate_error_codes_list,
+            },
+            schema=self.get_schema(),
         )
 
     @staticmethod

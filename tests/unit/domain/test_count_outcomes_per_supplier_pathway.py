@@ -1,4 +1,5 @@
 import polars as pl
+import pyarrow as pa
 import pytest
 
 from prmreportsgenerator.domain.reports_generator.transfer_outcome_per_supplier_pathway import (
@@ -6,7 +7,7 @@ from prmreportsgenerator.domain.reports_generator.transfer_outcome_per_supplier_
 )
 from prmreportsgenerator.domain.transfer import TransferFailureReason, TransferStatus
 from tests.builders.common import a_string
-from tests.builders.dataframe import TransferDataFrame
+from tests.builders.pa_table import PaTableBuilder
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
@@ -15,8 +16,8 @@ def test_returns_table_with_supplier_and_transfer_outcome_columns():
     sending_supplier = a_string(6)
     status = TransferStatus.TECHNICAL_FAILURE.value
     failure_reason = TransferFailureReason.FINAL_ERROR.value
-    df = (
-        TransferDataFrame()
+    table = (
+        PaTableBuilder()
         .with_row(
             requesting_supplier=requesting_supplier,
             sending_supplier=sending_supplier,
@@ -26,13 +27,13 @@ def test_returns_table_with_supplier_and_transfer_outcome_columns():
         .build()
     )
 
-    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(df)
-    actual_dataframe = report_generator.generate()
-    actual = actual_dataframe[
+    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(table)
+    actual_table = report_generator.generate()
+    actual = actual_table.select(
         ["requesting supplier", "sending supplier", "status", "failure reason"]
-    ]
+    )
 
-    expected = pl.from_dict(
+    expected = pa.table(
         {
             "requesting supplier": [requesting_supplier],
             "sending supplier": [sending_supplier],
@@ -41,7 +42,7 @@ def test_returns_table_with_supplier_and_transfer_outcome_columns():
         }
     )
 
-    assert actual.frame_equal(expected, null_equal=True)
+    assert actual == expected
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
@@ -56,14 +57,14 @@ def test_returns_table_with_supplier_and_transfer_outcome_columns():
         ([1], "1 - Unknown error code"),
     ],
 )
-def test_returns_dataframe_with_unique_final_error_codes(error_codes, expected):
-    df = TransferDataFrame().with_row(final_error_codes=error_codes).build()
+def test_returns_table_with_unique_final_error_codes(error_codes, expected):
+    table = PaTableBuilder().with_row(final_error_codes=error_codes).build()
 
-    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(df)
+    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(table)
     actual = report_generator.generate()
     expected_unique_final_errors = pl.Series("unique final errors", [expected])
 
-    assert actual["unique final errors"].series_equal(expected_unique_final_errors, null_equal=True)
+    assert actual["unique final errors"] == expected_unique_final_errors
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
@@ -78,16 +79,14 @@ def test_returns_dataframe_with_unique_final_error_codes(error_codes, expected):
         ([1], "1 - Unknown error code"),
     ],
 )
-def test_returns_dataframe_with_unique_sender_errors(error_codes, expected):
-    df = TransferDataFrame().with_row(sender_error_codes=error_codes).build()
+def test_returns_table_with_unique_sender_errors(error_codes, expected):
+    table = PaTableBuilder().with_row(sender_error_codes=error_codes).build()
 
-    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(df)
+    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(table)
     actual = report_generator.generate()
     expected_unique_sender_errors = pl.Series("unique sender errors", [expected])
 
-    assert actual["unique sender errors"].series_equal(
-        expected_unique_sender_errors, null_equal=True
-    )
+    assert actual["unique sender errors"] == expected_unique_sender_errors
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
@@ -100,16 +99,14 @@ def test_returns_dataframe_with_unique_sender_errors(error_codes, expected):
         ([1], "1 - Unknown error code"),
     ],
 )
-def test_returns_dataframe_with_unique_intermediate_error_codes(error_codes, expected):
-    df = TransferDataFrame().with_row(intermediate_error_codes=error_codes).build()
+def test_returns_table_with_unique_intermediate_error_codes(error_codes, expected):
+    table = PaTableBuilder().with_row(intermediate_error_codes=error_codes).build()
 
-    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(df)
+    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(table)
     actual = report_generator.generate()
     expected_unique_intermediate_errors = pl.Series("unique intermediate errors", [expected])
 
-    assert actual["unique intermediate errors"].series_equal(
-        expected_unique_intermediate_errors, null_equal=True
-    )
+    assert actual["unique intermediate errors"] == expected_unique_intermediate_errors
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
@@ -141,24 +138,22 @@ def test_returns_dataframe_with_unique_intermediate_error_codes(error_codes, exp
         (99, "99 - Unexpected"),
     ],
 )
-def test_returns_dataframe_with_correct_description_of_error(error_code, expected):
-    df = TransferDataFrame().with_row(intermediate_error_codes=[error_code]).build()
+def test_returns_table_with_correct_description_of_error(error_code, expected):
+    table = PaTableBuilder().with_row(intermediate_error_codes=[error_code]).build()
 
-    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(df)
+    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(table)
     actual = report_generator.generate()
     expected_unique_intermediate_errors = pl.Series("unique intermediate errors", [expected])
 
-    assert actual["unique intermediate errors"].series_equal(
-        expected_unique_intermediate_errors, null_equal=True
-    )
+    assert actual["unique intermediate errors"] == expected_unique_intermediate_errors
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
 def test_returns_sorted_count_per_supplier_pathway():
     supplier_a = a_string(6)
     supplier_b = a_string(6)
-    df = (
-        TransferDataFrame()
+    table = (
+        PaTableBuilder()
         .with_row(
             requesting_supplier=supplier_b,
             sending_supplier=supplier_a,
@@ -174,17 +169,17 @@ def test_returns_sorted_count_per_supplier_pathway():
         .build()
     )
 
-    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(df)
-    actual_dataframe = report_generator.generate()
-    actual = actual_dataframe[["requesting supplier", "sending supplier", "number of transfers"]]
-    expected = pl.from_dict(
+    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(table)
+    actual_table = report_generator.generate()
+    actual = actual_table.select(["requesting supplier", "sending supplier", "number of transfers"])
+    expected = pa.Table.from_pydict(
         {
             "requesting supplier": [supplier_a, supplier_b],
             "sending supplier": [supplier_b, supplier_a],
             "number of transfers": [2, 1],
         }
     )
-    assert actual.frame_equal(expected, null_equal=True)
+    assert actual == expected
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
@@ -193,26 +188,26 @@ def test_returns_sorted_count_per_transfer_outcome():
     integrated_failure_reason = None
     failed_status = TransferStatus.TECHNICAL_FAILURE.value
     failed_failure_reason = TransferFailureReason.FINAL_ERROR.value
-    df = (
-        TransferDataFrame()
+    table = (
+        PaTableBuilder()
         .with_row(status=integrated_status, failure_reason=integrated_failure_reason)
         .with_row(status=integrated_status, failure_reason=integrated_failure_reason)
         .with_row(status=failed_status, failure_reason=failed_failure_reason)
         .build()
     )
 
-    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(df)
-    actual_dataframe = report_generator.generate()
-    actual = actual_dataframe[["status", "failure reason", "number of transfers"]]
+    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(table)
+    actual_table = report_generator.generate()
+    actual = actual_table.select(["status", "failure reason", "number of transfers"])
 
-    expected = pl.from_dict(
+    expected = pa.Table.from_pydict(
         {
             "status": [integrated_status, failed_status],
             "failure reason": [integrated_failure_reason, failed_failure_reason],
             "number of transfers": [2, 1],
         }
     )
-    assert actual.frame_equal(expected, null_equal=True)
+    assert actual == expected
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
@@ -223,8 +218,8 @@ def test_returns_sorted_count_by_count_and_supplier_and_status_per_scenario():
     supplier_a = "SupplierA"
     supplier_b = "SupplierB"
 
-    df = (
-        TransferDataFrame()
+    table = (
+        PaTableBuilder()
         .with_row(
             status=integrated_status, requesting_supplier=supplier_b, sending_supplier=supplier_a
         )
@@ -254,12 +249,12 @@ def test_returns_sorted_count_by_count_and_supplier_and_status_per_scenario():
         .build()
     )
 
-    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(df)
-    actual_dataframe = report_generator.generate()
-    actual = actual_dataframe[
+    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(table)
+    actual_table = report_generator.generate()
+    actual = actual_table.select(
         ["status", "requesting supplier", "sending supplier", "number of transfers"]
-    ]
-    expected = pl.from_dict(
+    )
+    expected = pa.Table.from_pydict(
         {
             "status": [
                 integrated_status,
@@ -273,17 +268,17 @@ def test_returns_sorted_count_by_count_and_supplier_and_status_per_scenario():
             "number of transfers": [3, 2, 1, 1, 1],
         }
     )
-    assert actual.frame_equal(expected, null_equal=True)
+    assert actual == expected
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
-def test_returns_dataframe_with_percentage_of_transfers():
+def test_returns_table_with_percentage_of_transfers():
     integrated_status = TransferStatus.INTEGRATED_ON_TIME.value
     failed_status = TransferStatus.TECHNICAL_FAILURE.value
     process_failure_status = TransferStatus.PROCESS_FAILURE.value
 
-    df = (
-        TransferDataFrame()
+    table = (
+        PaTableBuilder()
         .with_row(status=integrated_status)
         .with_row(status=integrated_status)
         .with_row(status=integrated_status)
@@ -294,29 +289,29 @@ def test_returns_dataframe_with_percentage_of_transfers():
         .build()
     )
 
-    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(df)
-    actual_dataframe = report_generator.generate()
-    actual = actual_dataframe[["status", "% of transfers"]]
+    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(table)
+    actual_table = report_generator.generate()
+    actual = actual_table.select(["status", "% of transfers"])
 
-    expected = pl.from_dict(
+    expected = pa.Table.from_pydict(
         {
             "status": [integrated_status, failed_status, process_failure_status],
             "% of transfers": [57.14285714285714, 28.57142857142857, 14.285714285714285],
         }
     )
-    assert actual.frame_equal(expected, null_equal=True)
+    assert actual == expected
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
-def test_returns_dataframe_with_percentage_of_technical_failures():
+def test_returns_table_with_percentage_of_technical_failures():
     integrated_status = TransferStatus.INTEGRATED_ON_TIME.value
     failed_status = TransferStatus.TECHNICAL_FAILURE.value
     final_error_failure_reason = TransferFailureReason.FINAL_ERROR.value
     sender_error_failure_reason = TransferFailureReason.FATAL_SENDER_ERROR.value
     copc_not_sent_failure_reason = TransferFailureReason.COPC_NOT_SENT.value
 
-    df = (
-        TransferDataFrame()
+    table = (
+        PaTableBuilder()
         .with_row(status=integrated_status, failure_reason=None)
         .with_row(status=failed_status, failure_reason=final_error_failure_reason)
         .with_row(status=failed_status, failure_reason=final_error_failure_reason)
@@ -328,11 +323,11 @@ def test_returns_dataframe_with_percentage_of_technical_failures():
         .build()
     )
 
-    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(df)
-    actual_dataframe = report_generator.generate()
-    actual = actual_dataframe[["status", "failure reason", "% of technical failures"]]
+    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(table)
+    actual_table = report_generator.generate()
+    actual = actual_table.select(["status", "failure reason", "% of technical failures"])
 
-    expected = pl.from_dict(
+    expected = pa.Table.from_pydict(
         {
             "status": [failed_status, failed_status, integrated_status, failed_status],
             "failure reason": [
@@ -349,19 +344,19 @@ def test_returns_dataframe_with_percentage_of_technical_failures():
             ],
         }
     )
-    assert actual.frame_equal(expected, null_equal=True)
+    assert actual == expected
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
-def test_returns_dataframe_with_percentage_of_supplier_pathway():
+def test_returns_table_with_percentage_of_supplier_pathway():
     supplier_a = "SupplierA"
     supplier_b = "SupplierB"
     integrated_status = TransferStatus.INTEGRATED_ON_TIME.value
     failed_status = TransferStatus.TECHNICAL_FAILURE.value
     process_failure_status = TransferStatus.PROCESS_FAILURE.value
 
-    df = (
-        TransferDataFrame()
+    table = (
+        PaTableBuilder()
         .with_row(
             requesting_supplier=supplier_a, sending_supplier=supplier_b, status=integrated_status
         )
@@ -393,13 +388,13 @@ def test_returns_dataframe_with_percentage_of_supplier_pathway():
         .build()
     )
 
-    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(df)
-    actual_dataframe = report_generator.generate()
-    actual = actual_dataframe[
+    report_generator = TransferOutcomePerSupplierPathwayReportsGenerator(table)
+    actual_table = report_generator.generate()
+    actual = actual_table.select(
         ["requesting supplier", "sending supplier", "status", "% of supplier pathway"]
-    ]
+    )
 
-    expected = pl.from_dict(
+    expected = pa.Table.from_pydict(
         {
             "requesting supplier": [supplier_a, supplier_a, supplier_a, supplier_a, supplier_b],
             "sending supplier": [supplier_b, supplier_a, supplier_b, supplier_b, supplier_a],
@@ -419,4 +414,4 @@ def test_returns_dataframe_with_percentage_of_supplier_pathway():
             ],
         }
     )
-    assert actual.frame_equal(expected, null_equal=True)
+    assert actual == expected

@@ -1,5 +1,7 @@
 from typing import List, Union
 
+import polars as pl
+import pyarrow as pa
 from polars import DataFrame, Expr, col, count, lit, when
 
 from prmreportsgenerator.domain.reports_generator.reports_generator import ReportsGenerator
@@ -7,7 +9,7 @@ from prmreportsgenerator.domain.transfer import TransferStatus
 
 
 class TransferOutcomePerSupplierPathwayReportsGenerator(ReportsGenerator):
-    def __init__(self, transfers: DataFrame):
+    def __init__(self, transfers: pa.Table):
         super().__init__()
         self._transfers = transfers
 
@@ -79,12 +81,15 @@ class TransferOutcomePerSupplierPathwayReportsGenerator(ReportsGenerator):
             reverse=[True, False, False, False],
         )
 
-    def generate(self) -> DataFrame:
-        return self._process(
-            self._transfers,
+    def generate(self) -> pa.Table:
+        transfers_frame = pl.from_arrow(self._transfers)
+        processed_transfers = self._process(
+            transfers_frame,
             self._counted_by_supplier_pathway_and_outcome,
             self._with_percentage_of_all_transfers,
             self._with_percentage_of_technical_failures,
             self._with_percentage_of_supplier_pathway,
             self._sorted_by_pathway_and_status,
-        )
+        ).to_dict()
+
+        return pa.table(processed_transfers)

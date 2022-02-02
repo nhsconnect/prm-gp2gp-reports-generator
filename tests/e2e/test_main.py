@@ -20,7 +20,7 @@ from prmreportsgenerator.main import main
 from prmreportsgenerator.report_name import ReportName
 from prmreportsgenerator.utils.add_leading_zero import add_leading_zero
 from tests.builders.common import a_datetime, a_string
-from tests.builders.dataframe import TransferDataFrame
+from tests.builders.pa_table import PaTableBuilder
 
 logger = logging.getLogger(__name__)
 
@@ -120,7 +120,7 @@ def _read_s3_metadata(bucket, key):
 
 def _write_transfer_parquet(input_transfer_parquet_columns_json, s3_path: str):
     transfers_dictionary = _read_parquet_columns_json(input_transfer_parquet_columns_json)
-    transfers_table = pa.table(data=transfers_dictionary, schema=TransferDataFrame.get_schema())
+    transfers_table = pa.table(data=transfers_dictionary, schema=PaTableBuilder.get_schema())
     write_table(
         table=transfers_table,
         where=s3_path,
