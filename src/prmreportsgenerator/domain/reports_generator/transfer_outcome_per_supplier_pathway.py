@@ -6,7 +6,7 @@ from prmreportsgenerator.domain.reports_generator.reports_generator import Repor
 from prmreportsgenerator.domain.transfer import TransferStatus
 
 
-class TransferOutcomePerSupplierPathwayReportGenerator(ReportsGenerator):
+class TransferOutcomePerSupplierPathwayReportsGenerator(ReportsGenerator):
     def __init__(self, transfers: DataFrame):
         super().__init__()
         self._transfers = transfers
@@ -79,7 +79,7 @@ class TransferOutcomePerSupplierPathwayReportGenerator(ReportsGenerator):
             reverse=[True, False, False, False],
         )
 
-    def count_outcomes_per_supplier_pathway(self) -> DataFrame:
+    def generate(self) -> DataFrame:
         return self._process(
             self._transfers,
             self._counted_by_supplier_pathway_and_outcome,

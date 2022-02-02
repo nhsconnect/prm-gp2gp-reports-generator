@@ -1,10 +1,11 @@
+from abc import ABC, abstractmethod
 from functools import reduce
 from typing import List, Optional
 
 from prmreportsgenerator.domain.reports_generator.error_code_mapping import error_code_mapping
 
 
-class ReportsGenerator:
+class ReportsGenerator(ABC):
     def __init__(self):
         pass
 
@@ -22,3 +23,7 @@ class ReportsGenerator:
 
     def _process(self, data, *function_chain):
         return reduce(lambda d, func: func(d), list(function_chain), data)
+
+    @abstractmethod
+    def generate(self):
+        pass
