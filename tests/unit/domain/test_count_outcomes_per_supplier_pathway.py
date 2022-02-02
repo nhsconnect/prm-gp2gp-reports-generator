@@ -1,8 +1,8 @@
 import polars as pl
 import pytest
 
-from prmreportsgenerator.domain.count_outcomes_per_supplier_pathway import (
-    count_outcomes_per_supplier_pathway,
+from prmreportsgenerator.domain.reports_generator.count_outcomes_per_supplier_pathway import (
+    TransferOutcomePerSupplierPathwayReportGenerator,
 )
 from prmreportsgenerator.domain.transfer import TransferFailureReason, TransferStatus
 from tests.builders.common import a_string
@@ -10,7 +10,7 @@ from tests.builders.dataframe import TransferDataFrame
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
-def test_returns_dataframe_with_supplier_and_transfer_outcome_columns():
+def test_returns_table_with_supplier_and_transfer_outcome_columns():
     requesting_supplier = a_string(6)
     sending_supplier = a_string(6)
     status = TransferStatus.TECHNICAL_FAILURE.value
@@ -26,7 +26,8 @@ def test_returns_dataframe_with_supplier_and_transfer_outcome_columns():
         .build()
     )
 
-    actual_dataframe = count_outcomes_per_supplier_pathway(df)
+    report_generator = TransferOutcomePerSupplierPathwayReportGenerator(df)
+    actual_dataframe = report_generator.count_outcomes_per_supplier_pathway()
     actual = actual_dataframe[
         ["requesting supplier", "sending supplier", "status", "failure reason"]
     ]
@@ -58,7 +59,8 @@ def test_returns_dataframe_with_supplier_and_transfer_outcome_columns():
 def test_returns_dataframe_with_unique_final_error_codes(error_codes, expected):
     df = TransferDataFrame().with_row(final_error_codes=error_codes).build()
 
-    actual = count_outcomes_per_supplier_pathway(df)
+    report_generator = TransferOutcomePerSupplierPathwayReportGenerator(df)
+    actual = report_generator.count_outcomes_per_supplier_pathway()
     expected_unique_final_errors = pl.Series("unique final errors", [expected])
 
     assert actual["unique final errors"].series_equal(expected_unique_final_errors, null_equal=True)
@@ -79,7 +81,8 @@ def test_returns_dataframe_with_unique_final_error_codes(error_codes, expected):
 def test_returns_dataframe_with_unique_sender_errors(error_codes, expected):
     df = TransferDataFrame().with_row(sender_error_codes=error_codes).build()
 
-    actual = count_outcomes_per_supplier_pathway(df)
+    report_generator = TransferOutcomePerSupplierPathwayReportGenerator(df)
+    actual = report_generator.count_outcomes_per_supplier_pathway()
     expected_unique_sender_errors = pl.Series("unique sender errors", [expected])
 
     assert actual["unique sender errors"].series_equal(
@@ -100,7 +103,8 @@ def test_returns_dataframe_with_unique_sender_errors(error_codes, expected):
 def test_returns_dataframe_with_unique_intermediate_error_codes(error_codes, expected):
     df = TransferDataFrame().with_row(intermediate_error_codes=error_codes).build()
 
-    actual = count_outcomes_per_supplier_pathway(df)
+    report_generator = TransferOutcomePerSupplierPathwayReportGenerator(df)
+    actual = report_generator.count_outcomes_per_supplier_pathway()
     expected_unique_intermediate_errors = pl.Series("unique intermediate errors", [expected])
 
     assert actual["unique intermediate errors"].series_equal(
@@ -140,7 +144,8 @@ def test_returns_dataframe_with_unique_intermediate_error_codes(error_codes, exp
 def test_returns_dataframe_with_correct_description_of_error(error_code, expected):
     df = TransferDataFrame().with_row(intermediate_error_codes=[error_code]).build()
 
-    actual = count_outcomes_per_supplier_pathway(df)
+    report_generator = TransferOutcomePerSupplierPathwayReportGenerator(df)
+    actual = report_generator.count_outcomes_per_supplier_pathway()
     expected_unique_intermediate_errors = pl.Series("unique intermediate errors", [expected])
 
     assert actual["unique intermediate errors"].series_equal(
@@ -169,7 +174,8 @@ def test_returns_sorted_count_per_supplier_pathway():
         .build()
     )
 
-    actual_dataframe = count_outcomes_per_supplier_pathway(df)
+    report_generator = TransferOutcomePerSupplierPathwayReportGenerator(df)
+    actual_dataframe = report_generator.count_outcomes_per_supplier_pathway()
     actual = actual_dataframe[["requesting supplier", "sending supplier", "number of transfers"]]
     expected = pl.from_dict(
         {
@@ -195,7 +201,8 @@ def test_returns_sorted_count_per_transfer_outcome():
         .build()
     )
 
-    actual_dataframe = count_outcomes_per_supplier_pathway(df)
+    report_generator = TransferOutcomePerSupplierPathwayReportGenerator(df)
+    actual_dataframe = report_generator.count_outcomes_per_supplier_pathway()
     actual = actual_dataframe[["status", "failure reason", "number of transfers"]]
 
     expected = pl.from_dict(
@@ -247,7 +254,8 @@ def test_returns_sorted_count_by_count_and_supplier_and_status_per_scenario():
         .build()
     )
 
-    actual_dataframe = count_outcomes_per_supplier_pathway(df)
+    report_generator = TransferOutcomePerSupplierPathwayReportGenerator(df)
+    actual_dataframe = report_generator.count_outcomes_per_supplier_pathway()
     actual = actual_dataframe[
         ["status", "requesting supplier", "sending supplier", "number of transfers"]
     ]
@@ -286,7 +294,8 @@ def test_returns_dataframe_with_percentage_of_transfers():
         .build()
     )
 
-    actual_dataframe = count_outcomes_per_supplier_pathway(df)
+    report_generator = TransferOutcomePerSupplierPathwayReportGenerator(df)
+    actual_dataframe = report_generator.count_outcomes_per_supplier_pathway()
     actual = actual_dataframe[["status", "% of transfers"]]
 
     expected = pl.from_dict(
@@ -319,7 +328,8 @@ def test_returns_dataframe_with_percentage_of_technical_failures():
         .build()
     )
 
-    actual_dataframe = count_outcomes_per_supplier_pathway(df)
+    report_generator = TransferOutcomePerSupplierPathwayReportGenerator(df)
+    actual_dataframe = report_generator.count_outcomes_per_supplier_pathway()
     actual = actual_dataframe[["status", "failure reason", "% of technical failures"]]
 
     expected = pl.from_dict(
@@ -383,7 +393,8 @@ def test_returns_dataframe_with_percentage_of_supplier_pathway():
         .build()
     )
 
-    actual_dataframe = count_outcomes_per_supplier_pathway(df)
+    report_generator = TransferOutcomePerSupplierPathwayReportGenerator(df)
+    actual_dataframe = report_generator.count_outcomes_per_supplier_pathway()
     actual = actual_dataframe[
         ["requesting supplier", "sending supplier", "status", "% of supplier pathway"]
     ]

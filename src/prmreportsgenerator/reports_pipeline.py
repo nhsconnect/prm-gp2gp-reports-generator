@@ -5,9 +5,6 @@ import polars as pl
 import pyarrow as pa
 
 from prmreportsgenerator.config import PipelineConfig
-from prmreportsgenerator.domain.count_outcomes_per_supplier_pathway import (
-    count_outcomes_per_supplier_pathway,
-)
 from prmreportsgenerator.domain.reporting_windows.custom_reporting_window import (
     CustomReportingWindow,
 )
@@ -16,6 +13,9 @@ from prmreportsgenerator.domain.reporting_windows.monthly_reporting_window impor
     MonthlyReportingWindow,
 )
 from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
+from prmreportsgenerator.domain.reports_generator.count_outcomes_per_supplier_pathway import (
+    TransferOutcomePerSupplierPathwayReportGenerator,
+)
 from prmreportsgenerator.io.reports_io import ReportsIO, ReportsS3UriResolver
 from prmreportsgenerator.io.s3 import S3DataManager
 from prmreportsgenerator.report_name import ReportName
@@ -86,7 +86,8 @@ class ReportsPipeline:
     @staticmethod
     def _count_outcomes_per_supplier_pathway(transfer_table: pa.Table) -> pa.Table:
         transfers_frame = pl.from_arrow(transfer_table)
-        processed_transfers = count_outcomes_per_supplier_pathway(transfers_frame)
+        report_generator = TransferOutcomePerSupplierPathwayReportGenerator(transfers_frame)
+        processed_transfers = report_generator.count_outcomes_per_supplier_pathway()
         return processed_transfers.to_arrow()
 
     def _construct_date_range_info_json(self, config: PipelineConfig) -> dict:
