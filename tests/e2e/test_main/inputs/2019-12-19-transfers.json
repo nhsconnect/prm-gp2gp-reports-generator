@@ -14,6 +14,9 @@
   "requesting_supplier": [
     "SupplierB"
   ],
+  "sending_practice_asid": [
+    "987654321242"
+  ],
   "sending_supplier": [
     "SupplierC"
   ],

@@ -14,8 +14,11 @@ class TransferLevelTechnicalFailuresReportsGenerator(ReportsGenerator):
         transfers_frame = pl.from_arrow(self._transfers)
         processed_transfers = transfers_frame.select(  # type: ignore
             [
-                col("requesting_supplier").alias("requesting supplier"),
+                col("sending_practice_asid").alias("sending practice ASID"),
                 col("sending_supplier").alias("sending supplier"),
+                col("requesting_practice_asid").alias("requesting practice ASID"),
+                col("requesting_supplier").alias("requesting supplier"),
+                col("conversation_id").alias("conversation ID"),
                 col("status"),
                 col("failure_reason").alias("failure reason"),
                 col("final_error_codes").apply(self._unique_errors).alias("unique final errors"),

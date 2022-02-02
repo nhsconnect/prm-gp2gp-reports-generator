@@ -6,21 +6,29 @@ from prmreportsgenerator.domain.reports_generator.transfer_level_technical_failu
     TransferLevelTechnicalFailuresReportsGenerator,
 )
 from prmreportsgenerator.domain.transfer import TransferFailureReason, TransferStatus
-from tests.builders.common import a_string
+from tests.builders.common import a_datetime, a_string
 from tests.builders.pa_table import PaTableBuilder
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
 def test_returns_table_with_transfer_level_technical_failure_columns():
     requesting_supplier = a_string(6)
+    requesting_practice_asid = a_string(6)
     sending_supplier = a_string(6)
+    sending_practice_asid = a_string(6)
+    conversation_id = a_string(16)
+    date_requested = a_datetime(year=2021, hour=0, minute=0, second=0)
     status = TransferStatus.TECHNICAL_FAILURE.value
     failure_reason = TransferFailureReason.FINAL_ERROR.value
     table = (
         PaTableBuilder()
         .with_row(
-            requesting_supplier=requesting_supplier,
+            sending_practice_asid=sending_practice_asid,
             sending_supplier=sending_supplier,
+            requesting_practice_asid=requesting_practice_asid,
+            requesting_supplier=requesting_supplier,
+            conversation_id=conversation_id,
+            date_requested=date_requested,
             status=status,
             failure_reason=failure_reason,
         )
@@ -30,13 +38,24 @@ def test_returns_table_with_transfer_level_technical_failure_columns():
     report_generator = TransferLevelTechnicalFailuresReportsGenerator(table)
     actual_table = report_generator.generate()
     actual = actual_table.select(
-        ["requesting supplier", "sending supplier", "status", "failure reason"]
+        [
+            "sending practice ASID",
+            "sending supplier",
+            "requesting practice ASID",
+            "requesting supplier",
+            "conversation ID",
+            "status",
+            "failure reason",
+        ]
     )
 
     expected = pa.table(
         {
-            "requesting supplier": [requesting_supplier],
+            "sending practice ASID": [sending_practice_asid],
             "sending supplier": [sending_supplier],
+            "requesting practice ASID": [requesting_practice_asid],
+            "requesting supplier": [requesting_supplier],
+            "conversation ID": [conversation_id],
             "status": [status],
             "failure reason": [failure_reason],
         }

@@ -17,6 +17,9 @@
   "sending_supplier": [
     "SupplierB"
   ],
+  "sending_practice_asid": [
+    "987654321241"
+  ],
   "sla_duration": [
     null
   ],
