@@ -44,7 +44,6 @@ FAKE_AWS_URL = f"http://{FAKE_AWS_HOST}:{FAKE_AWS_PORT}"
 FAKE_S3_ACCESS_KEY = "testing"
 FAKE_S3_SECRET_KEY = "testing"
 FAKE_S3_REGION = "us-west-1"
-REPORT_NAME = ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY.value
 
 S3_INPUT_TRANSFER_DATA_BUCKET = "input-transfer-data-bucket"
 S3_OUTPUT_REPORTS_BUCKET = "output-reports-data-bucket"
@@ -66,7 +65,6 @@ def _setup():
     environ["AWS_ACCESS_KEY_ID"] = FAKE_S3_ACCESS_KEY
     environ["AWS_SECRET_ACCESS_KEY"] = FAKE_S3_SECRET_KEY
     environ["AWS_DEFAULT_REGION"] = FAKE_S3_REGION
-    environ["REPORT_NAME"] = REPORT_NAME
 
     environ["INPUT_TRANSFER_DATA_BUCKET"] = S3_INPUT_TRANSFER_DATA_BUCKET
     environ["OUTPUT_REPORTS_BUCKET"] = S3_OUTPUT_REPORTS_BUCKET
@@ -187,7 +185,10 @@ def test_end_to_end_custom_reporting_window_given_start_and_end_datetime(datadir
         "/2019-12-19-supplier_pathway_outcome_counts.csv"
     )
     expected_supplier_pathway_outcome_counts = _read_csv(
-        datadir / "expected_outputs" / "custom_supplier_pathway_outcome_counts.csv"
+        datadir
+        / "expected_outputs"
+        / "transfer_outcomes_per_supplier_pathway_report"
+        / "custom_supplier_pathway_outcome_counts.csv"
     )
 
     s3_reports_output_path = "v2/custom/2019/12/19"
@@ -196,6 +197,7 @@ def test_end_to_end_custom_reporting_window_given_start_and_end_datetime(datadir
         environ["START_DATETIME"] = "2019-12-19T00:00:00Z"
         environ["END_DATETIME"] = "2019-12-21T00:00:00Z"
         environ["CONVERSATION_CUTOFF_DAYS"] = DEFAULT_CONVERSATION_CUTOFF_DAYS
+        environ["REPORT_NAME"] = ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY.value
 
         for day in [19, 20]:
             _override_transfer_data(
@@ -251,7 +253,10 @@ def test_end_to_end_monthly_reporting_window_given_number_of_months_1(datadir):
         "/2019-12-01-supplier_pathway_outcome_counts.csv"
     )
     expected_supplier_pathway_outcome_counts = _read_csv(
-        datadir / "expected_outputs" / "monthly_supplier_pathway_outcome_counts.csv"
+        datadir
+        / "expected_outputs"
+        / "transfer_outcomes_per_supplier_pathway_report"
+        / "monthly_supplier_pathway_outcome_counts.csv"
     )
 
     s3_reports_output_path = "v2/1-months/2019/12/01"
@@ -259,6 +264,7 @@ def test_end_to_end_monthly_reporting_window_given_number_of_months_1(datadir):
     try:
         environ["NUMBER_OF_MONTHS"] = "1"
         environ["CONVERSATION_CUTOFF_DAYS"] = DEFAULT_CONVERSATION_CUTOFF_DAYS
+        environ["REPORT_NAME"] = ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY.value
 
         _upload_template_transfer_data(
             datadir,
@@ -321,7 +327,10 @@ def test_end_to_end_daily_reporting_window_given_number_of_days_2(datadir):
         "/2019-12-23-supplier_pathway_outcome_counts.csv"
     )
     expected_supplier_pathway_outcome_counts = _read_csv(
-        datadir / "expected_outputs" / "daily_supplier_pathway_outcome_counts.csv"
+        datadir
+        / "expected_outputs"
+        / "transfer_outcomes_per_supplier_pathway_report"
+        / "daily_supplier_pathway_outcome_counts.csv"
     )
 
     s3_reports_output_path = "v2/2-days/2019/12/23"
@@ -331,6 +340,7 @@ def test_end_to_end_daily_reporting_window_given_number_of_days_2(datadir):
         environ["NUMBER_OF_DAYS"] = number_of_days
         cutoff_days = "3"
         environ["CONVERSATION_CUTOFF_DAYS"] = cutoff_days
+        environ["REPORT_NAME"] = ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY.value
 
         for day in [23, 24]:
             _override_transfer_data(
