@@ -12,6 +12,9 @@ from prmreportsgenerator.domain.reporting_windows.monthly_reporting_window impor
     MonthlyReportingWindow,
 )
 from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
+from prmreportsgenerator.domain.reports_generator.transfer_level_technical_failures import (
+    TransferLevelTechnicalFailuresReportsGenerator,
+)
 from prmreportsgenerator.domain.reports_generator.transfer_outcomes_per_supplier_pathway import (
     TransferOutcomesPerSupplierPathwayReportsGenerator,
 )
@@ -101,6 +104,8 @@ class ReportsPipeline:
     def _generate_report(self, transfers: pa.Table) -> pa.Table:
         if self._report_name == ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY:
             return TransferOutcomesPerSupplierPathwayReportsGenerator(transfers).generate()
+        if self._report_name == ReportName.TRANSFER_LEVEL_TECHNICAL_FAILURES:
+            return TransferLevelTechnicalFailuresReportsGenerator(transfers).generate()
 
     def run(self):
         transfers = self._read_transfer_table()

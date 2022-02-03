@@ -174,7 +174,9 @@ def _override_transfer_data(
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
-def test_end_to_end_custom_reporting_window_given_start_and_end_datetime(datadir):
+def test_e2e_outcomes_per_supplier_pathway_with_custom_reporting_window_given_start_and_end_date(
+    datadir,
+):
     fake_s3, s3_client = _setup()
     fake_s3.start()
 
@@ -243,7 +245,9 @@ def test_end_to_end_custom_reporting_window_given_start_and_end_datetime(datadir
 
 @freeze_time(a_datetime(year=2020, month=1, day=2))
 @pytest.mark.filterwarnings("ignore:Conversion of")
-def test_end_to_end_monthly_reporting_window_given_number_of_months_1(datadir):
+def test_e2e_outcomes_per_supplier_pathway_with_monthly_reporting_window_given_number_of_months(
+    datadir,
+):
     fake_s3, s3_client = _setup()
     fake_s3.start()
 
@@ -318,7 +322,9 @@ def test_end_to_end_monthly_reporting_window_given_number_of_months_1(datadir):
 
 @freeze_time(a_datetime(year=2019, month=12, day=28))
 @pytest.mark.filterwarnings("ignore:Conversion of")
-def test_end_to_end_daily_reporting_window_given_number_of_days_2(datadir):
+def test_e2e_outcomes_per_supplier_pathway_with_daily_reporting_window_given_number_of_days(
+    datadir,
+):
     fake_s3, s3_client = _setup()
     fake_s3.start()
 
@@ -381,6 +387,238 @@ def test_end_to_end_daily_reporting_window_given_number_of_days_2(datadir):
         )
 
         assert actual_supplier_pathway_outcome_counts_s3_metadata == expected_metadata
+    finally:
+        output_reports_bucket.objects.all().delete()
+        output_reports_bucket.delete()
+        input_transfer_bucket.objects.all().delete()
+        input_transfer_bucket.delete()
+        fake_s3.stop()
+        environ.clear()
+
+
+@pytest.mark.filterwarnings("ignore:Conversion of")
+def test_e2e_transfer_level_technical_failures_custom_reporting_window_given_start_and_end_date(
+    datadir,
+):
+    fake_s3, s3_client = _setup()
+    fake_s3.start()
+
+    output_reports_bucket = _build_fake_s3_bucket(S3_OUTPUT_REPORTS_BUCKET, s3_client)
+    input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
+
+    expected_transfer_level_technical_failures_output_key = (
+        "/2019-12-19-supplier_pathway_outcome_counts.csv"
+    )
+    expected_transfer_level_technical_failures = _read_csv(
+        datadir
+        / "expected_outputs"
+        / "transfer_level_technical_failures_report"
+        / "custom_transfer_level_technical_failures_report.csv"
+    )
+
+    s3_reports_output_path = "v2/custom/2019/12/19"
+
+    try:
+        environ["START_DATETIME"] = "2019-12-19T00:00:00Z"
+        environ["END_DATETIME"] = "2019-12-21T00:00:00Z"
+        environ["CONVERSATION_CUTOFF_DAYS"] = DEFAULT_CONVERSATION_CUTOFF_DAYS
+        environ["REPORT_NAME"] = ReportName.TRANSFER_LEVEL_TECHNICAL_FAILURES.value
+
+        for day in [19, 20]:
+            _override_transfer_data(
+                datadir, S3_INPUT_TRANSFER_DATA_BUCKET, year=2019, data_month=12, data_day=day
+            )
+
+        main()
+
+        transfer_level_technical_failures_report_s3_path = (
+            f"{s3_reports_output_path}{expected_transfer_level_technical_failures_output_key}"
+        )
+        actual_transfer_level_technical_failures_report = _read_s3_csv(
+            output_reports_bucket, transfer_level_technical_failures_report_s3_path
+        )
+        assert (
+            actual_transfer_level_technical_failures_report
+            == expected_transfer_level_technical_failures
+        )
+
+        expected_metadata = {
+            "reports-generator-version": BUILD_TAG,
+            "config-start-datetime": "2019-12-19T00:00:00+00:00",
+            "config-end-datetime": "2019-12-21T00:00:00+00:00",
+            "config-number-of-months": "None",
+            "config-number-of-days": "None",
+            "config-cutoff-days": DEFAULT_CONVERSATION_CUTOFF_DAYS,
+            "reporting-window-start-datetime": "2019-12-19T00:00:00+00:00",
+            "reporting-window-end-datetime": "2019-12-21T00:00:00+00:00",
+            "report-name": ReportName.TRANSFER_LEVEL_TECHNICAL_FAILURES.value,
+        }
+
+        actual_transfer_level_technical_failures_report_s3_metadata = _read_s3_metadata(
+            output_reports_bucket, transfer_level_technical_failures_report_s3_path
+        )
+
+        assert actual_transfer_level_technical_failures_report_s3_metadata == expected_metadata
+
+    finally:
+        output_reports_bucket.objects.all().delete()
+        output_reports_bucket.delete()
+        input_transfer_bucket.objects.all().delete()
+        input_transfer_bucket.delete()
+        fake_s3.stop()
+        environ.clear()
+
+
+@freeze_time(a_datetime(year=2020, month=1, day=2))
+@pytest.mark.filterwarnings("ignore:Conversion of")
+def test_e2e_transfer_level_technical_failures_with_monthly_reporting_window_given_number_of_months(
+    datadir,
+):
+    fake_s3, s3_client = _setup()
+    fake_s3.start()
+
+    output_reports_bucket = _build_fake_s3_bucket(S3_OUTPUT_REPORTS_BUCKET, s3_client)
+    input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
+
+    expected_transfer_level_technical_failures_output_key = (
+        "/2019-12-01-supplier_pathway_outcome_counts.csv"
+    )
+    expected_transfer_level_technical_failures = _read_csv(
+        datadir
+        / "expected_outputs"
+        / "transfer_level_technical_failures_report"
+        / "monthly_transfer_level_technical_failures_report.csv"
+    )
+
+    s3_reports_output_path = "v2/1-months/2019/12/01"
+
+    try:
+        environ["NUMBER_OF_MONTHS"] = "1"
+        environ["CONVERSATION_CUTOFF_DAYS"] = DEFAULT_CONVERSATION_CUTOFF_DAYS
+        environ["REPORT_NAME"] = ReportName.TRANSFER_LEVEL_TECHNICAL_FAILURES.value
+
+        _upload_template_transfer_data(
+            datadir,
+            S3_INPUT_TRANSFER_DATA_BUCKET,
+            year=2019,
+            data_month=12,
+            time_range=range(1, 32),
+        )
+
+        for day in [1, 3, 5, 19, 20, 23, 24, 25, 29, 30, 31]:
+            _override_transfer_data(
+                datadir, S3_INPUT_TRANSFER_DATA_BUCKET, year=2019, data_month=12, data_day=day
+            )
+
+        main()
+
+        transfer_level_technical_failures_report_s3_path = (
+            f"{s3_reports_output_path}{expected_transfer_level_technical_failures_output_key}"
+        )
+        actual_transfer_level_technical_failures_report = _read_s3_csv(
+            output_reports_bucket, transfer_level_technical_failures_report_s3_path
+        )
+        assert (
+            actual_transfer_level_technical_failures_report
+            == expected_transfer_level_technical_failures
+        )
+
+        expected_metadata = {
+            "reports-generator-version": BUILD_TAG,
+            "config-start-datetime": "None",
+            "config-end-datetime": "None",
+            "config-number-of-months": "1",
+            "config-number-of-days": "None",
+            "config-cutoff-days": DEFAULT_CONVERSATION_CUTOFF_DAYS,
+            "reporting-window-start-datetime": "2019-12-01T00:00:00+00:00",
+            "reporting-window-end-datetime": "2020-01-01T00:00:00+00:00",
+            "report-name": ReportName.TRANSFER_LEVEL_TECHNICAL_FAILURES.value,
+        }
+
+        actual_transfer_level_technical_failures_report_s3_metadata = _read_s3_metadata(
+            output_reports_bucket, transfer_level_technical_failures_report_s3_path
+        )
+
+        assert actual_transfer_level_technical_failures_report_s3_metadata == expected_metadata
+    finally:
+        output_reports_bucket.objects.all().delete()
+        output_reports_bucket.delete()
+        input_transfer_bucket.objects.all().delete()
+        input_transfer_bucket.delete()
+        fake_s3.stop()
+        environ.clear()
+
+
+@freeze_time(a_datetime(year=2020, month=1, day=2))
+@pytest.mark.filterwarnings("ignore:Conversion of")
+def test_e2e_transfer_level_technical_failures_with_daily_reporting_window_given_number_of_days(
+    datadir,
+):
+    fake_s3, s3_client = _setup()
+    fake_s3.start()
+
+    output_reports_bucket = _build_fake_s3_bucket(S3_OUTPUT_REPORTS_BUCKET, s3_client)
+    input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
+
+    expected_transfer_level_technical_failures_output_key = (
+        "/2019-12-31-supplier_pathway_outcome_counts.csv"
+    )
+    expected_transfer_level_technical_failures = _read_csv(
+        datadir
+        / "expected_outputs"
+        / "transfer_level_technical_failures_report"
+        / "daily_transfer_level_technical_failures_report.csv"
+    )
+
+    s3_reports_output_path = "v2/1-days/2019/12/31"
+
+    try:
+        number_of_days = "1"
+        environ["NUMBER_OF_DAYS"] = number_of_days
+        cutoff_days = "1"
+        environ["CONVERSATION_CUTOFF_DAYS"] = cutoff_days
+        environ["REPORT_NAME"] = ReportName.TRANSFER_LEVEL_TECHNICAL_FAILURES.value
+
+        for day in [31]:
+            _override_transfer_data(
+                datadir,
+                S3_INPUT_TRANSFER_DATA_BUCKET,
+                year=2019,
+                data_month=12,
+                data_day=day,
+                cutoff_days=cutoff_days,
+            )
+
+        main()
+
+        transfer_level_technical_failures_report_s3_path = (
+            f"{s3_reports_output_path}{expected_transfer_level_technical_failures_output_key}"
+        )
+        actual_transfer_level_technical_failures_report = _read_s3_csv(
+            output_reports_bucket, transfer_level_technical_failures_report_s3_path
+        )
+        assert (
+            actual_transfer_level_technical_failures_report
+            == expected_transfer_level_technical_failures
+        )
+
+        expected_metadata = {
+            "reports-generator-version": BUILD_TAG,
+            "config-start-datetime": "None",
+            "config-end-datetime": "None",
+            "config-number-of-months": "None",
+            "config-number-of-days": number_of_days,
+            "config-cutoff-days": cutoff_days,
+            "reporting-window-start-datetime": "2019-12-31T00:00:00+00:00",
+            "reporting-window-end-datetime": "2020-01-01T00:00:00+00:00",
+            "report-name": ReportName.TRANSFER_LEVEL_TECHNICAL_FAILURES.value,
+        }
+
+        actual_transfer_level_technical_failures_report_s3_metadata = _read_s3_metadata(
+            output_reports_bucket, transfer_level_technical_failures_report_s3_path
+        )
+
+        assert actual_transfer_level_technical_failures_report_s3_metadata == expected_metadata
     finally:
         output_reports_bucket.objects.all().delete()
         output_reports_bucket.delete()

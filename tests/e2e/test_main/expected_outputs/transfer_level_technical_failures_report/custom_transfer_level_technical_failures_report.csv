@@ -1,0 +1,3 @@
+sending practice ASID, sending supplier, requesting practice ASID, requesting supplier, conversation ID, date requested, status, failure reason, unique final errors, unique sender errors, unique intermediate errors
+"987654321242", "SupplierC", "123456789123", "SupplierB", "failed--A12345", "2019-12-19 18:02:29.985000", "Technical failure", "Final error", "26 - Filed as attachment", "", ""
+"987654321241", "SupplierB", "123456789123", "SupplierA", "failed2--A12345", "2019-12-20 18:02:29.985000", "Technical failure", "Final error", "19 - Unauthorised req", "", ""
