@@ -130,3 +130,56 @@ def test_returns_table_with_unique_intermediate_error_codes(error_codes, expecte
     expected_unique_intermediate_errors = pl.Series("unique intermediate errors", [expected])
 
     assert actual["unique intermediate errors"] == expected_unique_intermediate_errors
+
+
+@pytest.mark.filterwarnings("ignore:Conversion of")
+def test_filter_only_maintains_technical_and_unclassified_failures():
+    conversation_1 = a_string(16)
+    filtered_status_1 = TransferStatus.TECHNICAL_FAILURE.value
+    conversation_2 = a_string(16)
+    filtered_status_2 = TransferStatus.TECHNICAL_FAILURE.value
+    conversation_3 = a_string(16)
+    filtered_status_3 = TransferStatus.UNCLASSIFIED_FAILURE.value
+
+    table = (
+        PaTableBuilder()
+        .with_row(
+            conversation_id=conversation_1,
+            status=filtered_status_1,
+        )
+        .with_row(
+            conversation_id=a_string(16),
+            status=TransferStatus.INTEGRATED_ON_TIME.value,
+        )
+        .with_row(
+            conversation_id=conversation_2,
+            status=filtered_status_2,
+        )
+        .with_row(
+            conversation_id=a_string(16),
+            status=TransferStatus.PROCESS_FAILURE.value,
+        )
+        .with_row(
+            conversation_id=conversation_3,
+            status=filtered_status_3,
+        )
+        .build()
+    )
+
+    report_generator = TransferLevelTechnicalFailuresReportsGenerator(table)
+    actual_table = report_generator.generate()
+    actual = actual_table.select(
+        [
+            "conversation ID",
+            "status",
+        ]
+    )
+
+    expected = pa.table(
+        {
+            "conversation ID": [conversation_1, conversation_2, conversation_3],
+            "status": [filtered_status_1, filtered_status_2, filtered_status_3],
+        },
+    )
+
+    assert actual == expected
