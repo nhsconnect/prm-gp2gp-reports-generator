@@ -5,6 +5,7 @@ from dateutil.tz import UTC, tzutc
 
 from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
 from prmreportsgenerator.io.reports_io import ReportsS3UriResolver
+from prmreportsgenerator.report_name import ReportName
 from tests.builders.common import a_string, an_integer
 
 
@@ -20,6 +21,7 @@ def test_returns_correct_transfer_data_uris_given_start_and_end_datetime_and_cut
     uri_resolver = ReportsS3UriResolver(
         reports_bucket=a_string(),
         transfer_data_bucket=transfer_data_bucket,
+        report_name=ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY,
     )
 
     actual = uri_resolver.input_transfer_data_uris(reporting_window, cutoff_days)
@@ -35,16 +37,17 @@ def test_returns_correct_transfer_data_uris_given_start_and_end_datetime_and_cut
 
 def test_returns_correct_supplier_pathway_outcome_counts_uri_given_date():
     reports_bucket = a_string()
+    report_name = ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY
     date = datetime(year=2022, month=3, day=5, tzinfo=UTC)
     uri_resolver = ReportsS3UriResolver(
-        reports_bucket=reports_bucket,
-        transfer_data_bucket=a_string(),
+        reports_bucket=reports_bucket, transfer_data_bucket=a_string(), report_name=report_name
     )
     supplement_s3_key = "4-days"
 
     actual = uri_resolver.output_table_uri(date, supplement_s3_key)
 
     expected_s3_key = f"{reports_bucket}/v2/{supplement_s3_key}/2022/03/05"
-    expected = f"s3://{expected_s3_key}/2022-03-05-supplier_pathway_outcome_counts.csv"
+    expected_report_name = report_name.value.lower()
+    expected = f"s3://{expected_s3_key}/2022-03-05-{expected_report_name}.csv"
 
     assert actual == expected

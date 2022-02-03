@@ -6,6 +6,7 @@ import pyarrow as pa
 
 from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
 from prmreportsgenerator.io.s3 import S3DataManager
+from prmreportsgenerator.report_name import ReportName
 from prmreportsgenerator.utils.add_leading_zero import add_leading_zero
 
 logger = logging.getLogger(__name__)
@@ -14,16 +15,13 @@ logger = logging.getLogger(__name__)
 class ReportsS3UriResolver:
     _TRANSFER_DATA_FILE_NAME = "transfers.parquet"
     _TRANSFER_DATA_VERSION = "v7"
-    _SUPPLIER_PATHWAY_OUTCOME_COUNTS_FILE_NAME = "supplier_pathway_outcome_counts.csv"
+    _EXTENSION = ".csv"
     _REPORTS_VERSION = "v2"
 
-    def __init__(
-        self,
-        transfer_data_bucket: str,
-        reports_bucket: str,
-    ):
+    def __init__(self, transfer_data_bucket: str, reports_bucket: str, report_name: ReportName):
         self._transfer_data_bucket = transfer_data_bucket
         self._reports_bucket = reports_bucket
+        self._report_name = report_name.value
 
     @staticmethod
     def _s3_path(*fragments):
@@ -60,7 +58,7 @@ class ReportsS3UriResolver:
             f"{add_leading_zero(date.year)}",
             f"{add_leading_zero(date.month)}",
             f"{add_leading_zero(date.day)}",
-            self._filepath(date, self._SUPPLIER_PATHWAY_OUTCOME_COUNTS_FILE_NAME),
+            self._filepath(date, self._report_name.lower() + self._EXTENSION),
         )
 
 

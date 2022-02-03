@@ -184,13 +184,13 @@ def test_e2e_outcomes_per_supplier_pathway_with_custom_reporting_window_given_st
     input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
 
     expected_supplier_pathway_outcome_counts_output_key = (
-        "/2019-12-19-supplier_pathway_outcome_counts.csv"
+        "/2019-12-19-transfer_outcomes_per_supplier_pathway.csv"
     )
     expected_supplier_pathway_outcome_counts = _read_csv(
         datadir
         / "expected_outputs"
         / "transfer_outcomes_per_supplier_pathway_report"
-        / "custom_supplier_pathway_outcome_counts.csv"
+        / "custom_transfer_outcomes_per_supplier_pathway.csv"
     )
 
     s3_reports_output_path = "v2/custom/2019/12/19"
@@ -255,13 +255,13 @@ def test_e2e_outcomes_per_supplier_pathway_with_monthly_reporting_window_given_n
     input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
 
     expected_supplier_pathway_outcome_counts_output_key = (
-        "/2019-12-01-supplier_pathway_outcome_counts.csv"
+        "/2019-12-01-transfer_outcomes_per_supplier_pathway.csv"
     )
     expected_supplier_pathway_outcome_counts = _read_csv(
         datadir
         / "expected_outputs"
         / "transfer_outcomes_per_supplier_pathway_report"
-        / "monthly_supplier_pathway_outcome_counts.csv"
+        / "monthly_transfer_outcomes_per_supplier_pathway.csv"
     )
 
     s3_reports_output_path = "v2/1-months/2019/12/01"
@@ -332,13 +332,13 @@ def test_e2e_outcomes_per_supplier_pathway_with_daily_reporting_window_given_num
     input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
 
     expected_supplier_pathway_outcome_counts_output_key = (
-        "/2019-12-23-supplier_pathway_outcome_counts.csv"
+        "/2019-12-23-transfer_outcomes_per_supplier_pathway.csv"
     )
     expected_supplier_pathway_outcome_counts = _read_csv(
         datadir
         / "expected_outputs"
         / "transfer_outcomes_per_supplier_pathway_report"
-        / "daily_supplier_pathway_outcome_counts.csv"
+        / "daily_transfer_outcomes_per_supplier_pathway.csv"
     )
 
     s3_reports_output_path = "v2/2-days/2019/12/23"
@@ -407,13 +407,13 @@ def test_e2e_transfer_level_technical_failures_custom_reporting_window_given_sta
     input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
 
     expected_transfer_level_technical_failures_output_key = (
-        "/2019-12-19-supplier_pathway_outcome_counts.csv"
+        "/2019-12-19-transfer_level_technical_failures.csv"
     )
     expected_transfer_level_technical_failures = _read_csv(
         datadir
         / "expected_outputs"
         / "transfer_level_technical_failures_report"
-        / "custom_transfer_level_technical_failures_report.csv"
+        / "custom_transfer_level_technical_failures.csv"
     )
 
     s3_reports_output_path = "v2/custom/2019/12/19"
@@ -481,13 +481,13 @@ def test_e2e_transfer_level_technical_failures_with_monthly_reporting_window_giv
     input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
 
     expected_transfer_level_technical_failures_output_key = (
-        "/2019-12-01-supplier_pathway_outcome_counts.csv"
+        "/2019-12-01-transfer_level_technical_failures.csv"
     )
     expected_transfer_level_technical_failures = _read_csv(
         datadir
         / "expected_outputs"
         / "transfer_level_technical_failures_report"
-        / "monthly_transfer_level_technical_failures_report.csv"
+        / "monthly_transfer_level_technical_failures.csv"
     )
 
     s3_reports_output_path = "v2/1-months/2019/12/01"
@@ -561,13 +561,13 @@ def test_e2e_transfer_level_technical_failures_with_daily_reporting_window_given
     input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
 
     expected_transfer_level_technical_failures_output_key = (
-        "/2019-12-31-supplier_pathway_outcome_counts.csv"
+        "/2019-12-31-transfer_level_technical_failures.csv"
     )
     expected_transfer_level_technical_failures = _read_csv(
         datadir
         / "expected_outputs"
         / "transfer_level_technical_failures_report"
-        / "daily_transfer_level_technical_failures_report.csv"
+        / "daily_transfer_level_technical_failures.csv"
     )
 
     s3_reports_output_path = "v2/1-days/2019/12/31"
