@@ -19,6 +19,7 @@ class TransferLevelTechnicalFailuresReportsGenerator(ReportsGenerator):
                 col("requesting_practice_asid").alias("requesting practice ASID"),
                 col("requesting_supplier").alias("requesting supplier"),
                 col("conversation_id").alias("conversation ID"),
+                col("date_requested").alias("date requested"),
                 col("status"),
                 col("failure_reason").alias("failure reason"),
                 col("final_error_codes").apply(self._unique_errors).alias("unique final errors"),

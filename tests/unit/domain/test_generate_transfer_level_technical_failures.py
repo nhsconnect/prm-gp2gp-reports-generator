@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import polars as pl
 import pyarrow as pa
 import pytest
@@ -6,7 +8,7 @@ from prmreportsgenerator.domain.reports_generator.transfer_level_technical_failu
     TransferLevelTechnicalFailuresReportsGenerator,
 )
 from prmreportsgenerator.domain.transfer import TransferFailureReason, TransferStatus
-from tests.builders.common import a_datetime, a_string
+from tests.builders.common import a_string
 from tests.builders.pa_table import PaTableBuilder
 
 
@@ -17,7 +19,7 @@ def test_returns_table_with_transfer_level_technical_failure_columns():
     sending_supplier = a_string(6)
     sending_practice_asid = a_string(6)
     conversation_id = a_string(16)
-    date_requested = a_datetime(year=2021, hour=0, minute=0, second=0)
+    date_requested = datetime.now()
     status = TransferStatus.TECHNICAL_FAILURE.value
     failure_reason = TransferFailureReason.FINAL_ERROR.value
     table = (
@@ -44,6 +46,7 @@ def test_returns_table_with_transfer_level_technical_failure_columns():
             "requesting practice ASID",
             "requesting supplier",
             "conversation ID",
+            "date requested",
             "status",
             "failure reason",
         ]
@@ -56,6 +59,7 @@ def test_returns_table_with_transfer_level_technical_failure_columns():
             "requesting practice ASID": [requesting_practice_asid],
             "requesting supplier": [requesting_supplier],
             "conversation ID": [conversation_id],
+            "date requested": [date_requested],
             "status": [status],
             "failure reason": [failure_reason],
         }
@@ -126,9 +130,3 @@ def test_returns_table_with_unique_intermediate_error_codes(error_codes, expecte
     expected_unique_intermediate_errors = pl.Series("unique intermediate errors", [expected])
 
     assert actual["unique intermediate errors"] == expected_unique_intermediate_errors
-
-
-# 1. certain/other columns exists
-# 3. errors have description and de-duplicated
-# 2. filtered statuses
-# make sure all columns have been checked
