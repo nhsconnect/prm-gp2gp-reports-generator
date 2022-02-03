@@ -95,6 +95,7 @@ class ReportsPipeline:
             "reporting-window-end-datetime": convert_to_datetime_string(
                 self._reporting_window.end_datetime
             ),
+            "report-name": config.report_name.value,
         }
 
     def _generate_report(self, transfers: pa.Table) -> pa.Table:

@@ -223,6 +223,7 @@ def test_end_to_end_custom_reporting_window_given_start_and_end_datetime(datadir
             "config-cutoff-days": DEFAULT_CONVERSATION_CUTOFF_DAYS,
             "reporting-window-start-datetime": "2019-12-19T00:00:00+00:00",
             "reporting-window-end-datetime": "2019-12-21T00:00:00+00:00",
+            "report-name": ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY.value,
         }
 
         actual_supplier_pathway_outcome_counts_s3_metadata = _read_s3_metadata(
@@ -298,6 +299,7 @@ def test_end_to_end_monthly_reporting_window_given_number_of_months_1(datadir):
             "config-cutoff-days": DEFAULT_CONVERSATION_CUTOFF_DAYS,
             "reporting-window-start-datetime": "2019-12-01T00:00:00+00:00",
             "reporting-window-end-datetime": "2020-01-01T00:00:00+00:00",
+            "report-name": ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY.value,
         }
 
         actual_supplier_pathway_outcome_counts_s3_metadata = _read_s3_metadata(
@@ -371,6 +373,7 @@ def test_end_to_end_daily_reporting_window_given_number_of_days_2(datadir):
             "config-cutoff-days": cutoff_days,
             "reporting-window-start-datetime": "2019-12-23T00:00:00+00:00",
             "reporting-window-end-datetime": "2019-12-25T00:00:00+00:00",
+            "report-name": ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY.value,
         }
 
         actual_supplier_pathway_outcome_counts_s3_metadata = _read_s3_metadata(
