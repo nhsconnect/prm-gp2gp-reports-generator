@@ -91,7 +91,7 @@ def test_logs_writing_file_events():
                 ),
                 mock.call(
                     f"Successfully uploaded to: {object_uri}",
-                    extra={"event": "UPLOADED_CSV_TO_S3", "object_uri": object_uri},
+                    extra={"event": "SUCCESSFULLY_UPLOADED_CSV_TO_S3", "object_uri": object_uri},
                 ),
             ]
         )

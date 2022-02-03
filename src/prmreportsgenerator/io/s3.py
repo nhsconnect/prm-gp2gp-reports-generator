@@ -58,5 +58,5 @@ class S3DataManager:
         s3_object.put(Body=csv_buffer.getvalue(), ContentType="text/csv", Metadata=metadata)
         logger.info(
             "Successfully uploaded to: " + object_uri,
-            extra={"event": "UPLOADED_CSV_TO_S3", "object_uri": object_uri},
+            extra={"event": "SUCCESSFULLY_UPLOADED_CSV_TO_S3", "object_uri": object_uri},
         )
