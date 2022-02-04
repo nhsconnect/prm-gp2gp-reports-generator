@@ -77,9 +77,12 @@ class ReportsPipeline:
         return self._io.read_transfers_as_table(transfer_data_s3_uris)
 
     def _write_table(self, table: pa.Table):
-        date = self._reporting_window.start_datetime
+        start_date = self._reporting_window.start_datetime
+        end_date = self._reporting_window.end_datetime
         output_table_uri = self._uri_resolver.output_table_uri(
-            date=date, supplement_s3_key=self._reporting_window.config_string
+            start_date=start_date,
+            end_date=end_date,
+            supplement_s3_key=self._reporting_window.config_string,
         )
         self._io.write_table(
             table=table,

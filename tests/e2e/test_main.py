@@ -184,7 +184,7 @@ def test_e2e_outcomes_per_supplier_pathway_with_custom_reporting_window_given_st
     input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
 
     expected_supplier_pathway_outcome_counts_output_key = (
-        "/2019-12-19-transfer_outcomes_per_supplier_pathway.csv"
+        "/2019-12-19-to-2019-12-20-transfer_outcomes_per_supplier_pathway.csv"
     )
     expected_supplier_pathway_outcome_counts = _read_csv(
         datadir
@@ -255,7 +255,7 @@ def test_e2e_outcomes_per_supplier_pathway_with_monthly_reporting_window_given_n
     input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
 
     expected_supplier_pathway_outcome_counts_output_key = (
-        "/2019-12-01-transfer_outcomes_per_supplier_pathway.csv"
+        "/2019-12-01-to-2019-12-31-transfer_outcomes_per_supplier_pathway.csv"
     )
     expected_supplier_pathway_outcome_counts = _read_csv(
         datadir
@@ -332,7 +332,7 @@ def test_e2e_outcomes_per_supplier_pathway_with_daily_reporting_window_given_num
     input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
 
     expected_supplier_pathway_outcome_counts_output_key = (
-        "/2019-12-23-transfer_outcomes_per_supplier_pathway.csv"
+        "/2019-12-23-to-2019-12-24-transfer_outcomes_per_supplier_pathway.csv"
     )
     expected_supplier_pathway_outcome_counts = _read_csv(
         datadir
@@ -407,7 +407,7 @@ def test_e2e_transfer_level_technical_failures_custom_reporting_window_given_sta
     input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
 
     expected_transfer_level_technical_failures_output_key = (
-        "/2019-12-19-transfer_level_technical_failures.csv"
+        "/2019-12-19-to-2019-12-20-transfer_level_technical_failures.csv"
     )
     expected_transfer_level_technical_failures = _read_csv(
         datadir
@@ -481,7 +481,7 @@ def test_e2e_transfer_level_technical_failures_with_monthly_reporting_window_giv
     input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
 
     expected_transfer_level_technical_failures_output_key = (
-        "/2019-12-01-transfer_level_technical_failures.csv"
+        "/2019-12-01-to-2019-12-31-transfer_level_technical_failures.csv"
     )
     expected_transfer_level_technical_failures = _read_csv(
         datadir
@@ -561,7 +561,7 @@ def test_e2e_transfer_level_technical_failures_with_daily_reporting_window_given
     input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
 
     expected_transfer_level_technical_failures_output_key = (
-        "/2019-12-31-transfer_level_technical_failures.csv"
+        "/2019-12-31-to-2019-12-31-transfer_level_technical_failures.csv"
     )
     expected_transfer_level_technical_failures = _read_csv(
         datadir
