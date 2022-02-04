@@ -18,6 +18,8 @@ Required environment variables:
 
 - START_DATETIME (must be at midnight)
 - END_DATETIME (must be at midnight)
+- CONVERSATION_CUTOFF_DAYS
+- REPORT_NAME
 
 The reports-generator will then use these to generate a report based on transfers within the start to end datetimes
 specified. This is used for ad hoc reports to be generated. Ensure OUTPUT_REPORTS_BUCKET points to the notebook data
@@ -26,6 +28,8 @@ bucket.
 The S3 output path where the reports will be uploaded to, would include `/custom/` and uses the start datetime to
 generate the S3 key.
 
+Example: if we want to generate data from 2022-01-03 to 2022-01-08 inclusively, the start and end datetime should be "2022-01-03T00:00:00Z", "2022-01-09T00:00:00Z" respectively
+
 ---
 
 #### Number of days
@@ -33,6 +37,8 @@ generate the S3 key.
 Required environment variables:
 
 - NUMBER_OF_DAYS (an integer)
+- CONVERSATION_CUTOFF_DAYS
+- REPORT_NAME
 
 Then the reports-generator will calculate the start date as the today midnight minus the number of days for the
 conversation cut off and the number of days specified. It will generate a report from this start datetime for the
@@ -48,6 +54,8 @@ generate the S3 key.
 Required environment variables:
 
 - NUMBER_OF_MONTHS (an integer)
+- CONVERSATION_CUTOFF_DAYS
+- REPORT_NAME
 
 If NUMBER_OF_MONTHS=1 then it will generate a report from the 1st of the previous month midnight to the last day in the
 previous month at midnight. Or if number of months is more than 1, it will go back that many number of months. This is
