@@ -1,6 +1,6 @@
 import logging
-from datetime import datetime
-from typing import Dict, List
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional
 
 import pyarrow as pa
 
@@ -28,11 +28,21 @@ class ReportsS3UriResolver:
         return "s3://" + "/".join(fragments)
 
     @staticmethod
-    def _filepath(date: datetime, filename: str) -> str:
-        year = add_leading_zero(date.year)
-        month = add_leading_zero(date.month)
-        day = add_leading_zero(date.day)
-        return f"{year}-{month}-{day}-{filename}"
+    def _filepath(start_date: datetime, filename: str, end_date: Optional[datetime] = None) -> str:
+        start_year = add_leading_zero(start_date.year)
+        start_month = add_leading_zero(start_date.month)
+        start_day = add_leading_zero(start_date.day)
+
+        if end_date:
+            end_year = add_leading_zero(end_date.year)
+            end_month = add_leading_zero(end_date.month)
+            end_day = add_leading_zero(end_date.day)
+            return (
+                f"{start_year}-{start_month}-{start_day}-to-"
+                f"{end_year}-{end_month}-{end_day}-{filename}"
+            )
+
+        return f"{start_year}-{start_month}-{start_day}-{filename}"
 
     def input_transfer_data_uris(
         self, reporting_window: ReportingWindow, cutoff_days: int
@@ -42,23 +52,30 @@ class ReportsS3UriResolver:
                 self._transfer_data_bucket,
                 self._TRANSFER_DATA_VERSION,
                 f"cutoff-{cutoff_days}",
-                f"{add_leading_zero(date.year)}",
-                f"{add_leading_zero(date.month)}",
-                f"{add_leading_zero(date.day)}",
-                self._filepath(date, self._TRANSFER_DATA_FILE_NAME),
+                f"{add_leading_zero(start_date.year)}",
+                f"{add_leading_zero(start_date.month)}",
+                f"{add_leading_zero(start_date.day)}",
+                self._filepath(start_date=start_date, filename=self._TRANSFER_DATA_FILE_NAME),
             )
-            for date in reporting_window.get_dates()
+            for start_date in reporting_window.get_dates()
         ]
 
-    def output_table_uri(self, date: datetime, supplement_s3_key: str) -> str:
+    def output_table_uri(
+        self, start_date: datetime, end_date: datetime, supplement_s3_key: str
+    ) -> str:
+        filename = self._report_name.lower() + self._EXTENSION
+        actual_end_date = end_date - timedelta(
+            days=1
+        )  # data is at until midnight, so the actual data is forp[;- the previous day
+
         return self._s3_path(
             self._reports_bucket,
             self._REPORTS_VERSION,
             supplement_s3_key,
-            f"{add_leading_zero(date.year)}",
-            f"{add_leading_zero(date.month)}",
-            f"{add_leading_zero(date.day)}",
-            self._filepath(date, self._report_name.lower() + self._EXTENSION),
+            f"{add_leading_zero(start_date.year)}",
+            f"{add_leading_zero(start_date.month)}",
+            f"{add_leading_zero(start_date.day)}",
+            self._filepath(start_date=start_date, end_date=actual_end_date, filename=filename),
         )
 
 
