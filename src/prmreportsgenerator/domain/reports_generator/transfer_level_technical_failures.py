@@ -19,7 +19,8 @@ class TransferLevelTechnicalFailuresReportsGenerator(ReportsGenerator):
     def generate(self) -> pa.Table:
         transfers_frame = pl.from_arrow(self._transfers)
         processed_transfers = (
-            transfers_frame.select(  # type: ignore
+            transfers_frame.filter(self._filter_status_technical_and_unclassified_failures())
+            .select(  # type: ignore
                 [
                     col("sending_practice_asid").alias("sending practice ASID"),
                     col("sending_supplier").alias("sending supplier"),
@@ -40,7 +41,6 @@ class TransferLevelTechnicalFailuresReportsGenerator(ReportsGenerator):
                     .alias("unique intermediate errors"),
                 ]
             )
-            .filter(self._filter_status_technical_and_unclassified_failures())
             .to_dict()
         )
 
