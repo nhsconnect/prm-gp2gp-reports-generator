@@ -100,7 +100,7 @@ def _read_parquet_columns_json(path):
 
 def _get_s3_path(bucket_name, year, month, day, cutoff_days):
     s3_filename = f"{year}-{month}-{day}-transfers.parquet"
-    return f"{bucket_name}/v7/cutoff-{cutoff_days}/{year}/{month}/{day}/{s3_filename}"
+    return f"{bucket_name}/v8/cutoff-{cutoff_days}/{year}/{month}/{day}/{s3_filename}"
 
 
 def _read_s3_csv(bucket, key):
@@ -193,7 +193,7 @@ def test_e2e_outcomes_per_supplier_pathway_with_custom_reporting_window_given_st
         / "custom_transfer_outcomes_per_supplier_pathway.csv"
     )
 
-    s3_reports_output_path = "v2/custom/2019/12/19"
+    s3_reports_output_path = "v3/custom/2019/12/19"
 
     try:
         environ["START_DATETIME"] = "2019-12-19T00:00:00Z"
@@ -264,7 +264,7 @@ def test_e2e_outcomes_per_supplier_pathway_with_monthly_reporting_window_given_n
         / "monthly_transfer_outcomes_per_supplier_pathway.csv"
     )
 
-    s3_reports_output_path = "v2/1-months/2019/12/01"
+    s3_reports_output_path = "v3/1-months/2019/12/01"
 
     try:
         environ["NUMBER_OF_MONTHS"] = "1"
@@ -341,7 +341,7 @@ def test_e2e_outcomes_per_supplier_pathway_with_daily_reporting_window_given_num
         / "daily_transfer_outcomes_per_supplier_pathway.csv"
     )
 
-    s3_reports_output_path = "v2/2-days/2019/12/23"
+    s3_reports_output_path = "v3/2-days/2019/12/23"
 
     try:
         number_of_days = "2"
@@ -416,7 +416,7 @@ def test_e2e_transfer_level_technical_failures_custom_reporting_window_given_sta
         / "custom_transfer_level_technical_failures.csv"
     )
 
-    s3_reports_output_path = "v2/custom/2019/12/19"
+    s3_reports_output_path = "v3/custom/2019/12/19"
 
     try:
         environ["START_DATETIME"] = "2019-12-19T00:00:00Z"
@@ -490,7 +490,7 @@ def test_e2e_transfer_level_technical_failures_with_monthly_reporting_window_giv
         / "monthly_transfer_level_technical_failures.csv"
     )
 
-    s3_reports_output_path = "v2/1-months/2019/12/01"
+    s3_reports_output_path = "v3/1-months/2019/12/01"
 
     try:
         environ["NUMBER_OF_MONTHS"] = "1"
@@ -570,7 +570,7 @@ def test_e2e_transfer_level_technical_failures_with_daily_reporting_window_given
         / "daily_transfer_level_technical_failures.csv"
     )
 
-    s3_reports_output_path = "v2/1-days/2019/12/31"
+    s3_reports_output_path = "v3/1-days/2019/12/31"
 
     try:
         number_of_days = "1"

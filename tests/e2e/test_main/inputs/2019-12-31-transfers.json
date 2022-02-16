@@ -19,6 +19,14 @@
     "SupplierC",
     "SupplierC"
   ],
+  "requesting_practice_ods_code": [
+    "D12349",
+    "D12349"
+  ],
+  "requesting_practice_ccg_ods_code": [
+    "22V",
+    "22V"
+  ],
   "sending_practice_asid": [
     "987654321241",
     "987654321241"
@@ -26,6 +34,14 @@
   "sending_supplier": [
     "SupplierA",
     "SupplierB"
+  ],
+  "sending_practice_ods_code": [
+    null,
+    null
+  ],
+  "sending_practice_ccg_ods_code": [
+    null,
+    null
   ],
   "sla_duration": [
     3,

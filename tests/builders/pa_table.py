@@ -16,6 +16,10 @@ class PaTableBuilder:
         self._sending_practice_asid_list = []
         self._requesting_supplier_list = []
         self._sending_supplier_list = []
+        self._requesting_practice_ods_code_list = []
+        self._sending_practice_ods_code_list = []
+        self._requesting_practice_ccg_ods_code_list = []
+        self._sending_practice_ccg_ods_code_list = []
         self._sender_error_codes_list = []
         self._final_error_codes_list = []
         self._intermediate_error_codes_list = []
@@ -36,6 +40,18 @@ class PaTableBuilder:
             kwargs.get("requesting_supplier", requesting_supplier)
         )
         self._sending_supplier_list.append(kwargs.get("sending_supplier", sending_supplier))
+        self._requesting_practice_ods_code_list.append(
+            kwargs.get("requesting_practice_ods_code", a_string(6))
+        )
+        self._sending_practice_ods_code_list.append(
+            kwargs.get("sending_practice_ods_code", a_string(6))
+        )
+        self._requesting_practice_ccg_ods_code_list.append(
+            kwargs.get("requesting_practice_ccg_ods_code", a_string(3))
+        )
+        self._sending_practice_ccg_ods_code_list.append(
+            kwargs.get("sending_practice_ccg_ods_code", a_string(3))
+        )
         self._sender_error_codes_list.append(kwargs.get("sender_error_codes", []))
         self._final_error_codes_list.append(kwargs.get("final_error_codes", []))
         self._intermediate_error_codes_list.append(kwargs.get("intermediate_error_codes", []))
@@ -57,8 +73,12 @@ class PaTableBuilder:
                 "last_sender_message_timestamp": self._last_sender_message_timestamp_list,
                 "requesting_practice_asid": self._requesting_practice_asid_list,
                 "requesting_supplier": self._requesting_supplier_list,
+                "requesting_practice_ods_code": self._requesting_practice_ods_code_list,
+                "requesting_practice_ccg_ods_code": self._requesting_practice_ccg_ods_code_list,
                 "sending_practice_asid": self._sending_practice_asid_list,
                 "sending_supplier": self._sending_supplier_list,
+                "sending_practice_ods_code": self._sending_practice_ods_code_list,
+                "sending_practice_ccg_ods_code": self._sending_practice_ccg_ods_code_list,
                 "sla_duration": self._sla_duration_list,
                 "status": self._status_list,
                 "failure_reason": self._failure_reason_list,
@@ -78,8 +98,12 @@ class PaTableBuilder:
                 ("last_sender_message_timestamp", pa.timestamp("us")),
                 ("requesting_practice_asid", pa.string()),
                 ("requesting_supplier", pa.string()),
+                ("requesting_practice_ods_code", pa.string()),
+                ("requesting_practice_ccg_ods_code", pa.string()),
                 ("sending_practice_asid", pa.string()),
                 ("sending_supplier", pa.string()),
+                ("sending_practice_ods_code", pa.string()),
+                ("sending_practice_ccg_ods_code", pa.string()),
                 ("sla_duration", pa.uint64()),
                 ("status", pa.string()),
                 ("failure_reason", pa.string()),

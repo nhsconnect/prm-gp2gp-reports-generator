@@ -14,11 +14,23 @@
   "requesting_supplier": [
     ""
   ],
+  "requesting_practice_ods_code": [
+    "D12349"
+  ],
+  "requesting_practice_ccg_ods_code": [
+    "22V"
+  ],
   "sending_practice_asid": [
     "987654321241"
   ],
   "sending_supplier": [
     "SupplierB"
+  ],
+  "sending_practice_ods_code": [
+    "E22444"
+  ],
+  "sending_practice_ccg_ods_code": [
+    "15F"
   ],
   "sla_duration": [
     311906

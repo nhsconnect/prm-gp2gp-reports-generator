@@ -28,8 +28,8 @@ def test_returns_correct_transfer_data_uris_given_start_and_end_datetime_and_cut
 
     cutoff_key = f"cutoff-{cutoff_days}"
     expected = [  # doesn't append end date to file name
-        f"s3://{transfer_data_bucket}/v7/{cutoff_key}/2021/01/01/2021-01-01-transfers.parquet",
-        f"s3://{transfer_data_bucket}/v7/{cutoff_key}/2021/01/02/2021-01-02-transfers.parquet",
+        f"s3://{transfer_data_bucket}/v8/{cutoff_key}/2021/01/01/2021-01-01-transfers.parquet",
+        f"s3://{transfer_data_bucket}/v8/{cutoff_key}/2021/01/02/2021-01-02-transfers.parquet",
     ]
 
     assert actual == expected
@@ -49,7 +49,7 @@ def test_returns_uri_given_start_date_and_end_date():
         start_date=start_date, end_date=end_date, supplement_s3_key=supplement_s3_key
     )
 
-    expected_s3_key = f"{reports_bucket}/v2/{supplement_s3_key}/2022/03/05"
+    expected_s3_key = f"{reports_bucket}/v3/{supplement_s3_key}/2022/03/05"
     expected_report_name = report_name.value.lower()
     expected = f"s3://{expected_s3_key}/2022-03-05-to-2022-03-06-{expected_report_name}.csv"
 
