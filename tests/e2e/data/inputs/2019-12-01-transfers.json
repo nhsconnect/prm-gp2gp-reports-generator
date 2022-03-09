@@ -15,6 +15,10 @@
     "123456789123",
     "123456789123"
   ],
+  "requesting_practice_name": [
+    "Test GP Practice D",
+    "Test GP Practice D"
+  ],
   "requesting_supplier": [
     "",
     ""
@@ -27,9 +31,17 @@
     "10D",
     "10D"
   ],
+  "requesting_practice_ccg_name": [
+    "Test CCG 1",
+    "Test CCG 1"
+  ],
   "sending_practice_asid": [
     "987654321245",
     "987654321245"
+  ],
+  "sending_practice_name": [
+    "Test GP Practice BB",
+    "Test GP Practice BB"
   ],
   "sending_practice_ods_code": [
     "B22345",
@@ -38,6 +50,10 @@
   "sending_practice_ccg_ods_code": [
     "14A",
     "14A"
+  ],
+  "sending_practice_ccg_name": [
+    "Test CCG 2",
+    "Test CCG 2"
   ],
   "sending_supplier": [
     "",

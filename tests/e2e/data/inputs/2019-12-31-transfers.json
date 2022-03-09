@@ -15,6 +15,10 @@
     "987654321240",
     "987654321240"
   ],
+  "requesting_practice_name": [
+    "Test GP Practice A",
+    "Test GP Practice A"
+  ],
   "requesting_supplier": [
     "SupplierC",
     "SupplierC"
@@ -27,9 +31,17 @@
     "22V",
     "22V"
   ],
+  "requesting_practice_ccg_name": [
+    "Test CCG 4",
+    "Test CCG 4"
+  ],
   "sending_practice_asid": [
     "987654321241",
     "987654321241"
+  ],
+  "sending_practice_name": [
+    "Test GP Practice E",
+    "Test GP Practice E"
   ],
   "sending_supplier": [
     "SupplierA",
@@ -40,6 +52,10 @@
     null
   ],
   "sending_practice_ccg_ods_code": [
+    null,
+    null
+  ],
+  "sending_practice_ccg_name": [
     null,
     null
   ],

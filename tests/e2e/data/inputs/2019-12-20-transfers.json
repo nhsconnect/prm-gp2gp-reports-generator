@@ -11,6 +11,9 @@
   "requesting_practice_asid": [
     "123456789123"
   ],
+  "requesting_practice_name": [
+    "Test GP Practice D"
+  ],
   "requesting_supplier": [
     "SupplierA"
   ],
@@ -20,16 +23,25 @@
   "requesting_practice_ccg_ods_code": [
     "10D"
   ],
+  "requesting_practice_ccg_name": [
+    "Test CCG 1"
+  ],
   "sending_supplier": [
     "SupplierB"
   ],
   "sending_practice_asid": [
     "987654321241"
   ],
+  "sending_practice_name": [
+    "Test GP Practice E"
+  ],
   "sending_practice_ods_code": [
     null
   ],
   "sending_practice_ccg_ods_code": [
+    null
+  ],
+  "sending_practice_ccg_name": [
     null
   ],
   "sla_duration": [
