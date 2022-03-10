@@ -12,6 +12,9 @@ from prmreportsgenerator.domain.reporting_windows.monthly_reporting_window impor
     MonthlyReportingWindow,
 )
 from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
+from prmreportsgenerator.domain.reports_generator.ccg_level_integration_times import (
+    CCGLevelIntegrationTimesReportsGenerator,
+)
 from prmreportsgenerator.domain.reports_generator.transfer_level_technical_failures import (
     TransferLevelTechnicalFailuresReportsGenerator,
 )
@@ -110,6 +113,8 @@ class ReportsPipeline:
             return TransferOutcomesPerSupplierPathwayReportsGenerator(transfers).generate()
         if self._report_name == ReportName.TRANSFER_LEVEL_TECHNICAL_FAILURES:
             return TransferLevelTechnicalFailuresReportsGenerator(transfers).generate()
+        if self._report_name == ReportName.CCG_LEVEL_INTEGRATION_TIMES:
+            return CCGLevelIntegrationTimesReportsGenerator(transfers).generate()
 
     def run(self):
         transfers = self._read_transfer_table()
