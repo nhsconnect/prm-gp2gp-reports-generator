@@ -55,45 +55,37 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
         transfers_total = col("conversation_id").count()
         return transfer_dataframe.with_column(transfers_total.alias("Total transfers"))
 
-    # .with_columns(
-    #     [
-    #         col("requesting_practice_ccg_name").alias("CCG name"),
-    #         col("requesting_practice_ccg_ods_code").alias("CCG ODS"),
-    #         col("requesting_practice_name").alias("Requesting practice name"),
-    #         col("requesting_practice_ods_code").alias("Requesting practice ODS"),
-    #         col("Integrated within 3 days"),
-    #         col("Integrated within 3 days - %"),
-    #     ]
-    # )
-
     def _generate_ccg_level_integration_times(self, transfer_dataframe: DataFrame) -> DataFrame:
-        return (
-            transfer_dataframe.groupby(["requesting_practice_name"])
-            .agg(
-                [
-                    col("requesting_practice_name").first().alias("Requesting practice name"),
-                    col("requesting_practice_ccg_name").first().alias("CCG name"),
-                    col("requesting_practice_ccg_ods_code").first().alias("CCG ODS"),
-                    col("requesting_practice_ods_code").first().alias("Requesting practice ODS"),
-                    count("conversation_id").alias("GP2GP Transfers received"),
-                    apply(
-                        [col("sla_duration"), col("status")],
-                        lambda tuple: self._calculate_integrated_within_3_days(tuple[0], tuple[1]),
-                    ).alias("Integrated within 3 days"),
-                ]
-            )
-            .drop("requesting_practice_name")
-            .sort("Requesting practice name")
+        return transfer_dataframe.groupby(["requesting_practice_name"]).agg(
+            [
+                col("requesting_practice_ccg_name").first().keep_name(),
+                col("requesting_practice_ccg_ods_code").first().keep_name(),
+                col("requesting_practice_ods_code").first().keep_name(),
+                count("conversation_id").alias("GP2GP Transfers received"),
+                apply(
+                    [col("sla_duration"), col("status")],
+                    lambda tuple: self._calculate_integrated_within_3_days(tuple[0], tuple[1]),
+                ).alias("Integrated within 3 days"),
+            ]
         )
+
+    def _generate_output(self, transfer_dataframe: DataFrame) -> DataFrame:
+        return transfer_dataframe.select(
+            [
+                col("requesting_practice_name").alias("Requesting practice name"),
+                col("requesting_practice_ccg_name").alias("CCG name"),
+                col("requesting_practice_ccg_ods_code").alias("CCG ODS"),
+                col("requesting_practice_ods_code").alias("Requesting practice ODS"),
+                col("GP2GP Transfers received"),
+                col("Integrated within 3 days"),
+            ]
+        ).sort(["CCG name", "Requesting practice name"])
 
     def generate(self) -> pa.Table:
         transfers_frame = pl.from_arrow(self._transfers)
         processed_transfers = self._process(
             transfers_frame,
-            # self._calculate_transfers_received,
-            # self._assign_sla_band,
-            # self._calculate_integrated_within_3_days,
-            # self._calculate_integrated_within_3_days_percent,
             self._generate_ccg_level_integration_times,
+            self._generate_output,
         ).to_dict()
         return pa.table(processed_transfers)
