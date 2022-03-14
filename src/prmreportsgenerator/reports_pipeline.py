@@ -4,23 +4,20 @@ import boto3
 import pyarrow as pa
 
 from prmreportsgenerator.config import PipelineConfig
-from prmreportsgenerator.domain.reporting_windows.custom_reporting_window import (
-    CustomReportingWindow,
-)
-from prmreportsgenerator.domain.reporting_windows.daily_reporting_window import DailyReportingWindow
-from prmreportsgenerator.domain.reporting_windows.monthly_reporting_window import (
-    MonthlyReportingWindow,
-)
-from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
-from prmreportsgenerator.domain.reports_generator.ccg_level_integration_times import (
-    CCGLevelIntegrationTimesReportsGenerator,
-)
-from prmreportsgenerator.domain.reports_generator.transfer_level_technical_failures import (
-    TransferLevelTechnicalFailuresReportsGenerator,
-)
-from prmreportsgenerator.domain.reports_generator.transfer_outcomes_per_supplier_pathway import (
-    TransferOutcomesPerSupplierPathwayReportsGenerator,
-)
+from prmreportsgenerator.domain.reporting_windows.custom_reporting_window import \
+    CustomReportingWindow
+from prmreportsgenerator.domain.reporting_windows.daily_reporting_window import \
+    DailyReportingWindow
+from prmreportsgenerator.domain.reporting_windows.monthly_reporting_window import \
+    MonthlyReportingWindow
+from prmreportsgenerator.domain.reporting_windows.reporting_window import \
+    ReportingWindow
+from prmreportsgenerator.domain.reports_generator.ccg_level_integration_times import \
+    CCGLevelIntegrationTimesReportsGenerator
+from prmreportsgenerator.domain.reports_generator.transfer_level_technical_failures import \
+    TransferLevelTechnicalFailuresReportsGenerator
+from prmreportsgenerator.domain.reports_generator.transfer_outcomes_per_supplier_pathway import \
+    TransferOutcomesPerSupplierPathwayReportsGenerator
 from prmreportsgenerator.io.reports_io import ReportsIO, ReportsS3UriResolver
 from prmreportsgenerator.io.s3 import S3DataManager
 from prmreportsgenerator.report_name import ReportName

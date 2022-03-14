@@ -2,7 +2,8 @@ import polars as pl
 import pyarrow as pa
 from polars import col
 
-from prmreportsgenerator.domain.reports_generator.reports_generator import ReportsGenerator
+from prmreportsgenerator.domain.reports_generator.reports_generator import \
+    ReportsGenerator
 from prmreportsgenerator.domain.transfer import TransferStatus
 
 

@@ -4,9 +4,8 @@ import pytest
 from dateutil.tz import UTC
 from freezegun import freeze_time
 
-from prmreportsgenerator.domain.reporting_windows.monthly_reporting_window import (
-    MonthlyReportingWindow,
-)
+from prmreportsgenerator.domain.reporting_windows.monthly_reporting_window import \
+    MonthlyReportingWindow
 from tests.builders.common import a_datetime
 
 

@@ -1,6 +1,7 @@
 from datetime import datetime, time
 
-from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
+from prmreportsgenerator.domain.reporting_windows.reporting_window import \
+    ReportingWindow
 
 
 class CustomReportingWindow(ReportingWindow):

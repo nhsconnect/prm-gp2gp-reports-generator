@@ -3,11 +3,9 @@ from datetime import datetime
 import pytest
 from dateutil.tz import tzutc
 
-from prmreportsgenerator.config import (
-    InvalidEnvironmentVariableValue,
-    MissingEnvironmentVariable,
-    PipelineConfig,
-)
+from prmreportsgenerator.config import (InvalidEnvironmentVariableValue,
+                                        MissingEnvironmentVariable,
+                                        PipelineConfig)
 from prmreportsgenerator.report_name import ReportName
 from tests.builders.common import a_string
 

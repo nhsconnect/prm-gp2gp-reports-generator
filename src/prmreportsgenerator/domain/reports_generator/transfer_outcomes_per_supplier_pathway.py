@@ -4,7 +4,8 @@ import polars as pl
 import pyarrow as pa
 from polars import DataFrame, Expr, col, count, lit, when
 
-from prmreportsgenerator.domain.reports_generator.reports_generator import ReportsGenerator
+from prmreportsgenerator.domain.reports_generator.reports_generator import \
+    ReportsGenerator
 from prmreportsgenerator.domain.transfer import TransferStatus
 
 

@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
 
-from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
-from prmreportsgenerator.utils.date_helpers import calculate_today_midnight_datetime
+from prmreportsgenerator.domain.reporting_windows.reporting_window import \
+    ReportingWindow
+from prmreportsgenerator.utils.date_helpers import \
+    calculate_today_midnight_datetime
 
 
 class DailyReportingWindow(ReportingWindow):

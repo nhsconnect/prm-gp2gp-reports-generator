@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 from functools import reduce
 from typing import List, Optional
 
-from prmreportsgenerator.domain.reports_generator.error_code_mapping import error_code_mapping
+from prmreportsgenerator.domain.reports_generator.error_code_mapping import \
+    error_code_mapping
 
 
 class ReportsGenerator(ABC):

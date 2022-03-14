@@ -3,8 +3,10 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from dateutil.tz import UTC
 
-from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
-from prmreportsgenerator.utils.date_helpers import calculate_today_midnight_datetime
+from prmreportsgenerator.domain.reporting_windows.reporting_window import \
+    ReportingWindow
+from prmreportsgenerator.utils.date_helpers import \
+    calculate_today_midnight_datetime
 
 
 class MonthlyReportingWindow(ReportingWindow):

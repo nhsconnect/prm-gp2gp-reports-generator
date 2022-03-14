@@ -3,7 +3,8 @@ from unittest.mock import patch
 
 from dateutil.tz import UTC
 
-from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
+from prmreportsgenerator.domain.reporting_windows.reporting_window import \
+    ReportingWindow
 
 
 @patch.multiple(ReportingWindow, __abstractmethods__=set())

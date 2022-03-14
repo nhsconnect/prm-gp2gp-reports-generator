@@ -3,9 +3,8 @@ from datetime import datetime
 import pytest
 from dateutil.tz import UTC
 
-from prmreportsgenerator.domain.reporting_windows.custom_reporting_window import (
-    CustomReportingWindow,
-)
+from prmreportsgenerator.domain.reporting_windows.custom_reporting_window import \
+    CustomReportingWindow
 from tests.builders.common import a_datetime
 
 

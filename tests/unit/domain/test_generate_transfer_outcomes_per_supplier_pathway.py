@@ -2,10 +2,10 @@ import polars as pl
 import pyarrow as pa
 import pytest
 
-from prmreportsgenerator.domain.reports_generator.transfer_outcomes_per_supplier_pathway import (
-    TransferOutcomesPerSupplierPathwayReportsGenerator,
-)
-from prmreportsgenerator.domain.transfer import TransferFailureReason, TransferStatus
+from prmreportsgenerator.domain.reports_generator.transfer_outcomes_per_supplier_pathway import \
+    TransferOutcomesPerSupplierPathwayReportsGenerator
+from prmreportsgenerator.domain.transfer import (TransferFailureReason,
+                                                 TransferStatus)
 from tests.builders.common import a_string
 from tests.builders.pa_table import PaTableBuilder
 

@@ -6,19 +6,13 @@ from freezegun import freeze_time
 from prmreportsgenerator.main import main
 from prmreportsgenerator.report_name import ReportName
 from tests.builders.common import a_datetime
-from tests.e2e.e2e_setup import (
-    BUILD_TAG,
-    DEFAULT_CONVERSATION_CUTOFF_DAYS,
-    S3_INPUT_TRANSFER_DATA_BUCKET,
-    S3_OUTPUT_REPORTS_BUCKET,
-    _build_fake_s3_bucket,
-    _override_transfer_data,
-    _read_csv,
-    _read_s3_csv,
-    _read_s3_metadata,
-    _setup,
-    _upload_template_transfer_data,
-)
+from tests.e2e.e2e_setup import (BUILD_TAG, DEFAULT_CONVERSATION_CUTOFF_DAYS,
+                                 S3_INPUT_TRANSFER_DATA_BUCKET,
+                                 S3_OUTPUT_REPORTS_BUCKET,
+                                 _build_fake_s3_bucket,
+                                 _override_transfer_data, _read_csv,
+                                 _read_s3_csv, _read_s3_metadata, _setup,
+                                 _upload_template_transfer_data)
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")

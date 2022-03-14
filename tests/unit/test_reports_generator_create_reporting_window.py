@@ -4,13 +4,12 @@ import pytest
 from dateutil.tz import UTC
 from freezegun import freeze_time
 
-from prmreportsgenerator.domain.reporting_windows.custom_reporting_window import (
-    CustomReportingWindow,
-)
-from prmreportsgenerator.domain.reporting_windows.daily_reporting_window import DailyReportingWindow
-from prmreportsgenerator.domain.reporting_windows.monthly_reporting_window import (
-    MonthlyReportingWindow,
-)
+from prmreportsgenerator.domain.reporting_windows.custom_reporting_window import \
+    CustomReportingWindow
+from prmreportsgenerator.domain.reporting_windows.daily_reporting_window import \
+    DailyReportingWindow
+from prmreportsgenerator.domain.reporting_windows.monthly_reporting_window import \
+    MonthlyReportingWindow
 from prmreportsgenerator.reports_pipeline import ReportsPipeline
 from tests.builders.common import a_datetime
 from tests.builders.pipeline_config import create_pipeline_config

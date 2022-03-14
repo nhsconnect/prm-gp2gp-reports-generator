@@ -4,10 +4,10 @@ import polars as pl
 import pyarrow as pa
 import pytest
 
-from prmreportsgenerator.domain.reports_generator.transfer_level_technical_failures import (
-    TransferLevelTechnicalFailuresReportsGenerator,
-)
-from prmreportsgenerator.domain.transfer import TransferFailureReason, TransferStatus
+from prmreportsgenerator.domain.reports_generator.transfer_level_technical_failures import \
+    TransferLevelTechnicalFailuresReportsGenerator
+from prmreportsgenerator.domain.transfer import (TransferFailureReason,
+                                                 TransferStatus)
 from tests.builders.common import a_string
 from tests.builders.pa_table import PaTableBuilder
 

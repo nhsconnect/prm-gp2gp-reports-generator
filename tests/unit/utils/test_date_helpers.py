@@ -5,10 +5,8 @@ from dateutil.tz import UTC
 from freezegun import freeze_time
 
 from prmreportsgenerator.utils.date_helpers import (
-    calculate_today_midnight_datetime,
-    convert_date_range_to_dates,
-    convert_to_datetime_string,
-)
+    calculate_today_midnight_datetime, convert_date_range_to_dates,
+    convert_to_datetime_string)
 from tests.builders.common import a_datetime
 
 
