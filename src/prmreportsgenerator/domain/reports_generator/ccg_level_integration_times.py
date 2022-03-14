@@ -5,16 +5,18 @@ import pyarrow as pa
 from polars import DataFrame, col, count
 
 from prmreportsgenerator.domain.reports_generator.reports_generator import ReportsGenerator
-from prmreportsgenerator.domain.transfer import TransferStatus
+from prmreportsgenerator.domain.transfer import TransferFailureReason, TransferStatus
 
 THREE_DAYS_IN_SECONDS = 259200
 EIGHT_DAYS_IN_SECONDS = 691200
+FOURTEEN_DAYS_IN_SECONDS = 1209600
 
 
 class SlaDuration(Enum):
     WITHIN_3_DAYS = "WITHIN_3_DAYS"
     WITHIN_8_DAYS = "WITHIN_8_DAYS"
-    BEYOND_8_DAYS = "BEYOND_8_DAYS"
+    WITHIN_14_DAYS = "WITHIN_14_DAYS"
+    BEYOND_14_DAYS = "BEYOND_14_DAYS"
 
 
 def assign_to_sla_band(sla_duration) -> str:
@@ -23,8 +25,10 @@ def assign_to_sla_band(sla_duration) -> str:
         return SlaDuration.WITHIN_3_DAYS.value
     elif sla_duration_in_seconds <= EIGHT_DAYS_IN_SECONDS:
         return SlaDuration.WITHIN_8_DAYS.value
+    elif sla_duration_in_seconds <= FOURTEEN_DAYS_IN_SECONDS:
+        return SlaDuration.WITHIN_14_DAYS.value
     else:
-        return SlaDuration.BEYOND_8_DAYS.value
+        return SlaDuration.BEYOND_14_DAYS.value
 
 
 class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
@@ -53,6 +57,14 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
             integrated_within_8_days_bool.alias("Integrated within 8 days")
         )
 
+    def _calculate_integrated_late(self, transfer_dataframe: DataFrame) -> DataFrame:
+        within_14_days_sla_band_bool = col("sla_band") == SlaDuration.WITHIN_14_DAYS.value
+        integrated_late_reason_bool = (
+            col("failure_reason") == TransferFailureReason.INTEGRATED_LATE.value
+        )
+        integrated_late_bool = within_14_days_sla_band_bool & integrated_late_reason_bool
+        return transfer_dataframe.with_column(integrated_late_bool.alias("Integrated late"))
+
     def _generate_ccg_level_integration_times_totals(
         self, transfer_dataframe: DataFrame
     ) -> DataFrame:
@@ -63,6 +75,7 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
                 col("requesting_practice_ods_code").first().keep_name(),
                 col("Integrated within 3 days").sum().keep_name(),
                 col("Integrated within 8 days").sum().keep_name(),
+                col("Integrated late").sum().keep_name(),
                 count("conversation_id").alias("GP2GP Transfers received"),
             ]
         )
@@ -77,6 +90,9 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
                 ),
                 (col("Integrated within 8 days") / col("GP2GP Transfers received") * 100).alias(
                     "Integrated within 8 days - %"
+                ),
+                (col("Integrated late") / col("GP2GP Transfers received") * 100).alias(
+                    "Integrated late - %"
                 ),
             ]
         )
@@ -93,6 +109,8 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
                 col("Integrated within 3 days - %"),
                 col("Integrated within 8 days"),
                 col("Integrated within 8 days - %"),
+                col("Integrated late"),
+                col("Integrated late - %"),
             ]
         ).sort(["CCG name", "Requesting practice name"])
 
@@ -103,6 +121,7 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
             self._calculate_sla_band,
             self._calculate_integrated_within_3_days,
             self._calculate_integrated_within_8_days,
+            self._calculate_integrated_late,
             self._generate_ccg_level_integration_times_totals,
             self._generate_ccg_level_integration_times_percentages,
             self._generate_output,
