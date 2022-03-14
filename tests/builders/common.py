@@ -16,7 +16,7 @@ def an_integer(a=None, b=None):
 
 def a_datetime(**kwargs):
     return datetime(
-        year=kwargs.get("year", an_integer(1, 9999)),
+        year=kwargs.get("year", an_integer(2000, 2020)),
         month=kwargs.get("month", an_integer(1, 12)),
         day=kwargs.get("day", an_integer(1, 28)),
         hour=kwargs.get("hour", an_integer(0, 23)),
