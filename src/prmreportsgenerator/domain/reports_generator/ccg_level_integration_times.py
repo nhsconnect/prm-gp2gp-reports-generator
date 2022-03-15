@@ -49,7 +49,10 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
         integrated_on_time_bool = col("status") == TransferStatus.INTEGRATED_ON_TIME.value
         integrated_within_3_days_bool = within_3_days_sla_band_bool & integrated_on_time_bool
         return transfer_dataframe.with_column(
-            integrated_within_3_days_bool.alias("Integrated within 3 days")
+            when(integrated_within_3_days_bool)
+            .then(1)
+            .otherwise(0)
+            .alias("Integrated within 3 days")
         )
 
     def _calculate_integrated_within_8_days(self, transfer_dataframe: DataFrame) -> DataFrame:
@@ -57,7 +60,10 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
         integrated_on_time_bool = col("status") == TransferStatus.INTEGRATED_ON_TIME.value
         integrated_within_8_days_bool = within_8_days_sla_band_bool & integrated_on_time_bool
         return transfer_dataframe.with_column(
-            integrated_within_8_days_bool.alias("Integrated within 8 days")
+            when(integrated_within_8_days_bool)
+            .then(1)
+            .otherwise(0)
+            .alias("Integrated within 8 days")
         )
 
     def _calculate_integrated_late(self, transfer_dataframe: DataFrame) -> DataFrame:
@@ -66,6 +72,18 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
         )
         return transfer_dataframe.with_column(
             when(integrated_late_failure_reason_bool).then(1).otherwise(0).alias("Integrated late")
+        )
+
+    def _calculate_not_integrated_within_14_days(self, transfer_dataframe: DataFrame) -> DataFrame:
+        # transfers that are received but not integrated have a transferred not integrated reason
+        not_integrated_within_14_days = (
+            col("failure_reason") == TransferFailureReason.TRANSFERRED_NOT_INTEGRATED.value
+        )
+        return transfer_dataframe.with_column(
+            when(not_integrated_within_14_days)
+            .then(1)
+            .otherwise(0)
+            .alias("Not integrated within 14 days")
         )
 
     def _generate_ccg_level_integration_times_totals(
@@ -78,6 +96,7 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
                 col("requesting_practice_ods_code").first().keep_name(),
                 col("Integrated within 3 days").sum().keep_name(),
                 col("Integrated within 8 days").sum().keep_name(),
+                col("Not integrated within 14 days").sum().keep_name(),
                 col("Integrated late").sum().keep_name(),
                 count("conversation_id").alias("GP2GP Transfers received"),
             ]
@@ -97,6 +116,9 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
                 (col("Integrated late") / col("GP2GP Transfers received") * 100).alias(
                     "Integrated late - %"
                 ),
+                (
+                    col("Not integrated within 14 days") / col("GP2GP Transfers received") * 100
+                ).alias("Not integrated within 14 days - %"),
             ]
         )
 
@@ -114,6 +136,8 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
                 col("Integrated within 8 days - %"),
                 col("Integrated late"),
                 col("Integrated late - %"),
+                col("Not integrated within 14 days"),
+                col("Not integrated within 14 days - %"),
             ]
         ).sort(["CCG name", "Requesting practice name"])
 
@@ -126,6 +150,7 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
             self._calculate_integrated_within_3_days,
             self._calculate_integrated_within_8_days,
             self._calculate_integrated_late,
+            self._calculate_not_integrated_within_14_days,
             self._generate_ccg_level_integration_times_totals,
             self._generate_ccg_level_integration_times_percentages,
             self._generate_output,

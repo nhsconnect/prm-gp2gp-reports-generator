@@ -66,6 +66,15 @@ def test_returns_table_with_ccg_level_integration_times_columns():
             failure_reason=TransferFailureReason.INTEGRATED_LATE.value,
             sla_duration=timedelta(days=10).total_seconds(),
         )
+        .with_row(
+            requesting_practice_name=requesting_practice_name2,
+            requesting_practice_ods_code=requesting_practice_ods_code2,
+            requesting_practice_ccg_ods_code=requesting_practice_ccg_ods_code,
+            requesting_practice_ccg_name=requesting_practice_ccg_name,
+            status=TransferStatus.PROCESS_FAILURE.value,
+            failure_reason=TransferFailureReason.TRANSFERRED_NOT_INTEGRATED.value,
+            sla_duration=None,
+        )
         .build()
     )
 
@@ -84,13 +93,13 @@ def test_returns_table_with_ccg_level_integration_times_columns():
             "Integrated within 8 days - %",
             "Integrated late",
             "Integrated late - %",
+            "Not integrated within 14 days",
+            "Not integrated within 14 days - %",
         ]
     )
 
     # "Not integrated within 8 days (integrated late + not integrated)",
     # "Not integrated within 8 days (integrated late + not integrated) - %",
-    # "Not integrated within 14 days",
-    # "Not integrated within 14 days - %"
 
     expected = pa.table(
         {
@@ -110,18 +119,18 @@ def test_returns_table_with_ccg_level_integration_times_columns():
                 requesting_practice_ods_code,
                 requesting_practice_ods_code2,
             ],
-            "GP2GP Transfers received": [1, 2],
+            "GP2GP Transfers received": [1, 3],
             "Integrated within 3 days": [1, 0],
             "Integrated within 3 days - %": [100.00, 0.00],
             "Integrated within 8 days": [0, 1],
-            "Integrated within 8 days - %": [0.00, 50.00],
+            "Integrated within 8 days - %": [0.00, 33.33333333333333],
             "Integrated late": [0, 1],
-            "Integrated late - %": [0.00, 50.00],
+            "Integrated late - %": [0.00, 33.33333333333333],
+            "Not integrated within 14 days": [0, 1],
+            "Not integrated within 14 days - %": [0, 33.33333333333333],
         }
     )
     # "Not integrated within 8 days (integrated late + not integrated)": [None],
     # "Not integrated within 8 days (integrated late + not integrated) - %": [None],
-    # "Not integrated within 14 days": [None],
-    # "Not integrated within 14 days - %": [None]
 
     assert actual == expected
