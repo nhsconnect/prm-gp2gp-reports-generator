@@ -2,10 +2,10 @@ from enum import Enum
 
 import polars as pl
 import pyarrow as pa
-from polars import DataFrame, col, count
+from polars import DataFrame, col, count, when
 
 from prmreportsgenerator.domain.reports_generator.reports_generator import ReportsGenerator
-from prmreportsgenerator.domain.transfer import TransferStatus
+from prmreportsgenerator.domain.transfer import TransferFailureReason, TransferStatus
 
 THREE_DAYS_IN_SECONDS = 259200
 EIGHT_DAYS_IN_SECONDS = 691200
@@ -53,6 +53,14 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
             integrated_within_8_days_bool.alias("Integrated within 8 days")
         )
 
+    def _calculate_integrated_late(self, transfer_dataframe: DataFrame) -> DataFrame:
+        integrated_late_failure_reason_bool = (
+            col("failure_reason") == TransferFailureReason.INTEGRATED_LATE.value
+        )
+        return transfer_dataframe.with_column(
+            when(integrated_late_failure_reason_bool).then(1).otherwise(0).alias("Integrated late")
+        )
+
     def _generate_ccg_level_integration_times_totals(
         self, transfer_dataframe: DataFrame
     ) -> DataFrame:
@@ -63,6 +71,7 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
                 col("requesting_practice_ods_code").first().keep_name(),
                 col("Integrated within 3 days").sum().keep_name(),
                 col("Integrated within 8 days").sum().keep_name(),
+                col("Integrated late").sum().keep_name(),
                 count("conversation_id").alias("GP2GP Transfers received"),
             ]
         )
@@ -77,6 +86,9 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
                 ),
                 (col("Integrated within 8 days") / col("GP2GP Transfers received") * 100).alias(
                     "Integrated within 8 days - %"
+                ),
+                (col("Integrated late") / col("GP2GP Transfers received") * 100).alias(
+                    "Integrated late - %"
                 ),
             ]
         )
@@ -93,6 +105,8 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
                 col("Integrated within 3 days - %"),
                 col("Integrated within 8 days"),
                 col("Integrated within 8 days - %"),
+                col("Integrated late"),
+                col("Integrated late - %"),
             ]
         ).sort(["CCG name", "Requesting practice name"])
 
@@ -103,6 +117,7 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
             self._calculate_sla_band,
             self._calculate_integrated_within_3_days,
             self._calculate_integrated_within_8_days,
+            self._calculate_integrated_late,
             self._generate_ccg_level_integration_times_totals,
             self._generate_ccg_level_integration_times_percentages,
             self._generate_output,
