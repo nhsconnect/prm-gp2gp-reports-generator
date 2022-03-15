@@ -28,8 +28,8 @@ def test_returns_correct_transfer_data_uris_given_start_and_end_datetime_and_cut
 
     cutoff_key = f"cutoff-{cutoff_days}"
     expected = [  # doesn't append end date to file name
-        f"s3://{transfer_data_bucket}/v8/{cutoff_key}/2021/01/01/2021-01-01-transfers.parquet",
-        f"s3://{transfer_data_bucket}/v8/{cutoff_key}/2021/01/02/2021-01-02-transfers.parquet",
+        f"s3://{transfer_data_bucket}/v9/{cutoff_key}/2021/01/01/2021-01-01-transfers.parquet",
+        f"s3://{transfer_data_bucket}/v9/{cutoff_key}/2021/01/02/2021-01-02-transfers.parquet",
     ]
 
     assert actual == expected

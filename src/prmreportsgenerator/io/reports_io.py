@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class ReportsS3UriResolver:
     _TRANSFER_DATA_FILE_NAME = "transfers.parquet"
-    _TRANSFER_DATA_VERSION = "v8"
+    _TRANSFER_DATA_VERSION = "v9"
     _EXTENSION = ".csv"
     _REPORTS_VERSION = "v3"
 
