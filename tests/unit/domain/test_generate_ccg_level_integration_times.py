@@ -44,8 +44,8 @@ def test_returns_table_with_ccg_level_integration_times_columns():
             requesting_practice_ods_code=requesting_practice_ods_code2,
             requesting_practice_ccg_ods_code=requesting_practice_ccg_ods_code,
             requesting_practice_ccg_name=requesting_practice_ccg_name,
-            status=TransferStatus.TECHNICAL_FAILURE.value,
-            failure_reason=TransferFailureReason.FINAL_ERROR.value,
+            status=TransferStatus.UNCLASSIFIED_FAILURE.value,
+            failure_reason=TransferFailureReason.AMBIGUOUS_COPCS.value,
             sla_duration=timedelta(days=1).total_seconds(),
         )
         .with_row(
@@ -110,13 +110,13 @@ def test_returns_table_with_ccg_level_integration_times_columns():
                 requesting_practice_ods_code,
                 requesting_practice_ods_code2,
             ],
-            "GP2GP Transfers received": [2, 3],
+            "GP2GP Transfers received": [1, 2],
             "Integrated within 3 days": [1, 0],
-            "Integrated within 3 days - %": [50.00, 0.00],
+            "Integrated within 3 days - %": [100.00, 0.00],
             "Integrated within 8 days": [0, 1],
-            "Integrated within 8 days - %": [0.00, 33.33333333333333],
+            "Integrated within 8 days - %": [0.00, 50.00],
             "Integrated late": [0, 1],
-            "Integrated late - %": [0.00, 33.33333333333333],
+            "Integrated late - %": [0.00, 50.00],
         }
     )
     # "Not integrated within 8 days (integrated late + not integrated)": [None],

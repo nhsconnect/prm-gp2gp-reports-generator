@@ -1,2 +1,4 @@
 CCG name, CCG ODS, Requesting practice name, Requesting practice ODS, GP2GP Transfers received, Integrated within 3 days, Integrated within 3 days - %, Integrated within 8 days, Integrated within 8 days - %, Integrated late, Integrated late - %
-"Test CCG 1", "10D", "Test GP Practice D", "A12347", "2","","","","","0","0"
+"Test CCG 1", "10D", "Test GP Practice B", "A12347", "1", "0", "0", "0", "0", "0", "0"
+"Test CCG 1", "10D", "Test GP Practice D", "A12347", "6", "1", "16.666666666666664", "2", "33.33333333333333", "1", "16.666666666666664"
+"Test CCG 4", "22V", "Test GP Practice A", "D12349", "3", "2", "66.66666666666666", "1", "33.33333333333333", "0", "0"

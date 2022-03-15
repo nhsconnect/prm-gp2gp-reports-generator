@@ -32,6 +32,13 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
         super().__init__()
         self._transfers = transfers
 
+    def _filter_received_transfers(self, transfer_dataframe: DataFrame) -> DataFrame:
+        received_transfers = (col("status") == TransferStatus.INTEGRATED_ON_TIME.value) | (
+            col("status") == TransferStatus.PROCESS_FAILURE.value
+        )
+        # remove technical and unclassified failures
+        return transfer_dataframe.filter(received_transfers)
+
     def _calculate_sla_band(self, transfer_dataframe: DataFrame) -> DataFrame:
         return transfer_dataframe.with_column(
             col("sla_duration").apply(assign_to_sla_band).alias("sla_band")
@@ -114,6 +121,7 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
         transfers_frame = pl.from_arrow(self._transfers)
         processed_transfers = self._process(
             transfers_frame,
+            self._filter_received_transfers,
             self._calculate_sla_band,
             self._calculate_integrated_within_3_days,
             self._calculate_integrated_within_8_days,
