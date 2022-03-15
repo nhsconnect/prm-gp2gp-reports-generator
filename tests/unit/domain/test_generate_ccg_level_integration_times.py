@@ -91,15 +91,14 @@ def test_returns_table_with_ccg_level_integration_times_columns():
             "Integrated within 3 days - %",
             "Integrated within 8 days",
             "Integrated within 8 days - %",
+            "Not integrated within 8 days (integrated late + not integrated)",
+            "Not integrated within 8 days (integrated late + not integrated) - %",
             "Integrated late",
             "Integrated late - %",
             "Not integrated within 14 days",
             "Not integrated within 14 days - %",
         ]
     )
-
-    # "Not integrated within 8 days (integrated late + not integrated)",
-    # "Not integrated within 8 days (integrated late + not integrated) - %",
 
     expected = pa.table(
         {
@@ -124,13 +123,16 @@ def test_returns_table_with_ccg_level_integration_times_columns():
             "Integrated within 3 days - %": [100.00, 0.00],
             "Integrated within 8 days": [0, 1],
             "Integrated within 8 days - %": [0.00, 33.33333333333333],
+            "Not integrated within 8 days (integrated late + not integrated)": [0, 2],
+            "Not integrated within 8 days (integrated late + not integrated) - %": [
+                0.00,
+                66.66666666666666,
+            ],
             "Integrated late": [0, 1],
             "Integrated late - %": [0.00, 33.33333333333333],
             "Not integrated within 14 days": [0, 1],
             "Not integrated within 14 days - %": [0, 33.33333333333333],
         }
     )
-    # "Not integrated within 8 days (integrated late + not integrated)": [None],
-    # "Not integrated within 8 days (integrated late + not integrated) - %": [None],
 
     assert actual == expected
