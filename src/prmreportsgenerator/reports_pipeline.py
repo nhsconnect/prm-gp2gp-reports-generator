@@ -41,7 +41,6 @@ class ReportsPipeline:
         self._uri_resolver = ReportsS3UriResolver(
             transfer_data_bucket=config.input_transfer_data_bucket,
             reports_bucket=config.output_reports_bucket,
-            report_name=config.report_name,
         )
 
         self._date_range_info_json = self._construct_date_range_info_json(config)
@@ -86,6 +85,8 @@ class ReportsPipeline:
             start_date=start_date,
             end_date=end_date,
             supplement_s3_key=self._reporting_window.config_string,
+            cutoff_days=self._cutoff_days,
+            report_name=self._report_name,
         )
         self._io.write_table(
             table=table,

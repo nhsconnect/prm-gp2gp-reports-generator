@@ -15,13 +15,11 @@ logger = logging.getLogger(__name__)
 class ReportsS3UriResolver:
     _TRANSFER_DATA_FILE_NAME = "transfers.parquet"
     _TRANSFER_DATA_VERSION = "v9"
-    _EXTENSION = ".csv"
     _REPORTS_VERSION = "v3"
 
-    def __init__(self, transfer_data_bucket: str, reports_bucket: str, report_name: ReportName):
+    def __init__(self, transfer_data_bucket: str, reports_bucket: str):
         self._transfer_data_bucket = transfer_data_bucket
         self._reports_bucket = reports_bucket
-        self._report_name = report_name.value
 
     @staticmethod
     def _s3_path(*fragments):
@@ -60,14 +58,23 @@ class ReportsS3UriResolver:
             for start_date in reporting_window.get_dates()
         ]
 
-    def output_table_uri(
-        self, start_date: datetime, end_date: datetime, supplement_s3_key: str
-    ) -> str:
-        filename = self._report_name.lower() + self._EXTENSION
+    def _output_table_file_name(
+        self, start_date: datetime, end_date: datetime, cutoff_days: int, report_name: ReportName
+    ):
+        filename = f"{report_name.value.lower()}--{cutoff_days}-days-cutoff.csv"
         actual_end_date = end_date - timedelta(
             days=1
-        )  # data is at until midnight, so the actual data is forp[;- the previous day
+        )  # data is at until midnight, so the actual data is for the previous day
+        return self._filepath(start_date=start_date, end_date=actual_end_date, filename=filename)
 
+    def output_table_uri(
+        self,
+        start_date: datetime,
+        end_date: datetime,
+        supplement_s3_key: str,
+        cutoff_days: int,
+        report_name: ReportName,
+    ) -> str:
         return self._s3_path(
             self._reports_bucket,
             self._REPORTS_VERSION,
@@ -75,7 +82,7 @@ class ReportsS3UriResolver:
             f"{add_leading_zero(start_date.year)}",
             f"{add_leading_zero(start_date.month)}",
             f"{add_leading_zero(start_date.day)}",
-            self._filepath(start_date=start_date, end_date=actual_end_date, filename=filename),
+            self._output_table_file_name(start_date, end_date, cutoff_days, report_name),
         )
 
 

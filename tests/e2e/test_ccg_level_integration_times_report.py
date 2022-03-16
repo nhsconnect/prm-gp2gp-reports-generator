@@ -30,7 +30,7 @@ def test_e2e_with_custom_reporting_window_given_start_and_end_date(
     input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
 
     expected_supplier_outcome_counts_output_key = (
-        "/2019-12-01-to-2019-12-31-ccg_level_integration_times.csv"
+        "/2019-12-01-to-2019-12-31-ccg_level_integration_times--14-days-cutoff.csv"
     )
     expected_supplier_outcome_counts = _read_csv(
         shared_datadir

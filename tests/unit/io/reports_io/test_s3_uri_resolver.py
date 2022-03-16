@@ -21,7 +21,6 @@ def test_returns_correct_transfer_data_uris_given_start_and_end_datetime_and_cut
     uri_resolver = ReportsS3UriResolver(
         reports_bucket=a_string(),
         transfer_data_bucket=transfer_data_bucket,
-        report_name=ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY,
     )
 
     actual = uri_resolver.input_transfer_data_uris(reporting_window, cutoff_days)
@@ -35,22 +34,30 @@ def test_returns_correct_transfer_data_uris_given_start_and_end_datetime_and_cut
     assert actual == expected
 
 
-def test_returns_uri_given_start_date_and_end_date():
+def test_returns_output_uri_with_supplement_s3_key_and_filename_contains_cutoff_and_date_range():
     reports_bucket = a_string()
     report_name = ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY
     start_date = datetime(year=2022, month=3, day=5, tzinfo=UTC)
     end_date = datetime(year=2022, month=3, day=7, tzinfo=UTC)
     uri_resolver = ReportsS3UriResolver(
-        reports_bucket=reports_bucket, transfer_data_bucket=a_string(), report_name=report_name
+        reports_bucket=reports_bucket, transfer_data_bucket=a_string()
     )
     supplement_s3_key = "4-days"
+    cutoff_days = 0
 
     actual = uri_resolver.output_table_uri(
-        start_date=start_date, end_date=end_date, supplement_s3_key=supplement_s3_key
+        start_date=start_date,
+        end_date=end_date,
+        supplement_s3_key=supplement_s3_key,
+        cutoff_days=cutoff_days,
+        report_name=report_name,
     )
 
     expected_s3_key = f"{reports_bucket}/v3/{supplement_s3_key}/2022/03/05"
     expected_report_name = report_name.value.lower()
-    expected = f"s3://{expected_s3_key}/2022-03-05-to-2022-03-06-{expected_report_name}.csv"
+    expected_filename = (
+        f"2022-03-05-to-2022-03-06-{expected_report_name}--{cutoff_days}-days-cutoff.csv"
+    )
+    expected = f"s3://{expected_s3_key}/{expected_filename}"
 
     assert actual == expected
