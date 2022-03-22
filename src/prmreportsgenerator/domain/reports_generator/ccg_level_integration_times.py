@@ -106,11 +106,11 @@ class CCGLevelIntegrationTimesReportsGenerator(ReportsGenerator):
     def _generate_ccg_level_integration_times_totals(
         self, transfer_dataframe: DataFrame
     ) -> DataFrame:
-        return transfer_dataframe.groupby(["requesting_practice_name"]).agg(
+        return transfer_dataframe.groupby(["requesting_practice_ods_code"]).agg(
             [
                 col("requesting_practice_ccg_name").first().keep_name(),
                 col("requesting_practice_ccg_ods_code").first().keep_name(),
-                col("requesting_practice_ods_code").first().keep_name(),
+                col("requesting_practice_name").first().keep_name(),
                 col("Integrated within 3 days").sum().keep_name(),
                 col("Integrated within 8 days").sum().keep_name(),
                 col("Not integrated within 8 days (integrated late + not integrated)")
