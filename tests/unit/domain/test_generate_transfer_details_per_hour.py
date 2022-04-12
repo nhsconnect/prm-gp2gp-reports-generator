@@ -4,6 +4,7 @@ from dateutil.tz import UTC
 from src.prmreportsgenerator.domain.reports_generator.transfer_details_per_hour import (
     TransferDetailsPerHourReportsGenerator,
 )
+from src.prmreportsgenerator.domain.transfer import TransferStatus
 from tests.builders.common import a_datetime
 from tests.builders.pa_table import PaTableBuilder
 
@@ -13,10 +14,16 @@ def test_total_transfers_shown_per_hour():
     input_data = (
         PaTableBuilder()
         .with_row(
-            date_requested=a_datetime(year=2021, month=1, day=1, hour=12, minute=10).astimezone(UTC)
+            date_requested=a_datetime(year=2021, month=1, day=1, hour=12, minute=10).astimezone(
+                UTC
+            ),
+            status=TransferStatus.TECHNICAL_FAILURE.value,
         )
         .with_row(
-            date_requested=a_datetime(year=2021, month=1, day=1, hour=12, minute=20).astimezone(UTC)
+            date_requested=a_datetime(year=2021, month=1, day=1, hour=12, minute=20).astimezone(
+                UTC
+            ),
+            status=TransferStatus.TECHNICAL_FAILURE.value,
         )
         .with_row(
             date_requested=a_datetime(year=2021, month=1, day=2, hour=15, minute=10).astimezone(UTC)
@@ -31,6 +38,7 @@ def test_total_transfers_shown_per_hour():
         {
             "Date/Time": ["21/01/01 12:00", "21/01/01 14:00", "21/01/02 15:00"],
             "Total number of transfers": [2, 1, 1],
+            "Total technical failures": [2, 0, 0],
         }
     )
 

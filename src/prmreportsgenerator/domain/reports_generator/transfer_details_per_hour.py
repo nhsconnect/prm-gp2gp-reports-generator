@@ -3,6 +3,7 @@ import pyarrow as pa
 from polars import DataFrame, col, count
 
 from src.prmreportsgenerator.domain.reports_generator.reports_generator import ReportsGenerator
+from src.prmreportsgenerator.domain.transfer import TransferStatus
 
 
 class TransferDetailsPerHourReportsGenerator(ReportsGenerator):
@@ -15,10 +16,20 @@ class TransferDetailsPerHourReportsGenerator(ReportsGenerator):
 
         return transfer_dataframe.with_column(date_requested_by_hour.alias("Date/Time"))
 
+    def _create_technical_failure_column(self, transfer_dataframe: DataFrame) -> DataFrame:
+        is_technical_failure = col("status") == TransferStatus.TECHNICAL_FAILURE.value
+
+        return transfer_dataframe.with_column(is_technical_failure.alias("is_technical_failure"))
+
     def _group_by_date_requested_hourly(self, transfer_dataframe: DataFrame) -> DataFrame:
         return (
             transfer_dataframe.groupby(["Date/Time"])
-            .agg([count("conversation_id").alias("Total number of transfers")])
+            .agg(
+                [
+                    count("conversation_id").alias("Total number of transfers"),
+                    col("is_technical_failure").sum().alias("Total technical failures"),
+                ]
+            )
             .sort("Date/Time")
         )
 
@@ -27,6 +38,7 @@ class TransferDetailsPerHourReportsGenerator(ReportsGenerator):
         processed_transfers = self._process(
             transfers_frame,
             self._create_hour_column,
+            self._create_technical_failure_column,
             self._group_by_date_requested_hourly,
         ).to_dict()
         return pa.table(processed_transfers)
