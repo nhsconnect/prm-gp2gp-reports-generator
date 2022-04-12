@@ -41,7 +41,7 @@ do
       pipenv install -d
       ;;
     validate)
-      ./tasks check-format typecheck lint test
+      ./tasks format check-format typecheck lint test
       ;;
     dojo-validate)
       dojo "./tasks devenv validate"
