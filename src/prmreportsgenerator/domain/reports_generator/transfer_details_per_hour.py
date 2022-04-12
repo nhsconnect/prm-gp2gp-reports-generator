@@ -21,6 +21,13 @@ class TransferDetailsPerHourReportsGenerator(ReportsGenerator):
 
         return transfer_dataframe.with_column(is_technical_failure.alias("is_technical_failure"))
 
+    def _create_unclassified_failure_column(self, transfer_dataframe: DataFrame) -> DataFrame:
+        is_unclassified_failure = col("status") == TransferStatus.UNCLASSIFIED_FAILURE.value
+
+        return transfer_dataframe.with_column(
+            is_unclassified_failure.alias("is_unclassified_failure")
+        )
+
     def _group_by_date_requested_hourly(self, transfer_dataframe: DataFrame) -> DataFrame:
         return (
             transfer_dataframe.groupby(["Date/Time"])
@@ -28,6 +35,7 @@ class TransferDetailsPerHourReportsGenerator(ReportsGenerator):
                 [
                     count("conversation_id").alias("Total number of transfers"),
                     col("is_technical_failure").sum().alias("Total technical failures"),
+                    col("is_unclassified_failure").sum().alias("Total unclassified failures"),
                 ]
             )
             .sort("Date/Time")
@@ -39,6 +47,7 @@ class TransferDetailsPerHourReportsGenerator(ReportsGenerator):
             transfers_frame,
             self._create_hour_column,
             self._create_technical_failure_column,
+            self._create_unclassified_failure_column,
             self._group_by_date_requested_hourly,
         ).to_dict()
         return pa.table(processed_transfers)
