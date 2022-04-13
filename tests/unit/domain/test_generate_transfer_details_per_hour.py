@@ -35,22 +35,26 @@ def test_total_transfers_shown_per_hour():
                 UTC
             ),
             status=TransferStatus.UNCLASSIFIED_FAILURE.value,
-        ).with_row(
+        )
+        .with_row(
             date_requested=a_datetime(year=2021, month=1, day=1, hour=14, minute=10).astimezone(
                 UTC
             ),
             status=TransferStatus.PROCESS_FAILURE.value,
-        ).with_row(
+        )
+        .with_row(
             date_requested=a_datetime(year=2021, month=1, day=2, hour=15, minute=45).astimezone(
                 UTC
             ),
             status=TransferStatus.UNCLASSIFIED_FAILURE.value,
-        ).with_row(
+        )
+        .with_row(
             date_requested=a_datetime(year=2021, month=1, day=2, hour=14, minute=30).astimezone(
                 UTC
             ),
             status=TransferStatus.TECHNICAL_FAILURE.value,
-        ).with_row(
+        )
+        .with_row(
             date_requested=a_datetime(year=2021, month=1, day=2, hour=14, minute=30).astimezone(
                 UTC
             ),

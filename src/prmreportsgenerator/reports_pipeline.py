@@ -25,6 +25,9 @@ from prmreportsgenerator.io.reports_io import ReportsIO, ReportsS3UriResolver
 from prmreportsgenerator.io.s3 import S3DataManager
 from prmreportsgenerator.report_name import ReportName
 from prmreportsgenerator.utils.date_helpers import convert_to_datetime_string
+from src.prmreportsgenerator.domain.reports_generator.transfer_details_per_hour import (
+    TransferDetailsPerHourReportsGenerator,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -116,6 +119,8 @@ class ReportsPipeline:
             return TransferLevelTechnicalFailuresReportsGenerator(transfers).generate()
         if self._report_name == ReportName.CCG_LEVEL_INTEGRATION_TIMES:
             return CCGLevelIntegrationTimesReportsGenerator(transfers).generate()
+        if self._report_name == ReportName.TRANSFER_DETAILS_BY_HOUR:
+            return TransferDetailsPerHourReportsGenerator(transfers).generate()
 
     def run(self):
         transfers = self._read_transfer_table()
