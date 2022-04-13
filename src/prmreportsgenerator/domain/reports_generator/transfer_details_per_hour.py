@@ -2,8 +2,8 @@ import polars as pl
 import pyarrow as pa
 from polars import DataFrame, col, count
 
-from src.prmreportsgenerator.domain.reports_generator.reports_generator import ReportsGenerator
-from src.prmreportsgenerator.domain.transfer import TransferStatus
+from prmreportsgenerator.domain.reports_generator.reports_generator import ReportsGenerator
+from prmreportsgenerator.domain.transfer import TransferStatus
 
 
 class TransferDetailsPerHourReportsGenerator(ReportsGenerator):

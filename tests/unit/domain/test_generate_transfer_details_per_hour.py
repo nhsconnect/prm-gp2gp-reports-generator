@@ -1,10 +1,10 @@
 import pyarrow as pa
 from dateutil.tz import UTC
 
-from src.prmreportsgenerator.domain.reports_generator.transfer_details_per_hour import (
+from prmreportsgenerator.domain.reports_generator.transfer_details_per_hour import (
     TransferDetailsPerHourReportsGenerator,
 )
-from src.prmreportsgenerator.domain.transfer import TransferStatus
+from prmreportsgenerator.domain.transfer import TransferStatus
 from tests.builders.common import a_datetime
 from tests.builders.pa_table import PaTableBuilder
 

@@ -15,6 +15,9 @@ from prmreportsgenerator.domain.reporting_windows.reporting_window import Report
 from prmreportsgenerator.domain.reports_generator.ccg_level_integration_times import (
     CCGLevelIntegrationTimesReportsGenerator,
 )
+from prmreportsgenerator.domain.reports_generator.transfer_details_per_hour import (
+    TransferDetailsPerHourReportsGenerator,
+)
 from prmreportsgenerator.domain.reports_generator.transfer_level_technical_failures import (
     TransferLevelTechnicalFailuresReportsGenerator,
 )
@@ -25,9 +28,6 @@ from prmreportsgenerator.io.reports_io import ReportsIO, ReportsS3UriResolver
 from prmreportsgenerator.io.s3 import S3DataManager
 from prmreportsgenerator.report_name import ReportName
 from prmreportsgenerator.utils.date_helpers import convert_to_datetime_string
-from src.prmreportsgenerator.domain.reports_generator.transfer_details_per_hour import (
-    TransferDetailsPerHourReportsGenerator,
-)
 
 logger = logging.getLogger(__name__)
 
