@@ -127,7 +127,7 @@ class ReportsPipeline:
                 transfers
             ).generate(),
         }
-        return reports[self._report_name]
+        return reports.get(self._report_name)
 
     def run(self):
         transfers = self._read_transfer_table()
