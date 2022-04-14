@@ -1,4 +1,5 @@
 import logging
+import sys
 from os import environ
 
 from prmreportsgenerator.config import PipelineConfig
@@ -17,9 +18,14 @@ def _setup_logger():
 
 
 def main():
-    _setup_logger()
-    config = PipelineConfig.from_environment_variables(environ)
-    ReportsPipeline(config).run()
+    config = {}
+    try:
+        _setup_logger()
+        config = PipelineConfig.from_environment_variables(environ)
+        ReportsPipeline(config).run()
+    except Exception as ex:
+        logger.error(str(ex), extra={"event": "FAILED_TO_RUN_MAIN", "config": config.__str__()})
+        sys.exit("Failed to run main, exiting...")
 
 
 if __name__ == "__main__":
