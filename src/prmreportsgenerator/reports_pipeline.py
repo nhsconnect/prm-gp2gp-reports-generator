@@ -113,14 +113,21 @@ class ReportsPipeline:
         }
 
     def _generate_report(self, transfers: pa.Table) -> pa.Table:
-        if self._report_name == ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY:
-            return TransferOutcomesPerSupplierPathwayReportsGenerator(transfers).generate()
-        if self._report_name == ReportName.TRANSFER_LEVEL_TECHNICAL_FAILURES:
-            return TransferLevelTechnicalFailuresReportsGenerator(transfers).generate()
-        if self._report_name == ReportName.CCG_LEVEL_INTEGRATION_TIMES:
-            return CCGLevelIntegrationTimesReportsGenerator(transfers).generate()
-        if self._report_name == ReportName.TRANSFER_DETAILS_BY_HOUR:
-            return TransferDetailsPerHourReportsGenerator(transfers).generate()
+        reports = {
+            ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY: TransferOutcomesPerSupplierPathwayReportsGenerator(
+                transfers
+            ).generate(),
+            ReportName.TRANSFER_LEVEL_TECHNICAL_FAILURES: TransferLevelTechnicalFailuresReportsGenerator(
+                transfers
+            ).generate(),
+            ReportName.CCG_LEVEL_INTEGRATION_TIMES: CCGLevelIntegrationTimesReportsGenerator(
+                transfers
+            ).generate(),
+            ReportName.TRANSFER_DETAILS_BY_HOUR: TransferDetailsPerHourReportsGenerator(
+                transfers
+            ).generate(),
+        }
+        return reports[self._report_name]
 
     def run(self):
         transfers = self._read_transfer_table()
