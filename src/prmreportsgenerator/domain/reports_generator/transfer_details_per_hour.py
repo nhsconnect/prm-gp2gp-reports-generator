@@ -12,7 +12,7 @@ class TransferDetailsPerHourReportsGenerator(ReportsGenerator):
         self._transfers = transfers
 
     def _create_hour_column(self, transfer_dataframe: DataFrame) -> DataFrame:
-        date_requested_by_hour = col("date_requested").dt.strftime("%y/%m/%d %H:00")
+        date_requested_by_hour = col("date_requested").dt.strftime("%Y-%m-%d %H:00")
 
         return transfer_dataframe.with_column(date_requested_by_hour.alias("Date/Time"))
 

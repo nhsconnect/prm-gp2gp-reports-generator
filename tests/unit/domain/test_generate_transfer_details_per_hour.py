@@ -65,7 +65,12 @@ def test_total_transfers_shown_per_hour():
 
     expected_output = pa.table(
         {
-            "Date/Time": ["21/01/01 12:00", "21/01/01 14:00", "21/01/02 14:00", "21/01/02 15:00"],
+            "Date/Time": [
+                "2021-01-01 12:00",
+                "2021-01-01 14:00",
+                "2021-01-02 14:00",
+                "2021-01-02 15:00",
+            ],
             "Total number of transfers": [2, 2, 2, 2],
             "Total technical failures": [2, 0, 1, 0],
             "Total unclassified failures": [0, 1, 0, 2],
