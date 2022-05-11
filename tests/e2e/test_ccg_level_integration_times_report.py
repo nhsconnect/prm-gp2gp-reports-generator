@@ -42,7 +42,7 @@ def test_e2e_with_custom_reporting_window_given_start_and_end_date(
         / "custom_ccg_level_integration_times.csv"
     )
 
-    s3_reports_output_path = "v3/custom/2019/12/01"
+    s3_reports_output_path = "v4/custom/2019/12/01"
 
     try:
         environ["START_DATETIME"] = "2019-12-01T00:00:00Z"

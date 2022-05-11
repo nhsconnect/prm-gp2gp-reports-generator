@@ -41,7 +41,7 @@ def test_e2e_custom_reporting_window_given_start_and_end_date(
         / "custom_transfer_level_technical_failures.csv"
     )
 
-    s3_reports_output_path = "v3/custom/2019/12/19"
+    s3_reports_output_path = "v4/custom/2019/12/19"
 
     try:
         environ["START_DATETIME"] = "2019-12-19T00:00:00Z"
@@ -119,7 +119,7 @@ def test_e2e_with_monthly_reporting_window_given_number_of_months(
         / "monthly_transfer_level_technical_failures.csv"
     )
 
-    s3_reports_output_path = "v3/1-months/2019/12/01"
+    s3_reports_output_path = "v4/1-months/2019/12/01"
 
     try:
         environ["NUMBER_OF_MONTHS"] = "1"
@@ -203,7 +203,7 @@ def test_e2e_with_daily_reporting_window_given_number_of_days(
         / "daily_transfer_level_technical_failures.csv"
     )
 
-    s3_reports_output_path = "v3/1-days/2019/12/31"
+    s3_reports_output_path = "v4/1-days/2019/12/31"
 
     try:
         number_of_days = "1"

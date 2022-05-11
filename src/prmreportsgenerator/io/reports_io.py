@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 class ReportsS3UriResolver:
     _TRANSFER_DATA_FILE_NAME = "transfers.parquet"
-    _TRANSFER_DATA_VERSION = "v9"
-    _REPORTS_VERSION = "v3"
+    _TRANSFER_DATA_VERSION = "v10"
+    _REPORTS_VERSION = "v4"
 
     def __init__(self, transfer_data_bucket: str, reports_bucket: str):
         self._transfer_data_bucket = transfer_data_bucket
