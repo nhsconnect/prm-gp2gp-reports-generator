@@ -17,11 +17,11 @@ def test_returns_table_with_transfer_level_technical_failure_columns():
     requesting_supplier = a_string(6)
     requesting_practice_asid = a_string(6)
     requesting_practice_ods_code = a_string(6)
-    requesting_practice_ccg_ods_code = a_string(3)
+    requesting_practice_icb_ods_code = a_string(3)
     sending_supplier = a_string(6)
     sending_practice_asid = a_string(6)
     sending_practice_ods_code = a_string(6)
-    sending_practice_ccg_ods_code = a_string(3)
+    sending_practice_icb_ods_code = a_string(3)
     conversation_id = a_string(16)
     date_requested = datetime.now()
     status = TransferStatus.TECHNICAL_FAILURE.value
@@ -32,11 +32,11 @@ def test_returns_table_with_transfer_level_technical_failure_columns():
             sending_practice_asid=sending_practice_asid,
             sending_supplier=sending_supplier,
             sending_practice_ods_code=sending_practice_ods_code,
-            sending_practice_ccg_ods_code=sending_practice_ccg_ods_code,
+            sending_practice_icb_ods_code=sending_practice_icb_ods_code,
             requesting_practice_asid=requesting_practice_asid,
             requesting_supplier=requesting_supplier,
             requesting_practice_ods_code=requesting_practice_ods_code,
-            requesting_practice_ccg_ods_code=requesting_practice_ccg_ods_code,
+            requesting_practice_icb_ods_code=requesting_practice_icb_ods_code,
             conversation_id=conversation_id,
             date_requested=date_requested,
             status=status,
@@ -52,11 +52,11 @@ def test_returns_table_with_transfer_level_technical_failure_columns():
             "sending practice ASID",
             "sending supplier",
             "sending practice ODS code",
-            "sending practice CCG ODS code",
+            "sending practice ICB ODS code",
             "requesting practice ASID",
             "requesting supplier",
             "requesting practice ODS code",
-            "requesting practice CCG ODS code",
+            "requesting practice ICB ODS code",
             "conversation ID",
             "date requested",
             "status",
@@ -69,11 +69,11 @@ def test_returns_table_with_transfer_level_technical_failure_columns():
             "sending practice ASID": [sending_practice_asid],
             "sending supplier": [sending_supplier],
             "sending practice ODS code": [sending_practice_ods_code],
-            "sending practice CCG ODS code": [sending_practice_ccg_ods_code],
+            "sending practice ICB ODS code": [sending_practice_icb_ods_code],
             "requesting practice ASID": [requesting_practice_asid],
             "requesting supplier": [requesting_supplier],
             "requesting practice ODS code": [requesting_practice_ods_code],
-            "requesting practice CCG ODS code": [requesting_practice_ccg_ods_code],
+            "requesting practice ICB ODS code": [requesting_practice_icb_ods_code],
             "conversation ID": [conversation_id],
             "date requested": [date_requested],
             "status": [status],

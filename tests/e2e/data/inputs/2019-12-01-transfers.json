@@ -27,13 +27,13 @@
     "A12347",
     "A12347"
   ],
-  "requesting_practice_ccg_ods_code": [
+  "requesting_practice_icb_ods_code": [
     "10D",
     "10D"
   ],
-  "requesting_practice_ccg_name": [
-    "Test CCG 1",
-    "Test CCG 1"
+  "requesting_practice_icb_name": [
+    "Test ICB 1",
+    "Test ICB 1"
   ],
   "sending_practice_asid": [
     "987654321245",
@@ -47,13 +47,13 @@
     "B22345",
     "B22345"
   ],
-  "sending_practice_ccg_ods_code": [
+  "sending_practice_icb_ods_code": [
     "14A",
     "14A"
   ],
-  "sending_practice_ccg_name": [
-    "Test CCG 2",
-    "Test CCG 2"
+  "sending_practice_icb_name": [
+    "Test ICB 2",
+    "Test ICB 2"
   ],
   "sending_supplier": [
     "",

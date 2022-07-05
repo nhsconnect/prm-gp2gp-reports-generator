@@ -20,11 +20,11 @@
   "requesting_practice_ods_code": [
     "D12349"
   ],
-  "requesting_practice_ccg_ods_code": [
+  "requesting_practice_icb_ods_code": [
     "22V"
   ],
-  "requesting_practice_ccg_name": [
-    "Test CCG 4"
+  "requesting_practice_icb_name": [
+    "Test ICB 4"
   ],
   "sending_practice_asid": [
     "987654321241"
@@ -38,10 +38,10 @@
   "sending_practice_ods_code": [
     null
   ],
-  "sending_practice_ccg_ods_code": [
+  "sending_practice_icb_ods_code": [
     null
   ],
-  "sending_practice_ccg_name": [
+  "sending_practice_icb_name": [
     null
   ],
   "sla_duration": [

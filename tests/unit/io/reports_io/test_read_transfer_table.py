@@ -25,7 +25,7 @@ def test_read_transfer_table_given_list_of_s3_uris():
     s3_manager.read_parquet.return_value = transfer_table
 
     transfer_data_bucket = "test_transfer_data_bucket"
-    s3_uri = f"s3://{transfer_data_bucket}/v4/{_METRIC_YEAR}/{_METRIC_MONTH}/transfers.parquet"
+    s3_uri = f"s3://{transfer_data_bucket}/v5/{_METRIC_YEAR}/{_METRIC_MONTH}/transfers.parquet"
 
     metrics_io = ReportsIO(
         s3_data_manager=s3_manager,

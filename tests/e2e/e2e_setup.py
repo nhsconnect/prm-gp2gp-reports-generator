@@ -94,7 +94,7 @@ def _read_parquet_columns_json(path):
 
 def _get_s3_path(bucket_name, year, month, day, cutoff_days):
     s3_filename = f"{year}-{month}-{day}-transfers.parquet"
-    return f"{bucket_name}/v10/cutoff-{cutoff_days}/{year}/{month}/{day}/{s3_filename}"
+    return f"{bucket_name}/v11/cutoff-{cutoff_days}/{year}/{month}/{day}/{s3_filename}"
 
 
 def _read_s3_csv(bucket, key):

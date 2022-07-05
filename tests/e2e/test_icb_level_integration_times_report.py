@@ -33,22 +33,22 @@ def test_e2e_with_custom_reporting_window_given_start_and_end_date(
     input_transfer_bucket = _build_fake_s3_bucket(S3_INPUT_TRANSFER_DATA_BUCKET, s3_client)
 
     expected_supplier_outcome_counts_output_key = (
-        "/2019-12-01-to-2019-12-31-ccg_level_integration_times--14-days-cutoff.csv"
+        "/2019-12-01-to-2019-12-31-icb_level_integration_times--14-days-cutoff.csv"
     )
     expected_supplier_outcome_counts = _read_csv(
         shared_datadir
         / "expected_outputs"
-        / "ccg_level_integration_times_report"
-        / "custom_ccg_level_integration_times.csv"
+        / "icb_level_integration_times_report"
+        / "custom_icb_level_integration_times.csv"
     )
 
-    s3_reports_output_path = "v4/custom/2019/12/01"
+    s3_reports_output_path = "v5/custom/2019/12/01"
 
     try:
         environ["START_DATETIME"] = "2019-12-01T00:00:00Z"
         environ["END_DATETIME"] = "2020-01-01T00:00:00Z"
         environ["CONVERSATION_CUTOFF_DAYS"] = DEFAULT_CONVERSATION_CUTOFF_DAYS
-        environ["REPORT_NAME"] = ReportName.CCG_LEVEL_INTEGRATION_TIMES.value
+        environ["REPORT_NAME"] = ReportName.ICB_LEVEL_INTEGRATION_TIMES.value
 
         _upload_template_transfer_data(
             shared_datadir,
@@ -86,7 +86,7 @@ def test_e2e_with_custom_reporting_window_given_start_and_end_date(
             "config-cutoff-days": DEFAULT_CONVERSATION_CUTOFF_DAYS,
             "reporting-window-start-datetime": "2019-12-01T00:00:00+00:00",
             "reporting-window-end-datetime": "2020-01-01T00:00:00+00:00",
-            "report-name": ReportName.CCG_LEVEL_INTEGRATION_TIMES.value,
+            "report-name": ReportName.ICB_LEVEL_INTEGRATION_TIMES.value,
         }
 
         actual_supplier_outcome_counts_s3_metadata = _read_s3_metadata(
