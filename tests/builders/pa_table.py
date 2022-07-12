@@ -20,10 +20,10 @@ class PaTableBuilder:
         self._sending_supplier_list = []
         self._requesting_practice_ods_code_list = []
         self._sending_practice_ods_code_list = []
-        self._requesting_practice_icb_ods_code_list = []
-        self._requesting_practice_icb_name_list = []
-        self._sending_practice_icb_ods_code_list = []
-        self._sending_practice_icb_name_list = []
+        self._requesting_practice_sicbl_ods_code_list = []
+        self._requesting_practice_sicbl_name_list = []
+        self._sending_practice_sicbl_ods_code_list = []
+        self._sending_practice_sicbl_name_list = []
         self._sender_error_codes_list = []
         self._final_error_codes_list = []
         self._intermediate_error_codes_list = []
@@ -54,17 +54,17 @@ class PaTableBuilder:
         self._sending_practice_ods_code_list.append(
             kwargs.get("sending_practice_ods_code", a_string(6))
         )
-        self._requesting_practice_icb_ods_code_list.append(
-            kwargs.get("requesting_practice_icb_ods_code", a_string(3))
+        self._requesting_practice_sicbl_ods_code_list.append(
+            kwargs.get("requesting_practice_sicbl_ods_code", a_string(3))
         )
-        self._requesting_practice_icb_name_list.append(
-            kwargs.get("requesting_practice_icb_name", a_string(3))
+        self._requesting_practice_sicbl_name_list.append(
+            kwargs.get("requesting_practice_sicbl_name", a_string(3))
         )
-        self._sending_practice_icb_ods_code_list.append(
-            kwargs.get("sending_practice_icb_ods_code", a_string(3))
+        self._sending_practice_sicbl_ods_code_list.append(
+            kwargs.get("sending_practice_sicbl_ods_code", a_string(3))
         )
-        self._sending_practice_icb_name_list.append(
-            kwargs.get("sending_practice_icb_name", a_string(3))
+        self._sending_practice_sicbl_name_list.append(
+            kwargs.get("sending_practice_sicbl_name", a_string(3))
         )
         self._sender_error_codes_list.append(kwargs.get("sender_error_codes", []))
         self._final_error_codes_list.append(kwargs.get("final_error_codes", []))
@@ -89,14 +89,14 @@ class PaTableBuilder:
                 "requesting_practice_name": self._requesting_practice_name_list,
                 "requesting_supplier": self._requesting_supplier_list,
                 "requesting_practice_ods_code": self._requesting_practice_ods_code_list,
-                "requesting_practice_icb_ods_code": self._requesting_practice_icb_ods_code_list,
-                "requesting_practice_icb_name": self._requesting_practice_icb_name_list,
+                "requesting_practice_sicbl_ods_code": self._requesting_practice_sicbl_ods_code_list,
+                "requesting_practice_sicbl_name": self._requesting_practice_sicbl_name_list,
                 "sending_practice_asid": self._sending_practice_asid_list,
                 "sending_practice_name": self._sending_practice_name_list,
                 "sending_supplier": self._sending_supplier_list,
                 "sending_practice_ods_code": self._sending_practice_ods_code_list,
-                "sending_practice_icb_ods_code": self._sending_practice_icb_ods_code_list,
-                "sending_practice_icb_name": self._sending_practice_icb_name_list,
+                "sending_practice_sicbl_ods_code": self._sending_practice_sicbl_ods_code_list,
+                "sending_practice_sicbl_name": self._sending_practice_sicbl_name_list,
                 "sla_duration": self._sla_duration_list,
                 "status": self._status_list,
                 "failure_reason": self._failure_reason_list,
@@ -118,14 +118,14 @@ class PaTableBuilder:
                 ("requesting_practice_name", pa.string()),
                 ("requesting_supplier", pa.string()),
                 ("requesting_practice_ods_code", pa.string()),
-                ("requesting_practice_icb_ods_code", pa.string()),
-                ("requesting_practice_icb_name", pa.string()),
+                ("requesting_practice_sicbl_ods_code", pa.string()),
+                ("requesting_practice_sicbl_name", pa.string()),
                 ("sending_practice_asid", pa.string()),
                 ("sending_practice_name", pa.string()),
                 ("sending_supplier", pa.string()),
                 ("sending_practice_ods_code", pa.string()),
-                ("sending_practice_icb_ods_code", pa.string()),
-                ("sending_practice_icb_name", pa.string()),
+                ("sending_practice_sicbl_ods_code", pa.string()),
+                ("sending_practice_sicbl_name", pa.string()),
                 ("sla_duration", pa.uint64()),
                 ("status", pa.string()),
                 ("failure_reason", pa.string()),

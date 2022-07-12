@@ -12,8 +12,8 @@ from prmreportsgenerator.domain.reporting_windows.monthly_reporting_window impor
     MonthlyReportingWindow,
 )
 from prmreportsgenerator.domain.reporting_windows.reporting_window import ReportingWindow
-from prmreportsgenerator.domain.reports_generator.icb_level_integration_times import (
-    ICBLevelIntegrationTimesReportsGenerator,
+from prmreportsgenerator.domain.reports_generator.sub_icb_location_level_integration_times import (
+    SICBLLevelIntegrationTimesReportsGenerator,
 )
 from prmreportsgenerator.domain.reports_generator.transfer_details_per_hour import (
     TransferDetailsPerHourReportsGenerator,
@@ -120,7 +120,7 @@ class ReportsPipeline:
             ReportName.TRANSFER_LEVEL_TECHNICAL_FAILURES: TransferLevelTechnicalFailuresReportsGenerator(
                 transfers
             ).generate(),
-            ReportName.ICB_LEVEL_INTEGRATION_TIMES: ICBLevelIntegrationTimesReportsGenerator(
+            ReportName.SUB_ICB_LOCATION_LEVEL_INTEGRATION_TIMES: SICBLLevelIntegrationTimesReportsGenerator(
                 transfers
             ).generate(),
             ReportName.TRANSFER_DETAILS_BY_HOUR: TransferDetailsPerHourReportsGenerator(

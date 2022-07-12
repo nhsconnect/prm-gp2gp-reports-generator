@@ -27,7 +27,7 @@ def assign_to_sla_band(sla_duration) -> str:
         return SlaDuration.BEYOND_8_DAYS.value
 
 
-class ICBLevelIntegrationTimesReportsGenerator(ReportsGenerator):
+class SICBLLevelIntegrationTimesReportsGenerator(ReportsGenerator):
     def __init__(self, transfers: pa.Table):
         super().__init__()
         self._transfers = transfers
@@ -103,13 +103,13 @@ class ICBLevelIntegrationTimesReportsGenerator(ReportsGenerator):
             .alias("Not integrated within 14 days")
         )
 
-    def _generate_icb_level_integration_times_totals(
+    def _generate_sicbl_level_integration_times_totals(
         self, transfer_dataframe: DataFrame
     ) -> DataFrame:
         return transfer_dataframe.groupby(["requesting_practice_ods_code"]).agg(
             [
-                col("requesting_practice_icb_name").first().keep_name(),
-                col("requesting_practice_icb_ods_code").first().keep_name(),
+                col("requesting_practice_sicbl_name").first().keep_name(),
+                col("requesting_practice_sicbl_ods_code").first().keep_name(),
                 col("requesting_practice_name").first().keep_name(),
                 col("Integrated within 3 days").sum().keep_name(),
                 col("Integrated within 8 days").sum().keep_name(),
@@ -122,7 +122,7 @@ class ICBLevelIntegrationTimesReportsGenerator(ReportsGenerator):
             ]
         )
 
-    def _generate_icb_level_integration_times_percentages(
+    def _generate_sicbl_level_integration_times_percentages(
         self, transfer_dataframe: DataFrame
     ) -> DataFrame:
         return transfer_dataframe.with_columns(
@@ -150,8 +150,8 @@ class ICBLevelIntegrationTimesReportsGenerator(ReportsGenerator):
     def _generate_output(self, transfer_dataframe: DataFrame) -> DataFrame:
         return transfer_dataframe.select(
             [
-                col("requesting_practice_icb_name").alias("ICB name"),
-                col("requesting_practice_icb_ods_code").alias("ICB ODS"),
+                col("requesting_practice_sicbl_name").alias("Sub ICB Location name"),
+                col("requesting_practice_sicbl_ods_code").alias("Sub ICB Location ODS"),
                 col("requesting_practice_name").alias("Requesting practice name"),
                 col("requesting_practice_ods_code").alias("Requesting practice ODS"),
                 col("GP2GP Transfers received"),
@@ -166,7 +166,7 @@ class ICBLevelIntegrationTimesReportsGenerator(ReportsGenerator):
                 col("Not integrated within 14 days"),
                 col("Not integrated within 14 days - %"),
             ]
-        ).sort(["ICB name", "Requesting practice name"])
+        ).sort(["Sub ICB Location name", "Requesting practice name"])
 
     def generate(self) -> pa.Table:
         transfers_frame = pl.from_arrow(self._transfers)
@@ -179,8 +179,8 @@ class ICBLevelIntegrationTimesReportsGenerator(ReportsGenerator):
             self._calculate_not_integrated_within_8_days,
             self._calculate_integrated_late,
             self._calculate_not_integrated_within_14_days,
-            self._generate_icb_level_integration_times_totals,
-            self._generate_icb_level_integration_times_percentages,
+            self._generate_sicbl_level_integration_times_totals,
+            self._generate_sicbl_level_integration_times_percentages,
             self._generate_output,
         ).to_dict()
         return pa.table(processed_transfers)

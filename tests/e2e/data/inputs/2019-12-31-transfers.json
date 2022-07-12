@@ -27,11 +27,11 @@
     "D12349",
     "D12349"
   ],
-  "requesting_practice_icb_ods_code": [
+  "requesting_practice_sicbl_ods_code": [
     "22V",
     "22V"
   ],
-  "requesting_practice_icb_name": [
+  "requesting_practice_sicbl_name": [
     "Test ICB 4",
     "Test ICB 4"
   ],
@@ -51,11 +51,11 @@
     null,
     null
   ],
-  "sending_practice_icb_ods_code": [
+  "sending_practice_sicbl_ods_code": [
     null,
     null
   ],
-  "sending_practice_icb_name": [
+  "sending_practice_sicbl_name": [
     null,
     null
   ],

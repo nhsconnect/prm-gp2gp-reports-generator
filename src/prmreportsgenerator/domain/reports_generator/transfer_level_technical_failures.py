@@ -25,12 +25,14 @@ class TransferLevelTechnicalFailuresReportsGenerator(ReportsGenerator):
                     col("sending_practice_asid").alias("sending practice ASID"),
                     col("sending_supplier").alias("sending supplier"),
                     col("sending_practice_ods_code").alias("sending practice ODS code"),
-                    col("sending_practice_icb_ods_code").alias("sending practice ICB ODS code"),
+                    col("sending_practice_sicbl_ods_code").alias(
+                        "sending practice Sub ICB Location ODS code"
+                    ),
                     col("requesting_practice_asid").alias("requesting practice ASID"),
                     col("requesting_supplier").alias("requesting supplier"),
                     col("requesting_practice_ods_code").alias("requesting practice ODS code"),
-                    col("requesting_practice_icb_ods_code").alias(
-                        "requesting practice ICB ODS code"
+                    col("requesting_practice_sicbl_ods_code").alias(
+                        "requesting practice Sub ICB Location ODS code"
                     ),
                     col("conversation_id").alias("conversation ID"),
                     col("date_requested").alias("date requested"),

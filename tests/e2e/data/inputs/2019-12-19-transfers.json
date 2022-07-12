@@ -20,10 +20,10 @@
   "requesting_practice_ods_code": [
     "A12347"
   ],
-  "requesting_practice_icb_ods_code": [
+  "requesting_practice_sicbl_ods_code": [
     "10D"
   ],
-  "requesting_practice_icb_name": [
+  "requesting_practice_sicbl_name": [
     "Test ICB 1"
   ],
   "sending_practice_asid": [
@@ -38,10 +38,10 @@
   "sending_practice_ods_code": [
     "G54637"
   ],
-  "sending_practice_icb_ods_code": [
+  "sending_practice_sicbl_ods_code": [
     "33A"
   ],
-  "sending_practice_icb_name": [
+  "sending_practice_sicbl_name": [
     "Test ICB 5"
   ],
   "sla_duration": [

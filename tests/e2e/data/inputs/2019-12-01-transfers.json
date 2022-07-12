@@ -27,11 +27,11 @@
     "A12347",
     "A12347"
   ],
-  "requesting_practice_icb_ods_code": [
+  "requesting_practice_sicbl_ods_code": [
     "10D",
     "10D"
   ],
-  "requesting_practice_icb_name": [
+  "requesting_practice_sicbl_name": [
     "Test ICB 1",
     "Test ICB 1"
   ],
@@ -47,11 +47,11 @@
     "B22345",
     "B22345"
   ],
-  "sending_practice_icb_ods_code": [
+  "sending_practice_sicbl_ods_code": [
     "14A",
     "14A"
   ],
-  "sending_practice_icb_name": [
+  "sending_practice_sicbl_name": [
     "Test ICB 2",
     "Test ICB 2"
   ],

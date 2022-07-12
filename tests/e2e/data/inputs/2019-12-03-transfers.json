@@ -20,10 +20,10 @@
   "requesting_practice_ods_code": [
     "D12349"
   ],
-  "requesting_practice_icb_ods_code": [
+  "requesting_practice_sicbl_ods_code": [
     "22V"
   ],
-  "requesting_practice_icb_name": [
+  "requesting_practice_sicbl_name": [
     "Test ICB 4"
   ],
   "sending_practice_asid": [
@@ -38,10 +38,10 @@
   "sending_practice_ods_code": [
     "E22444"
   ],
-  "sending_practice_icb_ods_code": [
+  "sending_practice_sicbl_ods_code": [
     "15F"
   ],
-  "sending_practice_icb_name": [
+  "sending_practice_sicbl_name": [
     "Test ICB 3"
   ],
   "sla_duration": [
