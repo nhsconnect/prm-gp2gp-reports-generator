@@ -81,6 +81,23 @@ class ReportsPipeline:
 
         return self._io.read_transfers_as_table(transfer_data_s3_uris)
 
+    def _log_technical_failure_percentage(self, transfers: pa.Table):
+        total_transfers = transfers.num_rows
+        total_technical_failures = transfers.filter(
+            pa.compute.equal(transfers["status"], "Technical failure")
+        ).num_rows
+
+        logger.info(
+            f"Percentage of technical failures: {total_technical_failures / total_transfers}%",
+            extra={
+                "total_transfers": total_transfers,
+                "total_technical_failures": total_technical_failures,
+                "percent_of_technical_failures": total_technical_failures / total_transfers,
+                "event": "PERCENT_OF_TECHNICAL_FAILURES",
+                **self._date_range_info_json,
+            },
+        )
+
     def _write_table(self, table: pa.Table):
         start_date = self._reporting_window.start_datetime
         end_date = self._reporting_window.end_datetime
@@ -149,5 +166,7 @@ class ReportsPipeline:
                 **self._date_range_info_json,
             },
         )
+
+        self._log_technical_failure_percentage(transfers)
 
         self._write_table(table)
