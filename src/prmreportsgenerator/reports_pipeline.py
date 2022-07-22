@@ -86,13 +86,14 @@ class ReportsPipeline:
         total_technical_failures = transfers.filter(
             pa.compute.equal(transfers["status"], "Technical failure")
         ).num_rows
+        technical_failures_percentage = round((total_technical_failures / total_transfers) * 100, 2)
 
         logger.info(
-            f"Percentage of technical failures: {total_technical_failures / total_transfers}%",
+            f"Percentage of technical failures: {technical_failures_percentage}%",
             extra={
                 "total_transfers": total_transfers,
                 "total_technical_failures": total_technical_failures,
-                "percent_of_technical_failures": total_technical_failures / total_transfers,
+                "percent_of_technical_failures": technical_failures_percentage,
                 "event": "PERCENT_OF_TECHNICAL_FAILURES",
                 **self._date_range_info_json,
             },
