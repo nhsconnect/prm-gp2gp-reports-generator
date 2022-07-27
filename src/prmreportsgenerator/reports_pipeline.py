@@ -92,11 +92,11 @@ class ReportsPipeline:
         logger.info(
             f"Percentage of technical failures: {technical_failures_percentage}%",
             extra={
-                "total_transfers": total_transfers,
-                "total_technical_failures": total_technical_failures,
-                "percent_of_technical_failures": technical_failures_percentage,
+                "total-transfers": total_transfers,
+                "total-technical-failures": total_technical_failures,
+                "percent-of-technical-failures": technical_failures_percentage,
                 "event": "PERCENT_OF_TECHNICAL_FAILURES",
-                "alert_enabled": self._alert_enabled,
+                "alert-enabled": self._alert_enabled,
                 **self._date_range_info_json,
             },
         )
