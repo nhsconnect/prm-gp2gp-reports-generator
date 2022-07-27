@@ -40,6 +40,7 @@ class ReportsPipeline:
         self._reporting_window = self.create_reporting_window(config)
         self._cutoff_days = config.cutoff_days
         self._report_name = config.report_name
+        self._alert_enabled = config.alert_enabled
 
         self._uri_resolver = ReportsS3UriResolver(
             transfer_data_bucket=config.input_transfer_data_bucket,
@@ -95,6 +96,7 @@ class ReportsPipeline:
                 "total_technical_failures": total_technical_failures,
                 "percent_of_technical_failures": technical_failures_percentage,
                 "event": "PERCENT_OF_TECHNICAL_FAILURES",
+                "alert_enabled": self._alert_enabled,
                 **self._date_range_info_json,
             },
         )
