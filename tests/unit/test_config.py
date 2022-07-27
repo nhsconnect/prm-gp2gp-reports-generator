@@ -25,6 +25,7 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
         "S3_ENDPOINT_URL": "a_url",
         "BUILD_TAG": build_tag,
         "REPORT_NAME": ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY.value,
+        "ALERT_ENABLED": "True",
     }
 
     expected_config = PipelineConfig(
@@ -42,6 +43,7 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
         s3_endpoint_url="a_url",
         build_tag=build_tag,
         report_name=ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY,
+        alert_enabled=True,
     )
 
     actual_config = PipelineConfig.from_environment_variables(environment)
@@ -70,6 +72,7 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
         s3_endpoint_url=None,
         build_tag=build_tag,
         report_name=ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY,
+        alert_enabled=False,
     )
 
     actual_config = PipelineConfig.from_environment_variables(environment)

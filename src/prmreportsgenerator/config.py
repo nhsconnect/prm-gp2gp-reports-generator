@@ -59,6 +59,11 @@ class EnvConfig:
     def read_report_name(self, report_name: str) -> ReportName:
         return ReportName(self._env_vars[report_name])
 
+    def read_optional_bool(self, name: str, default: bool) -> bool:
+        return self._read_env(
+            name, optional=True, converter=lambda string: string.lower() == "true", default=default
+        )
+
 
 @dataclass
 class PipelineConfig:
@@ -72,6 +77,7 @@ class PipelineConfig:
     cutoff_days: int
     s3_endpoint_url: Optional[str]
     report_name: ReportName
+    alert_enabled: Optional[bool]
 
     @classmethod
     def from_environment_variables(cls, env_vars):
@@ -87,4 +93,5 @@ class PipelineConfig:
             cutoff_days=env.read_int("CONVERSATION_CUTOFF_DAYS"),
             s3_endpoint_url=env.read_optional_str("S3_ENDPOINT_URL"),
             report_name=env.read_report_name("REPORT_NAME"),
+            alert_enabled=env.read_optional_bool("ALERT_ENABLED", default=False),
         )
