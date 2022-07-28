@@ -28,6 +28,15 @@ def test_generates_custom_reporting_window_given_start_datetime_and_end_datetime
     assert len(reporting_window.get_dates()) == 4
 
 
+def test_generates_daily_reporting_window_given_number_of_days_and_cutoff_days_as_0():
+    reporting_window = ReportsPipeline.create_reporting_window(
+        create_pipeline_config(number_of_days=2, cutoff_days=0)
+    )
+
+    assert isinstance(reporting_window, DailyReportingWindow)
+    assert len(reporting_window.get_dates()) == 2
+
+
 def test_generates_daily_reporting_window_given_number_of_days_and_cutoff_days():
     reporting_window = ReportsPipeline.create_reporting_window(
         create_pipeline_config(number_of_days=2, cutoff_days=1)

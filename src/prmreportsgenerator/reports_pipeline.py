@@ -61,7 +61,9 @@ class ReportsPipeline:
             raise ValueError("End datetime must be provided if start datetime is provided")
         if config.start_datetime and config.end_datetime:
             return CustomReportingWindow(config.start_datetime, config.end_datetime)
-        if config.number_of_days and config.cutoff_days:
+        if (config.number_of_days and config.cutoff_days) or (
+            config.number_of_days and config.cutoff_days == 0
+        ):
             return DailyReportingWindow(config.number_of_days, config.cutoff_days)
         if config.number_of_months:
             return MonthlyReportingWindow(config.number_of_months)
