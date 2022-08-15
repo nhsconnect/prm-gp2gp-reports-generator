@@ -1,3 +1,4 @@
+import json
 import logging
 
 import boto3
@@ -175,3 +176,5 @@ class ReportsPipeline:
         self._log_technical_failure_percentage(transfers)
 
         self._write_table(table)
+
+        return json.dumps({ "sendReport": True })
