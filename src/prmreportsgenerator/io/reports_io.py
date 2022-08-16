@@ -90,17 +90,15 @@ class ReportsIO:
     def __init__(
         self,
         s3_data_manager: S3DataManager,
-        output_metadata: Dict[str, str],
     ):
         self._s3_manager = s3_data_manager
-        self._output_metadata = output_metadata
 
     def read_transfers_as_table(self, s3_uris: List[str]) -> pa.Table:
         return pa.concat_tables(
             [self._s3_manager.read_parquet(s3_path) for s3_path in s3_uris],
         )
 
-    def write_table(self, table: pa.Table, s3_uri: str):
+    def write_table(self, table: pa.Table, s3_uri: str, output_metadata: Dict[str, str]):
         self._s3_manager.write_table_to_csv(
-            object_uri=s3_uri, table=table, metadata=self._output_metadata
+            object_uri=s3_uri, table=table, metadata=output_metadata
         )

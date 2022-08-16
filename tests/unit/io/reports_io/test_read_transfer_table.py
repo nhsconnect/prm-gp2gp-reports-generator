@@ -29,7 +29,6 @@ def test_read_transfer_table_given_list_of_s3_uris():
 
     metrics_io = ReportsIO(
         s3_data_manager=s3_manager,
-        output_metadata={},
     )
 
     expected_table = transfer_table

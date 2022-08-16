@@ -1,4 +1,5 @@
 import logging
+from typing import Dict
 
 import boto3
 import pyarrow as pa
@@ -49,7 +50,7 @@ class ReportsPipeline:
 
         self._date_range_info_json = self._construct_date_range_info_json(config)
 
-        self._io = ReportsIO(s3_data_manager=s3_manager, output_metadata=self._date_range_info_json)
+        self._io = ReportsIO(s3_data_manager=s3_manager)
 
     @staticmethod
     def create_reporting_window(config: PipelineConfig) -> ReportingWindow:
@@ -99,7 +100,7 @@ class ReportsPipeline:
             },
         )
 
-    def _write_table(self, table: pa.Table):
+    def _write_table(self, table: pa.Table, output_metadata: Dict[str, str]):
         start_date = self._reporting_window.start_datetime
         end_date = self._reporting_window.end_datetime
         output_table_uri = self._uri_resolver.output_table_uri(
@@ -109,10 +110,7 @@ class ReportsPipeline:
             cutoff_days=self._cutoff_days,
             report_name=self._report_name,
         )
-        self._io.write_table(
-            table=table,
-            s3_uri=output_table_uri,
-        )
+        self._io.write_table(table=table, s3_uri=output_table_uri, output_metadata=output_metadata)
 
     def _construct_date_range_info_json(self, config: PipelineConfig) -> dict:
         return {
@@ -171,4 +169,4 @@ class ReportsPipeline:
 
         self._log_technical_failure_percentage(transfers)
 
-        self._write_table(table)
+        self._write_table(table, self._date_range_info_json)

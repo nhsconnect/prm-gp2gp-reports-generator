@@ -17,14 +17,11 @@ def test_given_table_will_write_csv():
 
     output_metadata = {"metadata-field": "metadata_value"}
 
-    metrics_io = ReportsIO(
-        s3_data_manager=s3_manager,
-        output_metadata=output_metadata,
-    )
+    metrics_io = ReportsIO(s3_data_manager=s3_manager)
     data = {"Fruit": ["Banana"]}
     table = pa.table(data)
 
-    metrics_io.write_table(table=table, s3_uri=s3_uri)
+    metrics_io.write_table(table=table, s3_uri=s3_uri, output_metadata=output_metadata)
 
     expected_table = table
 
