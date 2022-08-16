@@ -49,12 +49,8 @@ class ReportsPipeline:
         )
 
         self._date_range_info_json = self._construct_date_range_info_json(config)
-        output_metadata = {
-            "reports-generator-version": config.build_tag,
-            **self._date_range_info_json,
-        }
 
-        self._io = ReportsIO(s3_data_manager=s3_manager, output_metadata=output_metadata)
+        self._io = ReportsIO(s3_data_manager=s3_manager, output_metadata=self._date_range_info_json)
 
     @staticmethod
     def create_reporting_window(config: PipelineConfig) -> ReportingWindow:
@@ -133,6 +129,7 @@ class ReportsPipeline:
                 self._reporting_window.end_datetime
             ),
             "report-name": config.report_name.value,
+            "reports-generator-version": config.build_tag,
         }
 
     def _generate_report(self, transfers: pa.Table) -> pa.Table:
@@ -177,4 +174,4 @@ class ReportsPipeline:
 
         self._write_table(table)
 
-        return json.dumps({ "sendReport": True })
+        return json.dumps({"sendReport": True})
