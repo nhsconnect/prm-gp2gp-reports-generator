@@ -84,6 +84,9 @@ def test_e2e_with_custom_reporting_window_given_start_and_end_date(
             "reporting-window-start-datetime": "2019-12-01T00:00:00+00:00",
             "reporting-window-end-datetime": "2020-01-01T00:00:00+00:00",
             "report-name": ReportName.TRANSFER_DETAILS_BY_HOUR.value,
+            "technical-failures-percentage": "15.38",
+            "total-technical-failures": "2",
+            "total-transfers": "13",
         }
 
         actual_transfer_details_by_hour_s3_metadata = _read_s3_metadata(

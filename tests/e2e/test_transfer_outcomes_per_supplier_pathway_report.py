@@ -78,6 +78,9 @@ def test_e2e_with_custom_reporting_window_given_start_and_end_date(
             "reporting-window-start-datetime": "2019-12-19T00:00:00+00:00",
             "reporting-window-end-datetime": "2019-12-21T00:00:00+00:00",
             "report-name": ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY.value,
+            "technical-failures-percentage": "100.0",
+            "total-technical-failures": "2",
+            "total-transfers": "2",
         }
 
         actual_supplier_pathway_outcome_counts_s3_metadata = _read_s3_metadata(
@@ -160,6 +163,9 @@ def test_e2e_with_monthly_reporting_window_given_number_of_months(
             "reporting-window-start-datetime": "2019-12-01T00:00:00+00:00",
             "reporting-window-end-datetime": "2020-01-01T00:00:00+00:00",
             "report-name": ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY.value,
+            "technical-failures-percentage": "15.38",
+            "total-technical-failures": "2",
+            "total-transfers": "13",
         }
 
         actual_supplier_pathway_outcome_counts_s3_metadata = _read_s3_metadata(
@@ -236,6 +242,9 @@ def test_e2e_with_daily_reporting_window_given_number_of_days(
             "reporting-window-start-datetime": "2019-12-23T00:00:00+00:00",
             "reporting-window-end-datetime": "2019-12-25T00:00:00+00:00",
             "report-name": ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY.value,
+            "technical-failures-percentage": "0.0",
+            "total-technical-failures": "0",
+            "total-transfers": "2",
         }
 
         actual_supplier_pathway_outcome_counts_s3_metadata = _read_s3_metadata(

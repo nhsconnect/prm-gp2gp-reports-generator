@@ -81,24 +81,30 @@ class ReportsPipeline:
 
         return self._io.read_transfers_as_table(transfer_data_s3_uris)
 
-    def _log_technical_failure_percentage(self, transfers: pa.Table):
-        total_transfers = transfers.num_rows
-        total_technical_failures = transfers.filter(
-            pa.compute.equal(transfers["status"], "Technical failure")
-        ).num_rows
-        technical_failures_percentage = round((total_technical_failures / total_transfers) * 100, 2)
-
+    def _log_technical_failure_percentage(self, transfers_metrics: Dict[str, str]):
         logger.info(
-            f"Percentage of technical failures: {technical_failures_percentage}%",
+            f"Percentage of technical failures: {transfers_metrics['technical_failures_percentage']}%",
             extra={
-                "total-transfers": total_transfers,
-                "total-technical-failures": total_technical_failures,
-                "percent-of-technical-failures": technical_failures_percentage,
+                "total-transfers": transfers_metrics["total_transfers"],
+                "total-technical-failures": transfers_metrics["total_technical_failures"],
+                "percent-of-technical-failures": transfers_metrics["technical_failures_percentage"],
                 "event": "PERCENT_OF_TECHNICAL_FAILURES",
                 "alert-enabled": self._alert_enabled,
                 **self._date_range_info_json,
             },
         )
+
+    def _generate_transfers_metrics(self, transfers) -> Dict[str, str]:
+        total_transfers = transfers.num_rows
+        total_technical_failures = transfers.filter(
+            pa.compute.equal(transfers["status"], "Technical failure")
+        ).num_rows
+        technical_failures_percentage = round((total_technical_failures / total_transfers) * 100, 2)
+        return {
+            "technical_failures_percentage": str(technical_failures_percentage),
+            "total_technical_failures": str(total_technical_failures),
+            "total_transfers": str(total_transfers),
+        }
 
     def _write_table(self, table: pa.Table, output_metadata: Dict[str, str]):
         start_date = self._reporting_window.start_datetime
@@ -166,7 +172,10 @@ class ReportsPipeline:
                 **self._date_range_info_json,
             },
         )
+        transfers_metrics = self._generate_transfers_metrics(transfers)
 
-        self._log_technical_failure_percentage(transfers)
+        self._log_technical_failure_percentage(transfers_metrics)
 
-        self._write_table(table, self._date_range_info_json)
+        self._write_table(
+            table=table, output_metadata={**transfers_metrics, **self._date_range_info_json}
+        )

@@ -87,6 +87,9 @@ def test_e2e_with_custom_reporting_window_given_start_and_end_date(
             "reporting-window-start-datetime": "2019-12-01T00:00:00+00:00",
             "reporting-window-end-datetime": "2020-01-01T00:00:00+00:00",
             "report-name": ReportName.SUB_ICB_LOCATION_LEVEL_INTEGRATION_TIMES.value,
+            "technical-failures-percentage": "15.38",
+            "total-technical-failures": "2",
+            "total-transfers": "13",
         }
 
         actual_supplier_outcome_counts_s3_metadata = _read_s3_metadata(

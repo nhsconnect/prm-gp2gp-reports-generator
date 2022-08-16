@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 import pyarrow as pa
 
@@ -98,7 +98,9 @@ class ReportsIO:
             [self._s3_manager.read_parquet(s3_path) for s3_path in s3_uris],
         )
 
-    def write_table(self, table: pa.Table, s3_uri: str, output_metadata: Dict[str, str]):
+    def write_table(
+        self, table: pa.Table, s3_uri: str, output_metadata: Dict[str, Union[str, int, float]]
+    ):
         self._s3_manager.write_table_to_csv(
             object_uri=s3_uri, table=table, metadata=output_metadata
         )
