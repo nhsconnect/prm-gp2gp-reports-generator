@@ -83,11 +83,11 @@ class ReportsPipeline:
 
     def _log_technical_failure_percentage(self, transfers_metrics: Dict[str, str]):
         logger.info(
-            f"Percentage of technical failures: {transfers_metrics['technical_failures_percentage']}%",
+            f"Percentage of technical failures: {transfers_metrics['technical-failures-percentage']}%",
             extra={
-                "total-transfers": transfers_metrics["total_transfers"],
-                "total-technical-failures": transfers_metrics["total_technical_failures"],
-                "percent-of-technical-failures": transfers_metrics["technical_failures_percentage"],
+                "total-transfers": transfers_metrics["total-transfers"],
+                "total-technical-failures": transfers_metrics["total-technical-failures"],
+                "percent-of-technical-failures": transfers_metrics["technical-failures-percentage"],
                 "event": "PERCENT_OF_TECHNICAL_FAILURES",
                 "alert-enabled": self._alert_enabled,
                 **self._date_range_info_json,
@@ -101,9 +101,9 @@ class ReportsPipeline:
         ).num_rows
         technical_failures_percentage = round((total_technical_failures / total_transfers) * 100, 2)
         return {
-            "technical_failures_percentage": str(technical_failures_percentage),
-            "total_technical_failures": str(total_technical_failures),
-            "total_transfers": str(total_transfers),
+            "technical-failures-percentage": str(technical_failures_percentage),
+            "total-technical-failures": str(total_technical_failures),
+            "total-transfers": str(total_transfers),
         }
 
     def _write_table(self, table: pa.Table, output_metadata: Dict[str, str]):
