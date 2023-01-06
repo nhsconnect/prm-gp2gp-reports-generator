@@ -29,7 +29,7 @@ do
       pipenv --version
       ;;
     check-deps)
-      pipenv check
+      pipenv check --ignore 51457 # ignore py until a fix is released
       ;;
     clean)
       find ./tests -type f -name "*.pyc" -delete
@@ -52,12 +52,12 @@ do
       dojo "./tasks devenv validate"
       ;;
     dep)
-        ./tasks output-versions
-        ./tasks check-deps > audit-output.txt
-        ;;
+      ./tasks output-versions
+      ./tasks check-deps > audit-output.txt
+      ;;
     dojo-dep)
-        dojo "./tasks devenv dep"
-        ;;
+      dojo "./tasks devenv dep"
+      ;;
     publish-docker)
       if [ -z $IMAGE_TAG ]; then
           echo "Please set IMAGE_TAG environment variable"
