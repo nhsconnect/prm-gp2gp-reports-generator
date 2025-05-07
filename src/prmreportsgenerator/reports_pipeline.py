@@ -49,6 +49,7 @@ class ReportsPipeline:
         )
 
         self._date_range_info_json = self._construct_date_range_info_json(config)
+        self._additional_metadata = self._construct_additional_metadata(config)
 
         self._io = ReportsIO(s3_data_manager=s3_manager)
 
@@ -131,8 +132,13 @@ class ReportsPipeline:
             "reporting-window-end-datetime": convert_to_datetime_string(
                 self._reporting_window.end_datetime
             ),
+        }
+
+    def _construct_additional_metadata(self, config: PipelineConfig) -> dict:
+        return {
             "report-name": config.report_name.value,
             "reports-generator-version": config.build_tag,
+            "send-email-notification": config.send_email_notification,
         }
 
     def _generate_report(self, transfers: pa.Table) -> pa.Table:
@@ -177,5 +183,10 @@ class ReportsPipeline:
         self._log_technical_failure_percentage(transfers_metrics)
 
         self._write_table(
-            table=table, output_metadata={**transfers_metrics, **self._date_range_info_json}
+            table=table,
+            output_metadata={
+                **transfers_metrics,
+                **self._date_range_info_json,
+                **self._additional_metadata,
+            },
         )

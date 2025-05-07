@@ -68,17 +68,18 @@ generate the S3 key.
 
 Configuration is achieved via the following environment variables:
 
-| Environment variable       | Description                                                                                                                                                                                           |
-|----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| INPUT_TRANSFER_DATA_BUCKET | Bucket to read transfer files from.                                                                                                                                                                   |
-| OUTPUT_REPORTS_BUCKET      | Bucket to write the reports.                                                                                                                                                                          |
-| BUILD_TAG                  | Unique identifier for version of code build tag (e.g. short git hash)                                                                                                                                 |
-| CONVERSATION_CUTOFF_DAYS   | Integer denoting the number of days for the conversation cutoff.                                                                                                                                      |
+| Environment variable       | Description                                                                                                                                                                                                        |
+|----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| INPUT_TRANSFER_DATA_BUCKET | Bucket to read transfer files from.                                                                                                                                                                                |
+| OUTPUT_REPORTS_BUCKET      | Bucket to write the reports.                                                                                                                                                                                       |
+| BUILD_TAG                  | Unique identifier for version of code build tag (e.g. short git hash)                                                                                                                                              |
+| CONVERSATION_CUTOFF_DAYS   | Integer denoting the number of days for the conversation cutoff.                                                                                                                                                   |
 | REPORT_NAME                | Name of report to generate - must be one of the following: *TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY*, *TRANSFER_LEVEL_TECHNICAL_FAILURES*, *SUB_ICB_LOCATION_LEVEL_INTEGRATION_TIMES* or *TRANSFER_DETAILS_BY_HOUR* |
-| START_DATETIME             | Optional ISO-8601 datetime specifying start of date range to produce reports for (see date range options)                                                                                             |
-| END_DATETIME               | Optional ISO-8601 datetime specifying end of date range to produce reports for (see date range options)                                                                                               |
-| NUMBER_OF_MONTHS           | Optional integer specifying number of whole months to produce reports for (see date range options)                                                                                                    |
-| NUMBER_OF_DAYS             | Optional integer specifying number of days to produce reports for, calculated from today midnight (see date range options)                                                                            |
+| START_DATETIME             | Optional ISO-8601 datetime specifying start of date range to produce reports for (see date range options)                                                                                                          |
+| END_DATETIME               | Optional ISO-8601 datetime specifying end of date range to produce reports for (see date range options)                                                                                                            |
+| NUMBER_OF_MONTHS           | Optional integer specifying number of whole months to produce reports for (see date range options)                                                                                                                 |
+| NUMBER_OF_DAYS             | Optional integer specifying number of days to produce reports for, calculated from today midnight (see date range options)                                                                                         |
+| SEND_EMAIL_NOTIFICATION    | Optional boolean specifying whether an email should be sent with the report(s) attached (If not included - defaults to TRUE)                                                                                       |
 
 Example of ISO-8601 datetime that is specified for START_DATETIME and END_DATETIME - "2022-01-19T00:00:00Z".
 
