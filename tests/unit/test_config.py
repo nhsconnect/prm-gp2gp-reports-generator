@@ -26,6 +26,7 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
         "BUILD_TAG": build_tag,
         "REPORT_NAME": ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY.value,
         "ALERT_ENABLED": "True",
+        "SEND_EMAIL_NOTIFICATION": "True",
     }
 
     expected_config = PipelineConfig(
@@ -44,6 +45,7 @@ def test_reads_from_environment_variables_and_converts_to_required_format():
         build_tag=build_tag,
         report_name=ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY,
         alert_enabled=True,
+        send_email_notification=True,
     )
 
     actual_config = PipelineConfig.from_environment_variables(environment)
@@ -73,6 +75,7 @@ def test_read_config_from_environment_when_optional_parameters_are_not_set():
         build_tag=build_tag,
         report_name=ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY,
         alert_enabled=False,
+        send_email_notification=True,
     )
 
     actual_config = PipelineConfig.from_environment_variables(environment)

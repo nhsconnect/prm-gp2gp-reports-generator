@@ -15,4 +15,5 @@ def create_pipeline_config(**kwargs) -> PipelineConfig:
         cutoff_days=kwargs.get("cutoff_days", None),
         report_name=ReportName.TRANSFER_OUTCOMES_PER_SUPPLIER_PATHWAY,
         alert_enabled=True,
+        send_email_notification=True,
     )
