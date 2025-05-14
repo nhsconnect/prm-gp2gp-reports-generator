@@ -14,17 +14,17 @@ class TransferDetailsPerHourReportsGenerator(ReportsGenerator):
     def _create_hour_column(self, transfer_dataframe: DataFrame) -> DataFrame:
         date_requested_by_hour = col("date_requested").dt.strftime("%Y-%m-%d %H:00")
 
-        return transfer_dataframe.with_column(date_requested_by_hour.alias("Date/Time"))
+        return transfer_dataframe.with_columns(date_requested_by_hour.alias("Date/Time"))
 
     def _create_technical_failure_column(self, transfer_dataframe: DataFrame) -> DataFrame:
         is_technical_failure = col("status") == TransferStatus.TECHNICAL_FAILURE.value
 
-        return transfer_dataframe.with_column(is_technical_failure.alias("is_technical_failure"))
+        return transfer_dataframe.with_columns(is_technical_failure.alias("is_technical_failure"))
 
     def _create_unclassified_failure_column(self, transfer_dataframe: DataFrame) -> DataFrame:
         is_unclassified_failure = col("status") == TransferStatus.UNCLASSIFIED_FAILURE.value
 
-        return transfer_dataframe.with_column(
+        return transfer_dataframe.with_columns(
             is_unclassified_failure.alias("is_unclassified_failure")
         )
 

@@ -48,7 +48,9 @@ class TransferOutcomesPerSupplierPathwayReportsGenerator(ReportsGenerator):
     def _with_percentage_of_all_transfers(self, transfer_dataframe: DataFrame) -> DataFrame:
         total_transfers = col("number of transfers").sum()
         percentage_of_total_transfers = (col("number of transfers") / total_transfers) * 100
-        return transfer_dataframe.with_column(percentage_of_total_transfers.alias("% of transfers"))
+        return transfer_dataframe.with_columns(
+            percentage_of_total_transfers.alias("% of transfers")
+        )
 
     def _with_percentage_of_supplier_pathway(self, transfer_dataframe: DataFrame) -> DataFrame:
         supplier_pathway: List[Union[Expr, str]] = [
@@ -57,13 +59,13 @@ class TransferOutcomesPerSupplierPathwayReportsGenerator(ReportsGenerator):
         ]
         count_per_pathway = col("number of transfers").sum().over(supplier_pathway)
         percentage_of_pathway = (col("number of transfers") / count_per_pathway) * 100
-        return transfer_dataframe.with_column(percentage_of_pathway.alias("% of supplier pathway"))
+        return transfer_dataframe.with_columns(percentage_of_pathway.alias("% of supplier pathway"))
 
     def _with_percentage_of_technical_failures(self, transfer_dataframe: DataFrame) -> DataFrame:
         is_technical_failure = col("status") == TransferStatus.TECHNICAL_FAILURE.value
         total_technical_failures = col("number of transfers").filter(is_technical_failure).sum()
         percentage_of_tech_failures = (col("number of transfers") / total_technical_failures) * 100
-        return transfer_dataframe.with_column(
+        return transfer_dataframe.with_columns(
             when(is_technical_failure)
             .then(percentage_of_tech_failures)
             .otherwise(lit(None).cast(float))
@@ -78,7 +80,7 @@ class TransferOutcomesPerSupplierPathwayReportsGenerator(ReportsGenerator):
                 col("sending supplier"),
                 col("status"),
             ],
-            reverse=[True, False, False, False],
+            descending=[True, False, False, False],
         )
 
     def generate(self) -> pa.Table:

@@ -40,7 +40,7 @@ class SICBLLevelIntegrationTimesReportsGenerator(ReportsGenerator):
         return transfer_dataframe.filter(received_transfers)
 
     def _calculate_sla_band(self, transfer_dataframe: DataFrame) -> DataFrame:
-        return transfer_dataframe.with_column(
+        return transfer_dataframe.with_columns(
             col("sla_duration").apply(assign_to_sla_band).alias("sla_band")
         )
 
@@ -48,7 +48,7 @@ class SICBLLevelIntegrationTimesReportsGenerator(ReportsGenerator):
         within_3_days_sla_band_bool = col("sla_band") == SlaDuration.WITHIN_3_DAYS.value
         integrated_on_time_bool = col("status") == TransferStatus.INTEGRATED_ON_TIME.value
         integrated_within_3_days_bool = within_3_days_sla_band_bool & integrated_on_time_bool
-        return transfer_dataframe.with_column(
+        return transfer_dataframe.with_columns(
             when(integrated_within_3_days_bool)
             .then(1)
             .otherwise(0)
@@ -59,7 +59,7 @@ class SICBLLevelIntegrationTimesReportsGenerator(ReportsGenerator):
         within_8_days_sla_band_bool = col("sla_band") == SlaDuration.WITHIN_8_DAYS.value
         integrated_on_time_bool = col("status") == TransferStatus.INTEGRATED_ON_TIME.value
         integrated_within_8_days_bool = within_8_days_sla_band_bool & integrated_on_time_bool
-        return transfer_dataframe.with_column(
+        return transfer_dataframe.with_columns(
             when(integrated_within_8_days_bool)
             .then(1)
             .otherwise(0)
@@ -76,7 +76,7 @@ class SICBLLevelIntegrationTimesReportsGenerator(ReportsGenerator):
         not_integrated_within_8_days_bool = (
             integrated_late_failure_reason_bool | not_integrated_within_14_days
         )
-        return transfer_dataframe.with_column(
+        return transfer_dataframe.with_columns(
             when(not_integrated_within_8_days_bool)
             .then(1)
             .otherwise(0)
@@ -87,7 +87,7 @@ class SICBLLevelIntegrationTimesReportsGenerator(ReportsGenerator):
         integrated_late_failure_reason_bool = (
             col("failure_reason") == TransferFailureReason.INTEGRATED_LATE.value
         )
-        return transfer_dataframe.with_column(
+        return transfer_dataframe.with_columns(
             when(integrated_late_failure_reason_bool).then(1).otherwise(0).alias("Integrated late")
         )
 
@@ -96,7 +96,7 @@ class SICBLLevelIntegrationTimesReportsGenerator(ReportsGenerator):
         not_integrated_within_14_days = (
             col("failure_reason") == TransferFailureReason.TRANSFERRED_NOT_INTEGRATED.value
         )
-        return transfer_dataframe.with_column(
+        return transfer_dataframe.with_columns(
             when(not_integrated_within_14_days)
             .then(1)
             .otherwise(0)
