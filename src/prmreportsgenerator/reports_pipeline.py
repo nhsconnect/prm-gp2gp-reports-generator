@@ -138,7 +138,7 @@ class ReportsPipeline:
         return {
             "report-name": config.report_name.value,
             "reports-generator-version": config.build_tag,
-            "send-email-notification": config.send_email_notification,
+            "send-email-notification": str(config.send_email_notification),
         }
 
     def _generate_report(self, transfers: pa.Table) -> pa.Table:

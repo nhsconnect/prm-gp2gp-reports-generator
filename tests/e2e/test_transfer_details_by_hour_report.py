@@ -87,6 +87,7 @@ def test_e2e_with_custom_reporting_window_given_start_and_end_date(
             "technical-failures-percentage": "15.38",
             "total-technical-failures": "2",
             "total-transfers": "13",
+            "send-email-notification": "True",
         }
 
         actual_transfer_details_by_hour_s3_metadata = _read_s3_metadata(
