@@ -62,9 +62,10 @@ def test_returns_table_with_unique_final_error_codes(error_codes, expected):
 
     report_generator = TransferOutcomesPerSupplierPathwayReportsGenerator(table)
     actual = report_generator.generate()
+    actual_series = pl.Series("unique final errors", actual["unique final errors"])
     expected_unique_final_errors = pl.Series("unique final errors", [expected])
 
-    assert actual["unique final errors"] == expected_unique_final_errors
+    assert actual_series.series_equal(expected_unique_final_errors)
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
@@ -84,9 +85,10 @@ def test_returns_table_with_unique_sender_errors(error_codes, expected):
 
     report_generator = TransferOutcomesPerSupplierPathwayReportsGenerator(table)
     actual = report_generator.generate()
+    actual_series = pl.Series("unique sender errors", actual["unique sender errors"])
     expected_unique_sender_errors = pl.Series("unique sender errors", [expected])
 
-    assert actual["unique sender errors"] == expected_unique_sender_errors
+    assert actual_series.series_equal(expected_unique_sender_errors)
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
@@ -104,9 +106,10 @@ def test_returns_table_with_unique_intermediate_error_codes(error_codes, expecte
 
     report_generator = TransferOutcomesPerSupplierPathwayReportsGenerator(table)
     actual = report_generator.generate()
+    actual_series = pl.Series("unique intermediate errors", actual["unique intermediate errors"])
     expected_unique_intermediate_errors = pl.Series("unique intermediate errors", [expected])
 
-    assert actual["unique intermediate errors"] == expected_unique_intermediate_errors
+    assert actual_series.series_equal(expected_unique_intermediate_errors)
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")
@@ -143,9 +146,10 @@ def test_returns_table_with_correct_description_of_error(error_code, expected):
 
     report_generator = TransferOutcomesPerSupplierPathwayReportsGenerator(table)
     actual = report_generator.generate()
+    actual_series = pl.Series("unique intermediate errors", actual["unique intermediate errors"])
     expected_unique_intermediate_errors = pl.Series("unique intermediate errors", [expected])
 
-    assert actual["unique intermediate errors"] == expected_unique_intermediate_errors
+    assert actual_series.series_equal(expected_unique_intermediate_errors)
 
 
 @pytest.mark.filterwarnings("ignore:Conversion of")

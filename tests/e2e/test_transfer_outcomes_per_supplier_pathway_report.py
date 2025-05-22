@@ -81,6 +81,7 @@ def test_e2e_with_custom_reporting_window_given_start_and_end_date(
             "technical-failures-percentage": "100.0",
             "total-technical-failures": "2",
             "total-transfers": "2",
+            "send-email-notification": "True",
         }
 
         actual_supplier_pathway_outcome_counts_s3_metadata = _read_s3_metadata(
@@ -166,6 +167,7 @@ def test_e2e_with_monthly_reporting_window_given_number_of_months(
             "technical-failures-percentage": "15.38",
             "total-technical-failures": "2",
             "total-transfers": "13",
+            "send-email-notification": "True",
         }
 
         actual_supplier_pathway_outcome_counts_s3_metadata = _read_s3_metadata(
@@ -245,6 +247,7 @@ def test_e2e_with_daily_reporting_window_given_number_of_days(
             "technical-failures-percentage": "0.0",
             "total-technical-failures": "0",
             "total-transfers": "2",
+            "send-email-notification": "True",
         }
 
         actual_supplier_pathway_outcome_counts_s3_metadata = _read_s3_metadata(

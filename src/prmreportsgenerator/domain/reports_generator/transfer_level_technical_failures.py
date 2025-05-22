@@ -39,13 +39,13 @@ class TransferLevelTechnicalFailuresReportsGenerator(ReportsGenerator):
                     col("status"),
                     col("failure_reason").alias("failure reason"),
                     col("final_error_codes")
-                    .apply(self._unique_errors)
+                    .apply(self._unique_errors, skip_nulls=False, return_dtype=pl.Utf8)
                     .alias("unique final errors"),
                     col("sender_error_codes")
-                    .apply(self._unique_errors)
+                    .apply(self._unique_errors, skip_nulls=False, return_dtype=pl.Utf8)
                     .alias("unique sender errors"),
                     col("intermediate_error_codes")
-                    .apply(self._unique_errors)
+                    .apply(self._unique_errors, skip_nulls=False, return_dtype=pl.Utf8)
                     .alias("unique intermediate errors"),
                 ]
             )

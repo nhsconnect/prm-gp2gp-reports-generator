@@ -78,6 +78,7 @@ class PipelineConfig:
     s3_endpoint_url: Optional[str]
     report_name: ReportName
     alert_enabled: Optional[bool]
+    send_email_notification: Optional[bool]
 
     @classmethod
     def from_environment_variables(cls, env_vars):
@@ -94,4 +95,5 @@ class PipelineConfig:
             s3_endpoint_url=env.read_optional_str("S3_ENDPOINT_URL"),
             report_name=env.read_report_name("REPORT_NAME"),
             alert_enabled=env.read_optional_bool("ALERT_ENABLED", default=False),
+            send_email_notification=env.read_optional_bool("SEND_EMAIL_NOTIFICATION", default=True),
         )
